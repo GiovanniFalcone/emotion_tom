@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Matching Game</title>
+    <meta name="description" content="">
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+    
+    <!-- Custom Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+</head>
+<body onload="checkFirstVisit()">
+    
+    <!-- Get id player -->
+    <div id="session-data-id" data-session-id="{{ session_id }}"></div>
+    <div id="session-data" data-session-lan="{{ session_language }}"></div>
+
+    <!-- Overlay for Game End -->
+    <div class="overlay">
+        <div class="overlay-content">
+            <section class="switch-msg"></section>
+            <!-- ending form -->
+            <form id="endingForm" class="congrats-form" style="max-width: 500px; margin: -180px auto 0;">
+                <label for="formText" style="text-align: center; display: block; margin-bottom: 10px;">
+                    <h1>Geez, That's amazing!!</h1></label><br>
+                <img src="static/images/tiger.svg" alt="" id="congrats-image" width="150" style="display: block; margin: 0 auto;"><br>
+
+                <ul class="stars"></ul>
+                <h4>Done with <span class="moves">0</span> Moves in  <span class="timer"><span class="timer-minutes">0</span>:<span class="timer-seconds">00</span></span></h4> 
+                
+                <label for="formText2" style="text-align: center; display: block; margin-bottom: 10px;">
+                    <h1>Grazie per aver giocato!</h1>
+                </label><br>
+                <img src="static/images/ai.png" alt="" id="robot-image" width="50" style="display: block; margin: 0 auto;"><br>
+        
+                <label for="restartFormText" style="display: block; margin-bottom: 10px;">
+                    <h1>Clicca "Exit" per ritornare alla schermata principale.</h1>
+                </label>
+
+                <!--<button type="button" class="restart"><i class="fa fa-repeat"></i> Again</button>-->
+                <button type="button" class="exit" style="background-color: red; color: white;"><i class="fa fa-sign-out"></i> Exit</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Overlay for Game Start -->
+    <div class="overlay-start">
+        <div class="overlay-content-start">
+            <section class="start-msg"></section>
+            <button class="start"><i class="fa fa-play"></i> Start</button>
+        </div>
+    </div>
+
+    <!-- Suggestion Box -->
+    <div class="suggestion">
+        <div class="suggestion-content">
+            <section class="msg"></section>
+            <h2> Hey, il robot sta per dire qualcosa! </h2>
+        </div>
+    </div>
+
+    <!-- Main Container -->
+    <div class="container">
+        <header>
+            <h1 class="title">Memory Game <img src="static/images/pelican.svg" alt="" width="50"></h1>
+        </header>
+
+        <!-- Score Panel -->
+        <section class="score-panel">
+            <div class="left-content">
+                <ul class="stars"></ul>
+                <span class="moves">0</span> Moves
+                <span class="timer"><span class="timer-minutes">0</span>:<span class="timer-seconds">00</span></span>
+            </div>
+            <div class="robot-container">
+                <span><img src="static/images/ai.png" alt="" id="robot-image" width="225"></span>
+                <div class="speech-bubble">
+                    Prova la riga 2 <br>
+                </div>
+            </div>
+        </section>
+    
+        <!-- Deck for Cards -->
+        <ul class="deck"></ul>
+
+        <!-- Footer -->
+        <footer>
+            <p>Site design + code © 2018 YUNKI LIN</p>
+            <p>Icons are from <a href="https://www.flaticon.com/" title="Flaticon" target="_blank">Flaticon</a></p>
+        </footer>
+    </div>
+
+    <!-- External Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.5.0/socket.io.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.7.1/jquery.min.js" type="text/javascript"></script>
+
+    <!-- Custom Script -->
+    <script src="{{url_for('static',filename='js/app.js')}}" defer></script>
+</body>
+</html>

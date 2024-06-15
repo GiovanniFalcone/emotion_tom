@@ -1,0 +1,7 @@
+id_player: 312
+Experimental condition:external_deception
+
+koala duck  flamingo horse pelican panda
+goose shark koala bird  penguin flamingo
+bird  shark walrus horse tiger walrus
+duck  panda goose pelican penguin tiger

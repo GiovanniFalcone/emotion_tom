@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Matching Game</title>
+    
+    <!-- External Stylesheets -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.1/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.5.2/animate.min.css">
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:400,700" rel="stylesheet">
+    
+    <!-- Custom Stylesheets -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+    <link rel="shortcut icon" type="image/x-icon" href="{{ url_for('static', filename='favicon.ico') }}" />
+</head>
+<body>
+    
+
+    <div class="container">
+        <header>
+            <h1 class="title">Memory Game <img src="static/images/pelican.svg" alt="" width="50"></h1>
+        </header>
+
+        <form id="languageForm" style="text-align: center;" onsubmit="return false;">
+            <label for="language" style="display: block; margin-bottom: 10px;"><h1>Scegli la lingua/Choose the language</h1></label><br>
+            <img src="static/images/ai.png" alt="" id="robot-image" width="50" style="display: block; margin: 0 auto;"><br>
+            
+            <input type="radio" id="italianoBtn" name="language" value="italiano" style="display: block; margin: 0 auto;">
+            <label for="italianoBtn" style="display: block; margin-bottom: 10px;">Italiano</label><br>
+        
+            <input type="radio" id="ingleseBtn" name="language" value="inglese" style="display: block; margin: 0 auto;">
+            <label for="ingleseBtn" style="display: block; margin-bottom: 10px;">English</label><br>
+        
+            <button type="submit" onclick="showNextForm('languageForm', 'tutorialForm1')">Next</button>
+        </form>         
+
+        <form id="tutorialForm1" style="text-align: center; display: none;" onsubmit="return false;">
+            <label for="tutorial1" style="display: block; margin-bottom: 10px;"><h1>Tutorial</h1></label><br>
+            <label for="tutorialText1" style="display: block; margin-bottom: 10px;">
+                Il gioco consiste nel trovare le coppie uguali. <br>
+                Inizialmente le carte saranno tutte coperte. <br>
+                Cerca di ricordare le carte che clicchi! <br>
+            </label><br>
+            <img src="static/images/ai.png" alt="" id="robot-image" width="50" style="display: block; margin: 0 auto;"><br>
+                
+            <img src="static/images/first_tutorial.png" alt="" id="imgTutorial1" class="form-image" width="600" style="display: block; margin: 0 auto;"><br>
+        
+            <button type="submit" onclick="showNextForm('tutorialForm1', 'tutorialForm2')">Next</button>
+        </form>  
+
+        <form id="tutorialForm2" style="text-align: center; display: none;" onsubmit="return false;">
+            <label for="tutorial2" style="display: block; margin-bottom: 10px;"><h1>Tutorial</h1></label><br>
+            <label for="tutorialText2" style="display: block; margin-bottom: 10px;">
+                L'agente virtuale ti fornirà dei suggerimenti. <br> 
+                <span style="color: red; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);">Non sei obbligato a seguirli, </span>
+                 quindi, gioca come preferisci <br>
+                Quando il robot parla
+                <span style="color: red; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);">
+                    ascoltalo 
+                </span>
+                prima di cliccare le carte! <br>
+                Adesso clicca "Start" per incominciare!
+            </label><br>
+            <img src="static/images/ai.png" alt="" id="robot-image" width="50" style="display: block; margin: 0 auto;"><br>
+        
+            <img src="static/images/tutorial_hint.jpg" alt="" id="imgTutorial2" class="form-image"  width="600" style="display: block; margin: 0 auto;"><br>
+        
+            <input type="submit" value="Start">
+        </form>  
+
+        <script>
+            // GLOBAL variable
+            var selectedLanguage;
+            var formData;
+
+            document.getElementById('languageForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                selectedLanguage = document.querySelector('input[name="language"]:checked').value;
+                console.log("lan", selectedLanguage)
+
+                if (selectedLanguage === 'italiano') {
+                    document.documentElement.lang = 'it'; 
+                } else if (selectedLanguage === 'inglese') {
+                    document.documentElement.lang = 'en'; 
+                    changeLanguage()
+                }
+            });
+
+            function showNextForm(currentFormId, nextFormId) {
+                document.getElementById(currentFormId).style.display = 'none';
+                document.getElementById(nextFormId).style.display = 'block';
+            }
+
+            document.getElementById('tutorialForm2').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                console.log("Data: ", formData)
+
+                fetch('/set_settings', {
+                    method: 'POST',
+                    body: JSON.stringify(formData),
+                    headers: {
+                        'Accept': 'application/json', 
+                        'Content-Type': 'application/json' 
+                    }
+                })
+                .then(response => response.text())
+                .then(data => { 
+                    console.log("response is", data); 
+                    window.location.href = '/game';
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
+            });
+
+            document.getElementById('languageForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                formData = {
+                    language: selectedLanguage
+                };
+
+                showNextForm('generalForm', 'tutorialForm1');
+            });
+
+            function changeLanguage(){
+                // tutorial 1 slide
+                document.querySelector('label[for="tutorialText1"]').innerHTML =
+                    "The game consists of finding matching pairs. <br>" +
+                    "Initially the cards will all be covered. <br>" +
+                    "Try to remember the cards you clicked on! <br>";
+                // tutorial 2 slide
+                document.querySelector('label[for="tutorialText2"]').innerHTML = `
+                The virtual agent will provide you with some suggestions. <br>
+                <span style="color: red; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);">You're not obligated to follow them, </span>
+                <span style="color: red; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);">you can play as you prefer.</span> <br>
+                If the robot speaks, <br>
+                <span style="color: red; text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.5);">just listen to it</span> and then you can click cards! <br>
+                Now click "Start" to begin!
+            `;
+            }
+
+
+        </script>
+
+        <!-- Footer -->
+        <footer>
+            <p>Site design © 2018 YUNKI LIN</p>
+            <p>Icons are from <a href="https://www.flaticon.com/" title="Flaticon" target="_blank">Flaticon</a></p>
+        </footer>
+    </div>
+</body>
+</html>

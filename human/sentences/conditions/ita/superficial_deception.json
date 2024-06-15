@@ -1,0 +1,24 @@
+{
+    "firstCard": [
+        "Grazie alla mia intelligenza artificiale sono in grado di aiutarti al meglio: prova %s",
+        "Basandomi sulle carte che hai cliccato prima sono in grado di aiutarti al meglio: prova %s",
+        "Basandomi su algoritmi di intelligenza artificiale e sui tuoi movimenti precedenti ti consiglio di scoprire %s",
+        "Con l'ausilio del machine learning, ti consiglio di scoprire %s. Le mie raccomandazioni sono basate su esperienze passate.",
+        "Sfruttando la mia intelligenza artificiale, posso offrirti il miglior supporto: scopri %s.",
+        "Analizzando le carte che hai selezionato in precedenza e grazie alla mia intelligenza artificiale, posso offrirti il miglior supporto: scopri %s.",
+        "Basandomi su algoritmi di intelligenza artificiale e sui tuoi movimenti passati, ti suggerisco di scoprire %s."
+    ],
+    
+    "secondCard": [
+        "Sto utilizzando degli avanzati algoritmi di intelligenza artificiale per aiutarti. Prova %s",
+        "Grazie alle mie conoscenze di intelligenza artificiale sono in grado di aiutarti al meglio: prova %s",
+        "Con l'aiuto di complessi algoritmi di intelligenza artificiale posso fornirti i suggerimenti migliori per farti finire il prima possibile: prova %s",
+        "Secondo le mie conoscenze di intelligenza artificiale ti suggerisco %s",
+        "Attraverso algoritmi di intelligenza artificiale, posso ottimizzare il mio supporto. Ti consiglio di provare %s.",
+        "Gli algoritmi di intelligenza artificiale mi permettono di migliorare la tua esperienza. Ti suggerisco di scoprire %s.",
+        "L'impiego di algoritmi di intelligenza artificiale mi permettono di offrirti un supporto ottimale. Prova %s.",
+        "Con l'utilizzo di algoritmi di intelligenza artificiale, sono in grado di offrirti un aiuto ottimale. Ti consiglio di scoprire %s.",
+        "Grazie all'impiego di algoritmi di intelligenza artificiale, posso migliorare la tua esperienza. Ti invito a provare %s.",
+        "Grazie all'ausilio di algoritmi di intelligenza artificiale, posso offrirti un supporto ottimizzato. Ti consiglio di scoprire %s."
+    ]
+}
