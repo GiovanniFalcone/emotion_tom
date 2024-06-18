@@ -391,7 +391,7 @@ function congrats() {
 function hintReceivedByRobot(msg) {
     const socket = io.connect(url);
 
-    console.log("socket_address diooo:", socket_address)
+    console.log("socket_address:", socket_address)
 
     //socket.on('Speech', handleSpeechEvent);
     socket.on(socket_address, handleRobotHintEvent);

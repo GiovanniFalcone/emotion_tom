@@ -185,6 +185,10 @@ class Util:
             return 
         
         file_path = Path("../human/data/user_" + str(id_player) + "/log_file_" + str(n_game) + ".txt")
+
+        if not os.path.exists(file_path): 
+            return
+
         with open(file_path, "a+", newline='') as outfile:
             outfile.write(data)
 

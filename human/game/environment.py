@@ -21,8 +21,6 @@ class Environment:
         self._player = Player(self._game)
         self._agent = None
         self._ID_PLAYER = ID_PLAYER
-        self._ONE_TERMINAL = Util.get_from_json_file("config")["one_terminal"]
-        self.classification = ''
         self.instance_flask = instance_flask
 
     def set_agent(self, agent):
@@ -34,7 +32,6 @@ class Environment:
 
     def _reset(self):
         """Resets the game state."""
-        
         while not self.instance_flask.board_changed.wait(timeout=1):
             if self.instance_flask.stop_thread.is_set():
                 Util.formatted_debug_message("Stopping update_environment due to stop_event.", level='INFO')
@@ -52,7 +49,9 @@ class Environment:
         self._player.create_history()
 
     def update_environment(self):
-        """Updates the game environment state."""
+        """
+        Updates the game environment state.
+        """
         while not self.instance_flask.board_changed.wait(timeout=1):
             if self.instance_flask.stop_thread.is_set():
                 Util.formatted_debug_message("Stopping update_environment due to stop_event.", level='INFO')
@@ -203,7 +202,7 @@ class Environment:
 
         # get sentence based on provided hint
         sentence = self._agent.generate_sentence(suggest, flip_type, flag_ToM, card, position)
-        print(sentence)
+        print(f"Sentence to utter: {sentence}")
 
         # Check if the agent provided a wrong card
         wrong_hint = self.check_wrong_hint(action, suggest, position)

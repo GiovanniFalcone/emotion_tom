@@ -66,14 +66,16 @@ class Menu:
                                         "0: Theory of Mind\n" +
                                         "1: No-Theory of Mind\n" +
                                         "2: Deception\n" +
+                                        "3: External\n" +
+                                        "4: Superficial\n" +
+                                        "5: Hidden\n" +
                                         "Other: you will restart with the same experimental condition setted at the beginning",
                                         level='INFO')
             experimental_condition = input("Choose mode: ")
             
-            if experimental_condition == '' or (not experimental_condition.isdigit() or int(experimental_condition) not in range(3)):
+            if experimental_condition == '' or (not experimental_condition.isdigit() or int(experimental_condition) not in range(6)):
                 experimental_condition = None
                 Menu.clean_shell()
-            
             return int(experimental_condition)
         else:
             return None

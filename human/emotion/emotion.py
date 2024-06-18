@@ -65,11 +65,11 @@ while True:
             if last_emotion == '':
                 last_emotion = dominant_emotion
                 print("Sending ", dominant_emotion)
-                #send_emotion(dominant_emotion)
+                send_emotion(dominant_emotion)
             elif last_emotion != dominant_emotion:
                 print("Sending ", dominant_emotion)
                 last_emotion = dominant_emotion
-                #send_emotion(dominant_emotion)
+                send_emotion(dominant_emotion)
 
         # Draw rectangle around face and label with predicted emotion
         cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)

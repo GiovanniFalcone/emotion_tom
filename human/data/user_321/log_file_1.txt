@@ -1,3 +1,0 @@
-id_player: 321
-Experimental condition:external_deception
-

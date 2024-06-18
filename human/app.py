@@ -20,7 +20,6 @@ log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
 # constants
-ONE_TERMINAL = Util.get_from_json_file("config")["one_terminal"]
 IP_ADDRESS = Util.get_from_json_file("config")['ip'] 
 
 # Creazione dell'app Flask
@@ -37,6 +36,32 @@ first_start = True              # in order to not have a menu at the very beginn
 exit_pressed = False            # when return to home page after pressing exit in the menu, don't show again the menu
 cleanup_flag = False            # clear session after CTRL+C
 last_emotion = ''
+id_player = -1                  # only used during HRI (for emotion)
+
+def get_id():
+    return session.get('id')
+
+def get_utility_flask(id, log_context):
+    utility_flask = client_instances.get(id)
+    if utility_flask is None:
+        print(f"[{log_context}] No client yet")
+        return None
+    return utility_flask
+
+def create_new_session(data):
+    # get id for user
+    lock.acquire()
+    id = Util.create_dir_for_current_user() 
+    lock.release()
+    # save it into session
+    session['id'] = id
+    session['language'] = data.get('language')
+    return id
+
+def clear_session():
+    id = session.get('id')
+    session.clear()
+    client_instances.pop(id, None)
 
 @app.route('/', methods=["GET", "POST"])
 @app.route('/index', methods=["GET", "POST"])
@@ -62,57 +87,45 @@ def index():
         if not exit_pressed:
             if 'id' in session:
                 Util.formatted_debug_message("Welcom back!", level='INFO')
-                return render_template('home_page.html')
             else:
                 Util.formatted_debug_message("New user", level='INFO')
+            return render_template('home_page.html')
 
+    if 'id' in session:
+        Util.formatted_debug_message("Welcom back!", level='INFO')
+    else:
+        Util.formatted_debug_message("New user", level='INFO')
+            
     return render_template('home_page.html')
 
 @app.route('/set_settings', methods=["POST"])
 def set_setting():
+    global id_player
+    # unpack request
+    data = request.get_json()
+
+    # create a session for new user, otherwise delete it and create a new one
     if 'id' not in session:
         Util.formatted_debug_message("Creating new session...", level='Settings')
-        # get id for user
-        lock.acquire()
-        id = Util.create_dir_for_current_user() 
-        lock.release()
-        # save it into session
-        data = request.get_json()
-        session['id'] = id
-        session['language'] = data.get('language')
-        # return response
-        response = jsonify({"message": "ok"})
-        response.status_code = 200
-        return redirect(url_for("show_game", _external=True), Response=response)
+        id = create_new_session(data)
     else:
-        # clear session
-        id = session.get('id')
-        session.clear()
-        client_instances.pop(id, None)
+        clear_session()
         Util.formatted_debug_message("Session cleared...", level='Settings')
-        lock.acquire()
-        id = Util.create_dir_for_current_user() 
-        lock.release()
-        # save it into session
-        data = request.get_json()
-        session['id'] = id
-        session['language'] = data.get('language')
-        Menu.clean_shell()
-        # return response
-        response = jsonify({"message": "ok"})
-        response.status_code = 200
-        return redirect(url_for("show_game", _external=True), Response=response)
+        id = create_new_session(data)
+    
+    id_player = id
+    Menu.clean_shell()
+    # return response
+    response = jsonify({"message": "ok"})
+    response.status_code = 200
+    return redirect(url_for("show_game", _external=True), Response=response)
 
 @app.route("/game", methods=["POST", "GET"])
 def show_game():
     if request.method == "GET":
-        id = session.get('id')
-        if id is None:
-            Util.formatted_debug_message("ID is None! Redirecting to home page...", level='Game')
-            return redirect(url_for("index"))
-        
+        id = get_id()
+        Util.formatted_debug_message(f"Showing game page to user with ID={id}", level='INFO')
         if id not in client_instances:
-            Util.formatted_debug_message(f"Showing game page to user with ID={session.get('id')}", level='INFO')
             # create instance for user
             client_instances[id] = UtilityFlask() 
             # handle player and run Q-learning
@@ -124,8 +137,7 @@ def show_game():
 @app.route('/exit', methods=['GET'])
 def exit():
     Util.formatted_debug_message(f"User with ID={session.get('id')} has pressed 'exit'!", level='INFO')
-    client_instances.pop(session.get('id'), None)
-    session.clear()
+    clear_session()
     # only to have a cleaner shell, you can delete it
     Menu.clean_shell()
     return redirect(url_for("index"))
@@ -134,33 +146,28 @@ def exit():
 def receive_game_board(id):
     Util.formatted_debug_message(f"Received game board for user with ID={id}", level='INFO')
     # get instance for current user
-    utility_flask = client_instances.get(id)
+    utility_flask = get_utility_flask(id, "Game Board")
     if utility_flask is None:
-        print("[Game Board] No client yet")
-        return render_template('index.html') 
+        return render_template('index.html')
     
     # handle game board and return response
     return utility_flask.handle_game_board(request)
 
 @app.route('/player_move/<int:id>', methods=["POST"])
 def receive_player_move_data(id):
-    Menu.debug_print("Player move received from player with id " + str(session.get('id')))
     # get instance for current user
-    utility_flask = client_instances.get(id)
+    utility_flask = get_utility_flask(id, "Player move")
     if utility_flask is None:
-        print("[Player move] No client yet")
-        return render_template('index.html') 
+        return render_template('index.html')
     
     return utility_flask.handle_player_move(request)
 
 @app.route('/hint_data/<int:id>', methods=["POST"])
 def receive_hint_data(id):
-    Menu.debug_print("Hint received from agent for player with id " + str(id))
     
-    utility_flask = client_instances.get(id)
+    utility_flask = get_utility_flask(id, "Agent")
     if utility_flask is None:
-        print("[Agent] No client yet")
-        return render_template('index.html') 
+        return render_template('index.html')
     
     return utility_flask.handle_robot_hint(request, socketio)
 
@@ -168,17 +175,35 @@ def receive_hint_data(id):
 def receive_dominant_emotion():
     global last_emotion
 
+    utility_flask = client_instances.get(id_player)
+    
     data = request.get_json()
     emotion = data.get('emotion')
+    if utility_flask is None:
+        print("id session not found!")
+        return jsonify({'message': 'session not found in emotion route'}), 200
 
     if last_emotion == '':
         last_emotion = emotion
-        Menu.debug_print(f"Emotion received for {session.get('id')}: {emotion}")
+        Menu.debug_print(f"Emotion received for {id_player}: {emotion}")
+        utility_flask.emotion = emotion
     elif last_emotion != emotion:
         last_emotion = emotion
-        Menu.debug_print(f"Emotion received for {session.get('id')}: {emotion}")
+        Menu.debug_print(f"Emotion received for {id_player}: {emotion}")
+        utility_flask.emotion = emotion
     
     return jsonify({'message': 'emotion received'}), 200
+
+@app.route('/get_emotion', methods=["POST"])
+def provide_dominant_emotion():
+
+    id = id_player
+    utility_flask = client_instances.get(id)
+    if utility_flask is None:
+        return jsonify({'message': 'session not found in emotion route'}), 200
+    emotion = utility_flask.emotion
+
+    return jsonify({'emotion': emotion})
 
 @app.route('/cheating/<int:id>', methods=["GET", "POST"])
 def def_cheater(id):
@@ -209,6 +234,8 @@ def handle_exit(*args):
     os._exit(0)
 
 if __name__ == '__main__':
+    # create robot socket
+    threading.Thread(target=UtilityFlask.create_socket, args=(UtilityFlask.ROBOT_PORT,)).start()
     # handle CTRL+C
     signal.signal(signal.SIGINT, handle_exit)
     # run app

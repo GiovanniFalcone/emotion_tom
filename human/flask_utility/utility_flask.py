@@ -4,6 +4,7 @@ from flask_socketio import emit
 import threading
 import json
 import multiprocessing
+import socket
 
 import sys
 import os
@@ -20,15 +21,12 @@ class UtilityFlask:
 
     Attributes:
         IP_ADDRESS (str): IP address of the server.
-        POP_UP (bool): Flag indicating whether pop-up windows are enabled (used before start the game).
-        LEARNING_PORT (int): Port number for the learning socket.
         ROBOT_PORT (int): Port number for the robot socket.
         robot_socket (int): Socket object for the robot connection.
     """
 
     # Constants
     IP_ADDRESS = Util.get_from_json_file("config")['ip'] 
-    LEARNING_PORT = 6000
     ROBOT_PORT = 7000
     robot_socket = 0
 
@@ -40,7 +38,6 @@ class UtilityFlask:
         ----------
             id_player (int): ID of the player.
             experiment_condition (str): Current experimental condition.
-            learning_socket (int): Socket object for the learning connection.
             isRobotConnected (bool): Flag indicating if the robot is connected: 
                                      if false the client will not show a pop-up before highlight the position suggested.
             received_hint (dict): Dictionary containing received hints.
@@ -49,7 +46,7 @@ class UtilityFlask:
         self.id_player = -1
         self.experimental_condition = None
         self.experimental_condition_str = ''
-        self.learning_socket = 0
+        self.emotion = ''
         self.isRobotConnected = False
         self.board = None
         self.move = None
@@ -59,6 +56,35 @@ class UtilityFlask:
         self.file_manager = FileManager()
         self.thread = None
         self.stop_thread = threading.Event()
+
+    @staticmethod
+    def create_socket(port):
+        """
+        Function to create a socket on a specific port.
+        Accepts incoming connections and starts a thread to handle each client.
+        Used to create connection with robot!
+
+        Args:
+            port (int): Port number for the socket.
+        """
+        serversocket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        serversocket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+        serversocket.bind((UtilityFlask.IP_ADDRESS, port))
+        serversocket.listen(5)
+        while True:
+            (clientsocket, address) = serversocket.accept()
+            client_handler = threading.Thread(target=UtilityFlask.handle_robot_socket, args=(clientsocket, port))
+            client_handler.start() 
+
+    def handle_robot_socket(client_socket, port):
+        """
+        Function to handle the client connecting to the socket.
+        If the port matches the learning port, sets the learning (q-learning algorithm) socket.
+        If the port matches the robot port, sets the robot socket and indicates that the robot is connected.
+        """
+        if port == UtilityFlask.ROBOT_PORT:
+            UtilityFlask.robot_socket = client_socket 
+            Util.formatted_debug_message("Handle robot client" + str(UtilityFlask.robot_socket.getsockname()), level='INFO')
 
     def handle_id_player(self, id_session, instance, expertiment_condition):
         """
@@ -136,6 +162,10 @@ class UtilityFlask:
                 self.move = data
                 self.board_changed.set()
 
+            # send to robot
+            if UtilityFlask.robot_socket != 0:
+                UtilityFlask.robot_socket.send(json.dumps(data).encode())
+
             # write log file and update csv file
             self.file_manager._write_game_data_on_file(dictionary)
                     
@@ -166,15 +196,12 @@ class UtilityFlask:
             # send to robot 
             if UtilityFlask.robot_socket != 0:
                 UtilityFlask.robot_socket.send(json.dumps(data).encode())
-                Util.formatted_debug_message("Hint sended to robot socket", level='INFO')
                 self.isRobotConnected = True
 
             # if not none send to js in order to highlight the card/row/col and send it to robot app     
             if agent_hint["suggestion"] != "none":
                 agent_hint["isRobotConnected"] = self.isRobotConnected
-                #print(json.dumps(data, indent=4))
                 socket_address = "robot_hint_" + str(self.id_player)
-                #print("address", socket_address)
                 socketio.emit(socket_address, json.dumps(data))
                 #Util.formatted_debug_message("Hint received by Q-learning agent.", level='INFO')
                 #Util.formatted_debug_message("Hint sended to javascript.", level='INFO')
