@@ -6,11 +6,15 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 
-from connection import RobotConnectionManager
+# robot
+from model.interface.robot_interface import RobotInterface
+from model.concrete.furhat import Furhat
 
 class PerceptionModule:
-    def __init__(self):
-        self.robot = RobotConnectionManager.get_session()
+    def __init__(self, robot: RobotInterface):
+        # get robot 
+        self.robot = robot
+        self.robot.connect()
         self.pub = rospy.Publisher('person_detected', Bool, queue_size=10)
         self.rate = rospy.Rate(10)  # 10 Hz
         self.user_found = False
@@ -50,7 +54,8 @@ class PerceptionModule:
 if __name__ == '__main__':
     try:
         rospy.init_node('perception_node', anonymous=True)
-        node = PerceptionModule()
+        robot = Furhat()
+        node = PerceptionModule(robot)
         node.run()
     except rospy.ROSInterruptException:
         pass

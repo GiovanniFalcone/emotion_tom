@@ -6,19 +6,17 @@ from std_msgs.msg import String, Bool
 import os
 import random
 import json
-import threading
 import requests
 import sys
 
-# furhat movements
-from automatic_movements import AutomaticMovements
-# Furhat connection
-from connection import RobotConnectionManager
+# robot
+from model.interface.robot_interface import RobotInterface
+from model.concrete.furhat import Furhat
 # Emotion sentence
 from sentences.emotion_sentences import EmotionGenerator
 
 class InteractionModule:
-    def __init__(self, language = 'ita'):
+    def __init__(self, robot: RobotInterface, language = 'ita'):
         rospy.Subscriber('/speech_hint', String, self.speech_callback)
         rospy.Subscriber('/game_data', String, self.game_callback)
         rospy.Subscriber("/emotion", String, self.handle_emotion)
@@ -35,8 +33,8 @@ class InteractionModule:
         self.last_emotion = ''
         self.emotion_sentence = EmotionGenerator('friendly', language)
         # get robot 
-        self.robot = RobotConnectionManager.get_session()
-        threading.Thread(target=AutomaticMovements.random_head_movements, args=(self.robot, )).start()
+        self.robot = robot
+        self.robot.connect()
         # interaction before (and after) the game
         script_dir = os.path.dirname(__file__)  
         relative_path = os.path.join('sentences', 'interaction', language)
@@ -145,12 +143,13 @@ class InteractionModule:
         self.speak(sentence)
 
     def speak(self, sentence):
-        self.robot.say(text=sentence, blocking = True)
+        self.robot.say(sentence)
 
     def run(self):
         rospy.spin()
 
 if __name__ == '__main__':
     rospy.init_node('interaction_node', anonymous=True)
-    interaction_node = InteractionModule()
+    robot = Furhat()
+    interaction_node = InteractionModule(robot)
     interaction_node.run()
