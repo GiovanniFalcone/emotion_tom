@@ -1,0 +1,25 @@
+{
+    "greetings": [
+        "Ciao, io sono Furhat, un robot parlante. Piacere di fare la tua conoscenza!",
+        "Ehy, ciao, il mio nome è Furhat e sono un robot parlante, piacere di conoscerti!",
+        "Ciao, piacere di conoscerti! Io sono Furhat, un robot parlante",
+        "Ciao, io sono Furhat, un robot parlante, piacere di conoscerti!"
+    ],
+
+    "before_rules": [
+        "Come già saprai, giocheremo insieme al memory game!",
+        "Come ti è già stato detto, giocheremo insieme al memory game!"
+    ],
+
+    "rules": [
+        "Io ti fornirò dei suggerimenti per aiutarti a vincere il più in fretta possibile! Ovviamente, potrai decidere anche di non seguirli, però prima di fare la tua mossa aspetta che io finisca di parlare. Quindi, fai come meglio credi. Inoltre, ti chiederei di non cliccare troppo velocemente le carte, prenditi il tuo tempo. Adesso, vai avanti nel tutorial così potremo giocare insieme!",
+        "Ti aiuterò per farti vincere il prima possibile, fornendoti dei suggerimenti. Puoi anche decidere di non ascoltarmi, però prima di fare la tua mossa aspetta che io finisca di parlare. Quindi, gioca come preferisci. Inoltre, ti pregherei di non cliccare troppo velocemente le carte, grazie! Ora, prosegui nella schermata e giochiamo!",
+        "Ti suggerirò dei consigli per farti vincere il prima possibile. Ovviamente puoi giocare come preferisci. Quindi, potrai anche non ascoltarmi. Però, prima di fare la tua mossa aspetta che io finisca di parlare. Inoltre, ti pregherei di non cliccare troppo velocemente le carte, grazie! Adesso vai avanti nel tutorial e iniziamo a giocare!"
+    ],
+
+    "end": [
+        "Bene, abbiamo terminato. Spero che tu abbia trovato questa esperienza interessante! Adesso ti saluto, ciao!",
+        "Ora che la partita è conclusa possiamo anche salutarci. Spero che tu abbia trovato questa esperienza interessante! Arrivederci!",
+        "Okay, abbiamo finito! Spero che giocare con me ti sia piaciuto. Adesso, però, dobbiamo salutarci: ciao!"
+    ]
+}

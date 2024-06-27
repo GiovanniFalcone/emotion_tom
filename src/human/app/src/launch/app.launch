@@ -1,0 +1,8 @@
+<launch>
+
+	<arg name="condition" /> 
+    <param name="condition" value="$(arg condition)"/>
+
+    <!-- Flask node: run server -->
+    <node name="flask_node" pkg="app" type="app.py" output="screen"/>
+</launch>

@@ -1,0 +1,8 @@
+prefix=/home/giovanni/emotional_tom/devel
+
+Name: emotion
+Description: Description of emotion
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

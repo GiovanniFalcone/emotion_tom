@@ -1,0 +1,14 @@
+<launch>
+    <!-- Perception node: human detection -->
+    <node name="perception_node" pkg="robot" type="perception.py" output="screen"/>
+
+    <!-- Interaction node: speech -->
+    <node name="interaction_node" pkg="robot" type="interaction.py" output="screen"/>
+    
+    <group if="$(arg launch_emotion_node)">
+        <!-- Emotion node: emotion recognition -->
+        <node name="emotion" pkg="emotion" type="emotion_node.py" output="screen">
+            <param name="launch_emotion_node" value="$(arg launch_emotion_node)"/>
+        </node>
+    </group>
+</launch>
