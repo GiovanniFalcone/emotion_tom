@@ -8,6 +8,7 @@ import random
 import json
 import requests
 import sys
+import csv
 
 # robot
 from model.interface.robot_interface import RobotInterface
@@ -17,11 +18,13 @@ from sentences.emotion_sentences import EmotionGenerator
 
 class InteractionModule:
     def __init__(self, robot: RobotInterface, language = 'ita'):
+        # ROS topic
         rospy.Subscriber('/speech_hint', String, self.speech_callback)
         rospy.Subscriber('/game_data', String, self.game_callback)
         rospy.Subscriber("/emotion", String, self.handle_emotion)
         rospy.Subscriber('/person_detected', Bool, self.person_detected_callback)
         self.person_detected = False
+        # game state (IDLE; BEGIN; GAME; END)
         self.state = 'IDLE'
         # emotion
         try:
@@ -37,11 +40,28 @@ class InteractionModule:
         self.robot = robot
         self.robot.connect()
         self.robot.random_head_movements()
-        # interaction before (and after) the game
+        # get sentences from interaction file (used in Greetings, Rules and Goodbye)
         script_dir = os.path.dirname(__file__)  
         relative_path = os.path.join('sentences', 'interaction', language)
         filename = os.path.join(script_dir, relative_path, 'interaction.json')
         self.speech = self.load_json_file(filename)
+        # Initialize CSV file
+        self.csv_file = 'interaction_data.csv'
+        self.init_csv()
+
+    def init_csv(self):
+        """Initialize the CSV file with headers."""
+        headers = ['timestamp', 'emotion', 'action_robot', 'result_action']
+        with open(self.csv_file, 'w', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow(headers)
+
+    def log_to_csv(self, emotion, action_robot, result_action):
+        """Log the interaction data to the CSV file."""
+        timestamp = rospy.get_time()
+        with open(self.csv_file, 'a', newline='') as file:
+            writer = csv.writer(file)
+            writer.writerow([timestamp, emotion, action_robot, result_action])
 
     def load_json_file(self, filename):
         try:
@@ -141,6 +161,8 @@ class InteractionModule:
                 print("Motivation: ", motivational_sentence)
                 self.speak(motivational_sentence)
                 self.robot.change_led_color_based_on_emotion("neutral")
+                # Log to CSV
+                self.log_to_csv(emotion, motivational_sentence, 'motivated')
 
     def handle_emotion(self, data):
         """Save the emotion received"""
