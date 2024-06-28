@@ -41,10 +41,8 @@ class PerceptionModule:
 
     def detect_person(self):
         # Get the users detected by the robot 
-        users = self.robot.get_users()
+        users = self.robot.user_detection()
         if len(users) > 0:
-            # Attend the user closest to the robot
-            self.robot.attend(user="CLOSEST")
             self.user_found = True
             rospy.loginfo("User found!")
         else:

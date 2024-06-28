@@ -25,16 +25,18 @@ class InteractionModule:
         self.state = 'IDLE'
         # emotion
         try:
-            self.emotional_condition = bool(rospy.get_param("launch_emotion_node"))
+            self.emotional_condition = bool(rospy.get_param("emotion_condition"))
+            print(f"Emotion condition: {self.emotional_condition}")
         except KeyError:
             rospy.logerr(
-                "Usage: roslaunch robot controller.launch launch_emotion_node:=<value> (where value can be true or false)")
+                "Usage: roslaunch robot controller.launch emotion_condition:=<value> (where value can be true or false)")
             sys.exit(1)
         self.last_emotion = ''
         self.emotion_sentence = EmotionGenerator('friendly', language)
         # get robot 
         self.robot = robot
         self.robot.connect()
+        self.robot.random_head_movements()
         # interaction before (and after) the game
         script_dir = os.path.dirname(__file__)  
         relative_path = os.path.join('sentences', 'interaction', language)
@@ -110,12 +112,19 @@ class InteractionModule:
             # debug
             print(f"Emotion after match: {emotion}")
             # define probability for robot's motivational speech
-            probability = 0.5 if match else 0.3
+            probability = 0.75 if match else 0.3
             # with 50% of chance the robot will motivate if user has found a pair (i.e match is True), 
             # otherwise the chance that robot will motivate are 25%
             if random.random() < probability:
+                self.robot.change_led_color_based_on_emotion(emotion)
+                if emotion != 'happy':
+                    self.robot.do_facial_expression("ExpressSad")
+                else:
+                    self.robot.do_facial_expression("BigSmile")
                 motivational_sentence = self.emotion_sentence.get_sentence(emotion, n_pairs, match)
+                print("Motivation: ", motivational_sentence)
                 self.speak(motivational_sentence)
+                self.robot.change_led_color_based_on_emotion("neutral")
 
     def handle_emotion(self, data):
         """Save the emotion received"""
