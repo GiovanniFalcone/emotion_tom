@@ -1,4 +1,4 @@
-prefix=/home/giovanni/emotional_tom/install
+prefix=/home/giovanni/emotion_tom/install
 
 Name: emotion
 Description: Description of emotion

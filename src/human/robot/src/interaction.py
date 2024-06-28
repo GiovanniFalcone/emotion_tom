@@ -9,6 +9,7 @@ import json
 import requests
 import sys
 import csv
+from datetime import datetime
 
 # robot
 from model.interface.robot_interface import RobotInterface
@@ -18,6 +19,16 @@ from sentences.emotion_sentences import EmotionGenerator
 
 class InteractionModule:
     def __init__(self, robot: RobotInterface, language = 'ita'):
+        # Initialize CSV file
+        script_dir = os.path.dirname(__file__) 
+        # Navigare fino alla cartella 'app/data' risalendo di due livelli da 'interaction.py'
+        data_dir = os.path.abspath(os.path.join(script_dir, '..', '..', 'app', 'src', 'data'))
+        # Combinare il percorso della cartella 'data' con il nome del file CSV
+        self.csv_file = os.path.join(data_dir, 'emotion_data.csv')
+        # Stampa del percorso assoluto del file CSV
+        print(f"Absolute path of the CSV file: {self.csv_file}")
+        self.init_csv()
+        
         # ROS topic
         rospy.Subscriber('/speech_hint', String, self.speech_callback)
         rospy.Subscriber('/game_data', String, self.game_callback)
@@ -45,23 +56,25 @@ class InteractionModule:
         relative_path = os.path.join('sentences', 'interaction', language)
         filename = os.path.join(script_dir, relative_path, 'interaction.json')
         self.speech = self.load_json_file(filename)
-        # Initialize CSV file
-        self.csv_file = 'interaction_data.csv'
-        self.init_csv()
 
     def init_csv(self):
         """Initialize the CSV file with headers."""
-        headers = ['timestamp', 'emotion', 'action_robot', 'result_action']
+        headers = ['timestamp', 'emotion', 'match', 'motivated']
         with open(self.csv_file, 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(headers)
+        rospy.loginfo(f"CSV file initialized at {self.csv_file}")
+        import time
+        time.sleep(2)
 
     def log_to_csv(self, emotion, action_robot, result_action):
         """Log the interaction data to the CSV file."""
         timestamp = rospy.get_time()
+        dt_object = datetime.fromtimestamp(timestamp)
+        formatted_time = dt_object.strftime('%Y-%m-%d %H:%M:%S.%f') 
         with open(self.csv_file, 'a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([timestamp, emotion, action_robot, result_action])
+            writer.writerow([formatted_time, emotion, action_robot, result_action])
 
     def load_json_file(self, filename):
         try:
@@ -162,7 +175,9 @@ class InteractionModule:
                 self.speak(motivational_sentence)
                 self.robot.change_led_color_based_on_emotion("neutral")
                 # Log to CSV
-                self.log_to_csv(emotion, motivational_sentence, 'motivated')
+                self.log_to_csv(emotion, match, 'yes')
+            else:
+                self.log_to_csv(emotion, match, 'no')
 
     def handle_emotion(self, data):
         """Save the emotion received"""

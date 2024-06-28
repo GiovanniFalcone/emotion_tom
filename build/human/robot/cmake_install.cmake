@@ -1,8 +1,8 @@
-# Install script for directory: /home/giovanni/emotional_tom/src/human/robot
+# Install script for directory: /home/giovanni/emotion_tom/src/human/robot
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/giovanni/emotional_tom/install")
+  set(CMAKE_INSTALL_PREFIX "/home/giovanni/emotion_tom/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -43,17 +43,17 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/giovanni/emotional_tom/build/human/robot/catkin_generated/installspace/robot.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/giovanni/emotion_tom/build/human/robot/catkin_generated/installspace/robot.pc")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/robot/cmake" TYPE FILE FILES
-    "/home/giovanni/emotional_tom/build/human/robot/catkin_generated/installspace/robotConfig.cmake"
-    "/home/giovanni/emotional_tom/build/human/robot/catkin_generated/installspace/robotConfig-version.cmake"
+    "/home/giovanni/emotion_tom/build/human/robot/catkin_generated/installspace/robotConfig.cmake"
+    "/home/giovanni/emotion_tom/build/human/robot/catkin_generated/installspace/robotConfig-version.cmake"
     )
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/robot" TYPE FILE FILES "/home/giovanni/emotional_tom/src/human/robot/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/robot" TYPE FILE FILES "/home/giovanni/emotion_tom/src/human/robot/package.xml")
 endif()
 

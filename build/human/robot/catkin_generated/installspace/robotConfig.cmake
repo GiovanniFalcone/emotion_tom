@@ -67,14 +67,14 @@ set(robot_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(robot_SOURCE_PREFIX /home/giovanni/emotional_tom/src/human/robot)
-  set(robot_DEVEL_PREFIX /home/giovanni/emotional_tom/devel)
+  set(robot_SOURCE_PREFIX /home/giovanni/emotion_tom/src/human/robot)
+  set(robot_DEVEL_PREFIX /home/giovanni/emotion_tom/devel)
   set(robot_INSTALL_PREFIX "")
   set(robot_PREFIX ${robot_DEVEL_PREFIX})
 else()
   set(robot_SOURCE_PREFIX "")
   set(robot_DEVEL_PREFIX "")
-  set(robot_INSTALL_PREFIX /home/giovanni/emotional_tom/install)
+  set(robot_INSTALL_PREFIX /home/giovanni/emotion_tom/install)
   set(robot_PREFIX ${robot_INSTALL_PREFIX})
 endif()
 
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/giovanni/emotional_tom/install/lib;/home/giovanni/emotional_tom/devel/lib;/opt/ros/noetic/lib)
+    foreach(path /home/giovanni/emotion_tom/install/lib;/home/giovanni/hri/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

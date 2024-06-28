@@ -1,8 +1,8 @@
-# Install script for directory: /home/giovanni/emotional_tom/src
+# Install script for directory: /home/giovanni/emotion_tom/src
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/giovanni/emotional_tom/install")
+  set(CMAKE_INSTALL_PREFIX "/home/giovanni/emotion_tom/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -54,91 +54,91 @@ endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/giovanni/emotional_tom/install/_setup_util.py")
+   "/home/giovanni/emotion_tom/install/_setup_util.py")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/home/giovanni/emotional_tom/install" TYPE PROGRAM FILES "/home/giovanni/emotional_tom/build/catkin_generated/installspace/_setup_util.py")
+  file(INSTALL DESTINATION "/home/giovanni/emotion_tom/install" TYPE PROGRAM FILES "/home/giovanni/emotion_tom/build/catkin_generated/installspace/_setup_util.py")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/giovanni/emotional_tom/install/env.sh")
+   "/home/giovanni/emotion_tom/install/env.sh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/home/giovanni/emotional_tom/install" TYPE PROGRAM FILES "/home/giovanni/emotional_tom/build/catkin_generated/installspace/env.sh")
+  file(INSTALL DESTINATION "/home/giovanni/emotion_tom/install" TYPE PROGRAM FILES "/home/giovanni/emotion_tom/build/catkin_generated/installspace/env.sh")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/giovanni/emotional_tom/install/setup.bash;/home/giovanni/emotional_tom/install/local_setup.bash")
+   "/home/giovanni/emotion_tom/install/setup.bash;/home/giovanni/emotion_tom/install/local_setup.bash")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/home/giovanni/emotional_tom/install" TYPE FILE FILES
-    "/home/giovanni/emotional_tom/build/catkin_generated/installspace/setup.bash"
-    "/home/giovanni/emotional_tom/build/catkin_generated/installspace/local_setup.bash"
+  file(INSTALL DESTINATION "/home/giovanni/emotion_tom/install" TYPE FILE FILES
+    "/home/giovanni/emotion_tom/build/catkin_generated/installspace/setup.bash"
+    "/home/giovanni/emotion_tom/build/catkin_generated/installspace/local_setup.bash"
     )
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/giovanni/emotional_tom/install/setup.sh;/home/giovanni/emotional_tom/install/local_setup.sh")
+   "/home/giovanni/emotion_tom/install/setup.sh;/home/giovanni/emotion_tom/install/local_setup.sh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/home/giovanni/emotional_tom/install" TYPE FILE FILES
-    "/home/giovanni/emotional_tom/build/catkin_generated/installspace/setup.sh"
-    "/home/giovanni/emotional_tom/build/catkin_generated/installspace/local_setup.sh"
+  file(INSTALL DESTINATION "/home/giovanni/emotion_tom/install" TYPE FILE FILES
+    "/home/giovanni/emotion_tom/build/catkin_generated/installspace/setup.sh"
+    "/home/giovanni/emotion_tom/build/catkin_generated/installspace/local_setup.sh"
     )
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/giovanni/emotional_tom/install/setup.zsh;/home/giovanni/emotional_tom/install/local_setup.zsh")
+   "/home/giovanni/emotion_tom/install/setup.zsh;/home/giovanni/emotion_tom/install/local_setup.zsh")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/home/giovanni/emotional_tom/install" TYPE FILE FILES
-    "/home/giovanni/emotional_tom/build/catkin_generated/installspace/setup.zsh"
-    "/home/giovanni/emotional_tom/build/catkin_generated/installspace/local_setup.zsh"
+  file(INSTALL DESTINATION "/home/giovanni/emotion_tom/install" TYPE FILE FILES
+    "/home/giovanni/emotion_tom/build/catkin_generated/installspace/setup.zsh"
+    "/home/giovanni/emotion_tom/build/catkin_generated/installspace/local_setup.zsh"
     )
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   list(APPEND CMAKE_ABSOLUTE_DESTINATION_FILES
-   "/home/giovanni/emotional_tom/install/.rosinstall")
+   "/home/giovanni/emotion_tom/install/.rosinstall")
   if(CMAKE_WARN_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(WARNING "ABSOLUTE path INSTALL DESTINATION : ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
   if(CMAKE_ERROR_ON_ABSOLUTE_INSTALL_DESTINATION)
     message(FATAL_ERROR "ABSOLUTE path INSTALL DESTINATION forbidden (by caller): ${CMAKE_ABSOLUTE_DESTINATION_FILES}")
   endif()
-  file(INSTALL DESTINATION "/home/giovanni/emotional_tom/install" TYPE FILE FILES "/home/giovanni/emotional_tom/build/catkin_generated/installspace/.rosinstall")
+  file(INSTALL DESTINATION "/home/giovanni/emotion_tom/install" TYPE FILE FILES "/home/giovanni/emotion_tom/build/catkin_generated/installspace/.rosinstall")
 endif()
 
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
-  include("/home/giovanni/emotional_tom/build/gtest/cmake_install.cmake")
-  include("/home/giovanni/emotional_tom/build/human/app/cmake_install.cmake")
-  include("/home/giovanni/emotional_tom/build/human/emotion/cmake_install.cmake")
-  include("/home/giovanni/emotional_tom/build/human/robot/cmake_install.cmake")
+  include("/home/giovanni/emotion_tom/build/gtest/cmake_install.cmake")
+  include("/home/giovanni/emotion_tom/build/human/app/cmake_install.cmake")
+  include("/home/giovanni/emotion_tom/build/human/emotion/cmake_install.cmake")
+  include("/home/giovanni/emotion_tom/build/human/robot/cmake_install.cmake")
 
 endif()
 
@@ -150,5 +150,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/giovanni/emotional_tom/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/giovanni/emotion_tom/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")

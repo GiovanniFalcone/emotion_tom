@@ -67,14 +67,14 @@ set(app_CONFIG_INCLUDED TRUE)
 
 # set variables for source/devel/install prefixes
 if("FALSE" STREQUAL "TRUE")
-  set(app_SOURCE_PREFIX /home/giovanni/emotional_tom/src/human/app)
-  set(app_DEVEL_PREFIX /home/giovanni/emotional_tom/devel)
+  set(app_SOURCE_PREFIX /home/giovanni/emotion_tom/src/human/app)
+  set(app_DEVEL_PREFIX /home/giovanni/emotion_tom/devel)
   set(app_INSTALL_PREFIX "")
   set(app_PREFIX ${app_DEVEL_PREFIX})
 else()
   set(app_SOURCE_PREFIX "")
   set(app_DEVEL_PREFIX "")
-  set(app_INSTALL_PREFIX /home/giovanni/emotional_tom/install)
+  set(app_INSTALL_PREFIX /home/giovanni/emotion_tom/install)
   set(app_PREFIX ${app_INSTALL_PREFIX})
 endif()
 
@@ -154,7 +154,7 @@ foreach(library ${libraries})
     set(lib_path "")
     set(lib "${library}-NOTFOUND")
     # since the path where the library is found is returned we have to iterate over the paths manually
-    foreach(path /home/giovanni/emotional_tom/install/lib;/home/giovanni/emotional_tom/devel/lib;/opt/ros/noetic/lib)
+    foreach(path /home/giovanni/emotion_tom/install/lib;/home/giovanni/hri/devel/lib;/opt/ros/noetic/lib)
       find_library(lib ${library}
         PATHS ${path}
         NO_DEFAULT_PATH NO_CMAKE_FIND_ROOT_PATH)

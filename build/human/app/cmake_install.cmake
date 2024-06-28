@@ -1,8 +1,8 @@
-# Install script for directory: /home/giovanni/emotional_tom/src/human/app
+# Install script for directory: /home/giovanni/emotion_tom/src/human/app
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
-  set(CMAKE_INSTALL_PREFIX "/home/giovanni/emotional_tom/install")
+  set(CMAKE_INSTALL_PREFIX "/home/giovanni/emotion_tom/install")
 endif()
 string(REGEX REPLACE "/$" "" CMAKE_INSTALL_PREFIX "${CMAKE_INSTALL_PREFIX}")
 
@@ -43,17 +43,17 @@ if(NOT DEFINED CMAKE_OBJDUMP)
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/giovanni/emotional_tom/build/human/app/catkin_generated/installspace/app.pc")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/lib/pkgconfig" TYPE FILE FILES "/home/giovanni/emotion_tom/build/human/app/catkin_generated/installspace/app.pc")
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
   file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/app/cmake" TYPE FILE FILES
-    "/home/giovanni/emotional_tom/build/human/app/catkin_generated/installspace/appConfig.cmake"
-    "/home/giovanni/emotional_tom/build/human/app/catkin_generated/installspace/appConfig-version.cmake"
+    "/home/giovanni/emotion_tom/build/human/app/catkin_generated/installspace/appConfig.cmake"
+    "/home/giovanni/emotion_tom/build/human/app/catkin_generated/installspace/appConfig-version.cmake"
     )
 endif()
 
 if(CMAKE_INSTALL_COMPONENT STREQUAL "Unspecified" OR NOT CMAKE_INSTALL_COMPONENT)
-  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/app" TYPE FILE FILES "/home/giovanni/emotional_tom/src/human/app/package.xml")
+  file(INSTALL DESTINATION "${CMAKE_INSTALL_PREFIX}/share/app" TYPE FILE FILES "/home/giovanni/emotion_tom/src/human/app/package.xml")
 endif()
 

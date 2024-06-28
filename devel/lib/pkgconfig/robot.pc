@@ -1,4 +1,4 @@
-prefix=/home/giovanni/emotional_tom/devel
+prefix=/home/giovanni/emotion_tom/devel
 
 Name: robot
 Description: Description of robot

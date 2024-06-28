@@ -53,10 +53,10 @@ RM = /home/giovanni/.local/lib/python3.8/site-packages/cmake/data/bin/cmake -E r
 EQUALS = =
 
 # The top-level source directory on which CMake was run.
-CMAKE_SOURCE_DIR = /home/giovanni/emotional_tom/src
+CMAKE_SOURCE_DIR = /home/giovanni/emotion_tom/src
 
 # The top-level build directory on which CMake was run.
-CMAKE_BINARY_DIR = /home/giovanni/emotional_tom/build
+CMAKE_BINARY_DIR = /home/giovanni/emotion_tom/build
 
 # Utility rule file for roscpp_generate_messages_py.
 
@@ -74,10 +74,10 @@ human/app/CMakeFiles/roscpp_generate_messages_py.dir/build: roscpp_generate_mess
 .PHONY : human/app/CMakeFiles/roscpp_generate_messages_py.dir/build
 
 human/app/CMakeFiles/roscpp_generate_messages_py.dir/clean:
-	cd /home/giovanni/emotional_tom/build/human/app && $(CMAKE_COMMAND) -P CMakeFiles/roscpp_generate_messages_py.dir/cmake_clean.cmake
+	cd /home/giovanni/emotion_tom/build/human/app && $(CMAKE_COMMAND) -P CMakeFiles/roscpp_generate_messages_py.dir/cmake_clean.cmake
 .PHONY : human/app/CMakeFiles/roscpp_generate_messages_py.dir/clean
 
 human/app/CMakeFiles/roscpp_generate_messages_py.dir/depend:
-	cd /home/giovanni/emotional_tom/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/giovanni/emotional_tom/src /home/giovanni/emotional_tom/src/human/app /home/giovanni/emotional_tom/build /home/giovanni/emotional_tom/build/human/app /home/giovanni/emotional_tom/build/human/app/CMakeFiles/roscpp_generate_messages_py.dir/DependInfo.cmake --color=$(COLOR)
+	cd /home/giovanni/emotion_tom/build && $(CMAKE_COMMAND) -E cmake_depends "Unix Makefiles" /home/giovanni/emotion_tom/src /home/giovanni/emotion_tom/src/human/app /home/giovanni/emotion_tom/build /home/giovanni/emotion_tom/build/human/app /home/giovanni/emotion_tom/build/human/app/CMakeFiles/roscpp_generate_messages_py.dir/DependInfo.cmake --color=$(COLOR)
 .PHONY : human/app/CMakeFiles/roscpp_generate_messages_py.dir/depend
 

@@ -7,4 +7,7 @@
 # new environment variables
 
 # modified environment variables
-export PWD='/home/giovanni/emotional_tom/build'
+export CMAKE_PREFIX_PATH="/home/giovanni/emotion_tom/devel:$CMAKE_PREFIX_PATH"
+export PWD='/home/giovanni/emotion_tom/build'
+export ROSLISP_PACKAGE_DIRECTORIES="/home/giovanni/emotion_tom/devel/share/common-lisp:$ROSLISP_PACKAGE_DIRECTORIES"
+export ROS_PACKAGE_PATH="/home/giovanni/emotion_tom/src:$ROS_PACKAGE_PATH"
