@@ -56,23 +56,33 @@ class InteractionModule:
             return None
         
     def person_detected_callback(self, msg):
+        """
+        If this callback is triggered, it means that the user is in the robot's field of view, so the robot can initiate the interaction. 
+        After finishing the conversation, it enters the game_state (by setting the corresponding variable).
+        """
         if msg.data and self.state == 'IDLE': 
             self.person_detected = True
             #self.start_interaction()
             self.state = 'GAME'
         
     def speech_callback(self, data):
-        """Robot will utter the suggestion."""
+        """
+        Robot will utter the suggestion.
+        Once the robot has uttered the suggestion an http request is sent to the server in order to remove the pop-up.
+        """
         rospy.loginfo(f"Hint Received: {data.data}")
+        # utter the suggestion
         self.speak(data.data)
-        json_data = ({
-                "speech": "ended"
-            })
+        # send to Flask
+        json_data = ({"speech": "ended"})
         requests.post("http://192.168.1.94:5000/robot_speech", json=json_data)
 
     def game_callback(self, data):
-        """The robot will pronounce sentences based on its personality depending on the outcome of the user's move 
-        (i.e. whether they made a match or not)."""
+        """
+        If this callback is triggered, it means the user has made a move. 
+        If the move is the last one of the game, the robot enters the final state (Goodbye) and says goodbye to the user. 
+        Otherwise, if emotional condition is setted, the robot will motivate the user based on user's emotion.
+        """
         rospy.loginfo(f"Game data Received: {data.data}")
         move = json.loads(data.data) 
         # get info game 
@@ -86,12 +96,18 @@ class InteractionModule:
                 self.handle_turn(move)
 
     def goodbye(self):
+        """Ending state of the interaction."""
         rospy.loginfo(f"Goodbye state...")
         sentences = self.speech["end"]
         sentence = random.choice(sentences)
         self.speak(sentence)
 
-    def handle_turn(self, move):    
+    def handle_turn(self, move):
+        """
+        Depending on the outcome of the move (whether the user found a pair or not), 
+        the robot will motivate the user based on user's emotion, 
+        by uttering a motivational sentence, making a facial expression, and changing the LED color.
+        """
         rospy.loginfo(f"Handle turn...")
         # get info about game
         n_pairs = move['game']['pairs']
@@ -132,17 +148,20 @@ class InteractionModule:
         self.last_emotion = data.data
 
     def start_interaction(self):
+        """BEGIN state"""
         rospy.loginfo("Start interaction...")
         self.greetings()
         self.rules()
 
     def greetings(self):
+        """The robot will start the interation."""
         rospy.loginfo("Greetings...")
         sentences = self.speech["greetings"]
         sentence = random.choice(sentences)
         self.speak(sentence)
 
     def rules(self):
+        """Robot explain the rules to the user."""
         rospy.loginfo("Before game...")
         sentences = self.speech["before_rules"]
         sentence = random.choice(sentences)
