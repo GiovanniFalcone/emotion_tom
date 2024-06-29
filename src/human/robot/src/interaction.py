@@ -8,43 +8,49 @@ import random
 import json
 import requests
 import sys
-import csv
-from datetime import datetime
+
+# in order to use and save correctly in csv file
+from threading import Lock
 
 # robot
 from model.interface.robot_interface import RobotInterface
 from model.concrete.furhat import Furhat
 # Emotion sentence
 from sentences.emotion_sentences import EmotionGenerator
+# emotion csv
+from emotion_csv import EmotionCSV
 
 class InteractionModule:
-    def __init__(self, robot: RobotInterface, language = 'ita'):
-        def __init__(self, robot: RobotInterface, language='ita'):
-            # initialize variable
-            self.robot = robot
-            self.language = language
-            self.state = 'IDLE'
-            self.emotional_condition = False
-            self.person_detected = False
-            self.last_emotion = ''
-            # initialize csv file
-            self.init_csv()
-            # get sentences from interaction file (greetings, rules, goodbye)
-            self.speech = self.load_interaction_sentences()
-            # Get id player for csv: analysis for emotion
-            self.id_player = self.get_player_id()
-            # Ros topic
-            rospy.Subscriber('/speech_hint', String, self.speech_callback)
-            rospy.Subscriber('/game_data', String, self.game_callback)
-            rospy.Subscriber("/emotion", String, self.handle_emotion)
-            rospy.Subscriber('/person_detected', Bool, self.person_detected_callback)
-            # connect to robot and do randomic movement with robot's head in order to look more natural
-            self.robot.connect()
-            self.robot.random_head_movements()
-            # get motivational sentences
-            self.emotion_sentence = EmotionGenerator('friendly', self.language)
-            # get experimental condition
-            self.get_emotion_condition()
+    def __init__(self, robot: RobotInterface, language='ita'):
+        # initialize variable
+        self.robot = robot
+        self.language = language
+        self.state = 'IDLE'
+        self.emotional_condition = False
+        self.person_detected = False
+        self.last_emotion = ''
+        # Get id player for csv: analysis for emotion
+        self.id_player = self.get_player_id()
+        # game info for csv file
+        self.turn = 0
+        self.match = False
+        self.motivated = False
+        self.lock = Lock()
+        self.logger = EmotionCSV(self.id_player)
+        # get sentences from interaction file (greetings, rules, goodbye)
+        self.speech = self.load_interaction_sentences()
+        # Ros topic
+        rospy.Subscriber('/speech_hint', String, self.speech_callback)
+        rospy.Subscriber('/game_data', String, self.game_callback)
+        rospy.Subscriber("/emotion", String, self.emotion_callback)
+        rospy.Subscriber('/person_detected', Bool, self.person_detected_callback)
+        # connect to robot and do randomic movement with robot's head in order to look more natural
+        self.robot.connect()
+        self.robot.random_head_movements()
+        # get motivational sentences
+        self.emotion_sentence = EmotionGenerator('friendly', self.language)
+        # get experimental condition
+        self.get_emotion_condition()
 
     ###############################################################################################################
     #                                                   SETTINGS                                                  #
@@ -59,7 +65,7 @@ class InteractionModule:
             data = response.json()
             return data.get('id')
         except requests.exceptions.RequestException as e:
-            print(f"Errore nella richiesta HTTP: {e}")
+            rospy.logerr(f"HTTP request error: {e}")
             return None
         
     def load_interaction_sentences(self):
@@ -70,10 +76,10 @@ class InteractionModule:
                 data = json.load(file)
             return data
         except FileNotFoundError:
-            print(f"File {filename} not found.")
+            rospy.logerr(f"File {filename} not found.")
             return {}
         except json.JSONDecodeError:
-            print(f"Error decoding JSON file {filename}.")
+            rospy.logerr(f"Error decoding JSON file {filename}.")
             return {}
     
     def get_emotion_condition(self):
@@ -85,35 +91,6 @@ class InteractionModule:
             rospy.logerr(
                 "Usage: roslaunch robot controller.launch emotion_condition:=<value> (where value can be true or false)")
             sys.exit(1)
-
-    def init_csv(self):
-        """Initialize the CSV file with headers."""
-        # get current dir
-        script_dir = os.path.dirname(__file__) 
-        # get path to data directory
-        user_dir = "user_" + self.id_player
-        data_dir = os.path.abspath(os.path.join(script_dir, '..', '..', 'app', 'src', 'data', user_dir))
-        if not os.path.exists(data_dir):
-            raise FileNotFoundError(f"The directory {data_dir} does not exist. Run the app.launch first!")
-        # save the csv in the player directory
-        self.csv_file = os.path.join(data_dir, 'emotion_data.csv')
-        # Stampa del percorso assoluto del file CSV
-        print(f"Absolute path of the CSV file: {self.csv_file}")
-        headers = ['id', 'timestamp', 'emotion', 'match', 'motivated', 'condition']
-        with open(self.csv_file, 'w', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow(headers)
-        rospy.loginfo(f"CSV file initialized at {self.csv_file}")
-
-    def log_to_csv(self, emotion, action_robot, result_action):
-        """Log the interaction data to the CSV file."""
-        timestamp = rospy.get_time()
-        dt_object = datetime.fromtimestamp(timestamp)
-        formatted_time = dt_object.strftime('%Y-%m-%d %H:%M:%S.%f') 
-        condition = "E-ToM" if self.emotional_condition else "ToM"
-        with open(self.csv_file, 'a', newline='') as file:
-            writer = csv.writer(file)
-            writer.writerow([formatted_time, emotion, action_robot, result_action, condition])
 
     ###############################################################################################################
     #                                                  CALLBACKS                                                  #
@@ -139,7 +116,17 @@ class InteractionModule:
         self.speak(data.data)
         # send to Flask
         json_data = ({"speech": "ended"})
-        requests.post("http://192.168.1.94:5000/robot_speech", json=json_data)
+        try:
+            requests.post("http://192.168.1.94:5000/robot_speech", json=json_data)
+        except requests.exceptions.RequestException as e:
+            rospy.logerr(f"HTTP error request: {e}")
+
+    def emotion_callback(self, data):
+        """Save the emotion received"""
+        rospy.loginfo(f"Emotion Received: {data.data}")
+        with self.lock:
+            self.last_emotion = data.data
+        self.logger.log_to_csv(rospy.get_time(), self.logger.csv_file_full, self.last_emotion, self.match, self.motivated)
 
     def game_callback(self, data):
         """
@@ -184,8 +171,12 @@ class InteractionModule:
         is_turn_even = turn % 2 == 0
         # motivate user only after the outcome of user's move
         if is_turn_even:
-            # copy last emotion
-            emotion = self.last_emotion
+            # copy info
+            with self.lock:
+                # copy last emotion
+                emotion = self.last_emotion
+                self.turn = turn
+                self.match = match
             # Set to 'neutral' if the emotion hasn't been detected.
             if emotion == '': emotion = 'neutral'
             # if emotion is 'fear' we take it as a classification error. Therefore, we set it to 'neutral'
@@ -210,14 +201,13 @@ class InteractionModule:
                 self.speak(motivational_sentence)
                 self.robot.change_led_color_based_on_emotion("neutral")
                 # Log to CSV
-                self.log_to_csv(emotion, match, 'yes')
+                with self.lock: 
+                    self.motivated = True
+                self.logger.log_to_csv(rospy.get_time(), self.logger.csv_file_filtered, emotion, match, 'yes')
             else:
-                self.log_to_csv(emotion, match, 'no')
-
-    def handle_emotion(self, data):
-        """Save the emotion received"""
-        rospy.loginfo(f"Emotion Received: {data.data}")
-        self.last_emotion = data.data
+                self.logger.log_to_csv(rospy.get_time(), self.logger.csv_file_filtered, emotion, match, 'no')
+                with self.lock:
+                    self.motivated = False
 
     def start_interaction(self):
         """BEGIN state"""
