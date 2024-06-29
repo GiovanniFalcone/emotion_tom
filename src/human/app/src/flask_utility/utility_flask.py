@@ -20,17 +20,12 @@ class UtilityFlask:
 
     Attributes:
         IP_ADDRESS (str): IP address of the server.
-        POP_UP (bool): Flag indicating whether pop-up windows are enabled (used before start the game).
-        LEARNING_PORT (int): Port number for the learning socket.
-        ROBOT_PORT (int): Port number for the robot socket.
-        robot_socket (int): Socket object for the robot connection.
+        HRI (bool): If true enable pop-up: when robot utter an hint, a pop-up will be shown
     """
 
     # Constants
     IP_ADDRESS = Util.get_from_json_file("config")['ip'] 
-    LEARNING_PORT = 6000
-    ROBOT_PORT = 7000
-    robot_socket = 0
+    HRI = Util.get_from_json_file("config")['HRI'] 
 
     def __init__(self):
         """
@@ -48,7 +43,7 @@ class UtilityFlask:
         self.id_player = -1
         self.experimental_condition = None
         self.experimental_condition_str = ''
-        self.isRobotConnected = False
+        self.isRobotConnected = UtilityFlask.HRI
         self.board = None
         self.move = None
         self.board_lock = multiprocessing.Lock()

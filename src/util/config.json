@@ -3,7 +3,6 @@
     "port": 6000,
     "language": "ita",
     "one_terminal": true,
-    "pop_up": true,
-    "auto_open_webpage": false,
+    "HRI": true,
     "multithreading": true
 }
