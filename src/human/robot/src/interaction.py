@@ -188,6 +188,7 @@ class InteractionModule:
             print(f"Emotion after match: {emotion}")
             # define probability for robot's motivational speech
             probability = 0.75 if match else 0.3
+            probability = 1 if (match and emotion == 'happy' or n_pairs == 1) else 0.75
             # with 50% of chance the robot will motivate if user has found a pair (i.e match is True), 
             # otherwise the chance that robot will motivate are 25%
             if random.random() < probability:
