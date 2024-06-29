@@ -19,25 +19,65 @@ from sentences.emotion_sentences import EmotionGenerator
 
 class InteractionModule:
     def __init__(self, robot: RobotInterface, language = 'ita'):
-        # Initialize CSV file
-        script_dir = os.path.dirname(__file__) 
-        # Navigare fino alla cartella 'app/data' risalendo di due livelli da 'interaction.py'
-        data_dir = os.path.abspath(os.path.join(script_dir, '..', '..', 'app', 'src', 'data'))
-        # Combinare il percorso della cartella 'data' con il nome del file CSV
-        self.csv_file = os.path.join(data_dir, 'emotion_data.csv')
-        # Stampa del percorso assoluto del file CSV
-        print(f"Absolute path of the CSV file: {self.csv_file}")
-        self.init_csv()
+        def __init__(self, robot: RobotInterface, language='ita'):
+            # initialize variable
+            self.robot = robot
+            self.language = language
+            self.state = 'IDLE'
+            self.emotional_condition = False
+            self.person_detected = False
+            self.last_emotion = ''
+            # initialize csv file
+            self.init_csv()
+            # get sentences from interaction file (greetings, rules, goodbye)
+            self.speech = self.load_interaction_sentences()
+            # Get id player for csv: analysis for emotion
+            self.id_player = self.get_player_id()
+            # Ros topic
+            rospy.Subscriber('/speech_hint', String, self.speech_callback)
+            rospy.Subscriber('/game_data', String, self.game_callback)
+            rospy.Subscriber("/emotion", String, self.handle_emotion)
+            rospy.Subscriber('/person_detected', Bool, self.person_detected_callback)
+            # connect to robot and do randomic movement with robot's head in order to look more natural
+            self.robot.connect()
+            self.robot.random_head_movements()
+            # get motivational sentences
+            self.emotion_sentence = EmotionGenerator('friendly', self.language)
+            # get experimental condition
+            self.get_emotion_condition()
+
+    ###############################################################################################################
+    #                                                   SETTINGS                                                  #
+    ###############################################################################################################
+
+    def get_player_id(self):
+        """Returns id player from Flask server. Used for csv file."""
+        url = "http://192.168.1.94:5000/get_id"
+        try:
+            response = requests.get(url)
+            response.raise_for_status()  # Solleva un'eccezione per errori HTTP
+            data = response.json()
+            return data.get('id')
+        except requests.exceptions.RequestException as e:
+            print(f"Errore nella richiesta HTTP: {e}")
+            return None
         
-        # ROS topic
-        rospy.Subscriber('/speech_hint', String, self.speech_callback)
-        rospy.Subscriber('/game_data', String, self.game_callback)
-        rospy.Subscriber("/emotion", String, self.handle_emotion)
-        rospy.Subscriber('/person_detected', Bool, self.person_detected_callback)
-        self.person_detected = False
-        # game state (IDLE; BEGIN; GAME; END)
-        self.state = 'IDLE'
-        # emotion
+    def load_interaction_sentences(self):
+        """Get sentences from interaction file."""
+        filename = os.path.join(os.path.dirname(__file__), 'sentences', 'interaction', self.language, 'interaction.json')
+        try:
+            with open(filename, 'r', encoding='utf-8') as file:
+                data = json.load(file)
+            return data
+        except FileNotFoundError:
+            print(f"File {filename} not found.")
+            return {}
+        except json.JSONDecodeError:
+            print(f"Error decoding JSON file {filename}.")
+            return {}
+    
+    def get_emotion_condition(self):
+        """Set experimental contion from ROS parameter."""
         try:
             self.emotional_condition = bool(rospy.get_param("emotion_condition"))
             print(f"Emotion condition: {self.emotional_condition}")
@@ -45,49 +85,40 @@ class InteractionModule:
             rospy.logerr(
                 "Usage: roslaunch robot controller.launch emotion_condition:=<value> (where value can be true or false)")
             sys.exit(1)
-        self.last_emotion = ''
-        self.emotion_sentence = EmotionGenerator('friendly', language)
-        # get robot 
-        self.robot = robot
-        self.robot.connect()
-        self.robot.random_head_movements()
-        # get sentences from interaction file (used in Greetings, Rules and Goodbye)
-        script_dir = os.path.dirname(__file__)  
-        relative_path = os.path.join('sentences', 'interaction', language)
-        filename = os.path.join(script_dir, relative_path, 'interaction.json')
-        self.speech = self.load_json_file(filename)
 
     def init_csv(self):
         """Initialize the CSV file with headers."""
-        headers = ['timestamp', 'emotion', 'match', 'motivated']
+        # get current dir
+        script_dir = os.path.dirname(__file__) 
+        # get path to data directory
+        user_dir = "user_" + self.id_player
+        data_dir = os.path.abspath(os.path.join(script_dir, '..', '..', 'app', 'src', 'data', user_dir))
+        if not os.path.exists(data_dir):
+            raise FileNotFoundError(f"The directory {data_dir} does not exist. Run the app.launch first!")
+        # save the csv in the player directory
+        self.csv_file = os.path.join(data_dir, 'emotion_data.csv')
+        # Stampa del percorso assoluto del file CSV
+        print(f"Absolute path of the CSV file: {self.csv_file}")
+        headers = ['id', 'timestamp', 'emotion', 'match', 'motivated', 'condition']
         with open(self.csv_file, 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(headers)
         rospy.loginfo(f"CSV file initialized at {self.csv_file}")
-        import time
-        time.sleep(2)
 
     def log_to_csv(self, emotion, action_robot, result_action):
         """Log the interaction data to the CSV file."""
         timestamp = rospy.get_time()
         dt_object = datetime.fromtimestamp(timestamp)
         formatted_time = dt_object.strftime('%Y-%m-%d %H:%M:%S.%f') 
+        condition = "E-ToM" if self.emotional_condition else "ToM"
         with open(self.csv_file, 'a', newline='') as file:
             writer = csv.writer(file)
-            writer.writerow([formatted_time, emotion, action_robot, result_action])
+            writer.writerow([formatted_time, emotion, action_robot, result_action, condition])
 
-    def load_json_file(self, filename):
-        try:
-            with open(filename, 'r', encoding='utf-8') as file:
-                data = json.load(file)
-            return data
-        except FileNotFoundError:
-            print(f"File {filename} not found.")
-            return None
-        except json.JSONDecodeError:
-            print(f"Error decoding JSON file {filename}.")
-            return None
-        
+    ###############################################################################################################
+    #                                                  CALLBACKS                                                  #
+    ###############################################################################################################    
+    
     def person_detected_callback(self, msg):
         """
         If this callback is triggered, it means that the user is in the robot's field of view, so the robot can initiate the interaction. 
@@ -127,6 +158,10 @@ class InteractionModule:
         else:
             if self.emotional_condition:
                 self.handle_turn(move)
+
+    ###############################################################################################################
+    #                                                INTERACTION                                                  #
+    ###############################################################################################################
 
     def goodbye(self):
         """Ending state of the interaction."""

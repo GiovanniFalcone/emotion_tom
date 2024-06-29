@@ -26,7 +26,6 @@ log = logging.getLogger('werkzeug')
 log.setLevel(logging.ERROR)
 
 # constants
-ONE_TERMINAL = Util.get_from_json_file("config")["one_terminal"]
 IP_ADDRESS = Util.get_from_json_file("config")['ip'] 
 
 # Creazione dell'app Flask
@@ -42,6 +41,7 @@ expertiment_condition = None    # new experimental condition received from menu
 first_start = True              # in order to not have a menu at the very beginning
 exit_pressed = False            # when return to home page after pressing exit in the menu, don't show again the menu
 cleanup_flag = False            # clear session after CTRL+C
+id_player = -1                  # only used for HRI
 
 # init ROS
 rospy.init_node('flask_to_ros_node')
@@ -100,6 +100,10 @@ def send_to_ros(request, flag):
         ros_message = String()
         ros_message.data = json_data
         game_publisher.publish(ros_message)
+
+@app.route('/get_id', methods=["GET", "POST"])
+def provide_id():
+    return jsonify({"id": id_player})
 
 @app.route('/', methods=["GET", "POST"])
 @app.route('/index', methods=["GET", "POST"])
