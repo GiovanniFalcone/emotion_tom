@@ -1,0 +1,69 @@
+{
+    "frames": [
+        {
+            "time": [0.5],  
+            "params": {
+            "SMILE_OPEN": 0.5,
+            "NECK_TILT": -5.0,
+            "NECK_PAN": 5.0,
+            "GAZE_PAN": 5.0,
+            "GAZE_TILT": 5.0
+        }
+      },
+      {
+        "time": [1.5],  
+        "params": {
+            "SMILE_OPEN": 0.5,
+            "NECK_TILT": -5.0,
+            "NECK_PAN": 5.0,
+            "GAZE_PAN": 5.0,
+            "GAZE_TILT": 5.0,
+            "EYE_SQUINT_LEFT": 0.2,
+            "EYE_SQUINT_RIGHT": 0.2
+        }
+      },
+      {
+        "time": [2.5],  
+        "params": {
+            "SMILE_OPEN": 0.5,
+            "NECK_TILT": -8.0,
+            "NECK_PAN": 5.0,
+            "GAZE_PAN": 5.0,
+            "GAZE_TILT": 5.0,
+            "EYE_SQUINT_LEFT": 0.1,
+            "EYE_SQUINT_RIGHT": 0.1
+        }
+      },
+      {
+        "time": [3.5],  
+        "params": {
+            "SMILE_CLOSED": 0.0,
+            "SMILE_OPEN": 0.3,
+            "NECK_TILT": -5.0,
+            "NECK_PAN": 5.0,
+            "GAZE_PAN": 5.0,
+            "GAZE_TILT": 5.0,
+            "EYE_SQUINT_LEFT": 0.1,
+            "EYE_SQUINT_RIGHT": 0.1
+        }
+      },
+      {
+        "time": [4.5], 
+        "params": {
+            "SMILE_CLOSED": 1.0
+        }
+      },
+      {
+        "time":[0.32,0.64],
+        "persist": false, 
+        "params":{
+            "BROW_UP_LEFT":1,
+            "BROW_UP_RIGHT":1,
+            "SMILE_OPEN":0.4,
+            "SMILE_CLOSED":0.7
+          }
+      }
+    ],
+    "name": "NaturalHappyGesture",  
+    "class": "furhatos.gestures.Gesture" 
+} 

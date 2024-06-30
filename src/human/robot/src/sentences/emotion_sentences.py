@@ -36,16 +36,26 @@ class EmotionGenerator:
                     key = emotion + '_beg_mid'
                 sentences = self.sentences['match'][emotion][key]
             else:
+                # surprise
                 sentences = self.sentences['match'][emotion]
         else:
-            if emotion not in ['angry', 'sad', 'neutral']:
+            if emotion not in ['angry', 'sad', 'neutral', 'happy']:
                 emotion = 'other'
-                
+            
+            if emotion == 'sad':
+                if n_pairs < 4:
+                    emotion = emotion + '_begin'
+                elif 3 < n_pairs < 8:
+                    emotion = emotion + '_mid'
+                else:
+                    emotion = emotion + '_end'
+
             if emotion == 'neutral':
                 if n_pairs <= 4:
                     emotion = emotion + '_begin'
                 else:
                     emotion = emotion + '_mid_end'
+
             sentences = self.sentences['unmatch'][emotion]
         
         return random.choice(sentences)

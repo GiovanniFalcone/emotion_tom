@@ -8,6 +8,7 @@ import random
 import json
 import requests
 import sys
+import time
 
 # in order to use and save correctly in csv file
 from threading import Lock
@@ -193,10 +194,7 @@ class InteractionModule:
             # otherwise the chance that robot will motivate are 25%
             if random.random() < probability:
                 self.robot.change_led_color_based_on_emotion(emotion)
-                if emotion != 'happy':
-                    self.robot.do_facial_expression("ExpressSad")
-                else:
-                    self.robot.do_facial_expression("BigSmile")
+                self.handle_expression_based_on_emotion(emotion, n_pairs, match)
                 motivational_sentence = self.emotion_sentence.get_sentence(emotion, n_pairs, match)
                 print("Motivation: ", motivational_sentence)
                 self.speak(motivational_sentence)
@@ -209,6 +207,74 @@ class InteractionModule:
                 self.logger.log_to_csv(rospy.get_time(), self.logger.csv_file_filtered, emotion, match, 'no')
                 with self.lock:
                     self.motivated = False
+
+    def handle_expression_based_on_emotion(self, emotion, n_pairs, match):
+        # naturalhappy -> 0
+        # indefinitehappy -> 1
+        is_first_pair = n_pairs == 1
+        is_begin = n_pairs < 4
+        is_middle = 3 < n_pairs < 8
+        is_end = n_pairs >= 8
+        # random condition in order to perform a different gesture
+        prob = random.choice([0, 1]) == 0 
+
+        if match:
+            if emotion == "happy":
+                if(is_begin or is_middle or is_first_pair):
+                    if prob:
+                        self.robot.do_facial_expression("happy_0")
+                        time.sleep(0.5)
+                        if random.choice([True, False]):
+                            self.robot.do_facial_expression("Wink")
+                        else:
+                            self.robot.do_facial_expression("BigSmile")
+                    else:
+                        self.robot.do_facial_expression("happy_1")
+                        time.sleep(0.5)
+                        self.robot.do_facial_expression("BigSmile")
+                else:
+                    if random.choice([True, False]):
+                        self.robot.do_facial_expression("happy_0")
+                    else:
+                        self.robot.do_facial_expression("happy_1")
+                    self.robot.do_facial_expression("BigSmile")
+            elif emotion == 'neutral':
+                if is_first_pair:
+                    if random.choice([True, False]):
+                        self.robot.do_facial_expression("happy_0")
+                    else:
+                        self.robot.do_facial_expression("happy_1")
+                    self.robot.do_facial_expression("BigSmile")
+                else:
+                    if random.choice([True, False]):
+                        self.robot.do_facial_expression("happy_0")
+                        self.robot.do_facial_expression("BigSmile")
+                    else:
+                        self.robot.do_facial_expression("happy_1")
+                        if not is_end: time.sleep(0.5)
+                        self.robot.do_facial_expression("Wink")
+            elif emotion == 'surprise':
+                self.robot.do_facial_expression("CustomSurprise")
+        else:
+            if emotion in ['happy', 'neutral']:
+                if random.choice([True, False]):
+                    self.robot.do_facial_expression("happy_0")
+                else:
+                    self.robot.do_facial_expression("happy_1")
+                self.robot.do_facial_expression("BigSmile")
+            elif emotion == 'sad':
+                if(is_begin or is_end):
+                    self.robot.do_facial_expression("CustomSad")
+                    self.robot.do_facial_expression("BigSmile")
+                    time.sleep(5)
+                    self.robot.do_facial_expression("BigSmile")
+                else:
+                    self.robot.do_facial_expression("CustomSad")
+                    self.robot.do_facial_expression("Wink")
+            else:
+                self.robot.do_facial_expression("CustomSad")
+                time.sleep(5)
+                self.robot.do_facial_expression("BigSmile")
 
     def start_interaction(self):
         """BEGIN state"""
