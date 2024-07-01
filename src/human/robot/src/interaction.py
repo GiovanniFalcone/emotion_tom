@@ -12,6 +12,10 @@ import sys
 # in order to use and save correctly in csv file
 from threading import Lock
 
+# to access to config file
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'util'))
+from util import Util
+
 # robot
 from model.interface.robot_interface import RobotInterface
 from model.concrete.furhat import Furhat
@@ -23,6 +27,8 @@ from emotion_handler import EmotionHandler
 from emotion_csv import EmotionCSV
 
 class InteractionModule:
+    IP_ADDRESS = Util.get_from_json_file("config")['ip']
+
     def __init__(self, robot: RobotInterface, language='ita'):
         # initialize variable
         self.robot = robot
@@ -41,11 +47,6 @@ class InteractionModule:
         self.logger = EmotionCSV(self.id_player)
         # get sentences from interaction file (greetings, rules, goodbye)
         self.speech = self.load_interaction_sentences()
-        # Ros topic
-        rospy.Subscriber('/speech_hint', String, self.speech_callback)
-        rospy.Subscriber('/game_data', String, self.game_callback)
-        rospy.Subscriber("/emotion", String, self.emotion_callback)
-        rospy.Subscriber('/person_detected', Bool, self.person_detected_callback)
         # connect to robot and do randomic movement with robot's head in order to look more natural
         self.robot.connect()
         self.robot.random_head_movements()
@@ -55,6 +56,11 @@ class InteractionModule:
         self.get_emotion_condition()
         # emotion object
         self.emotion_handler = EmotionHandler(self.robot)
+        # Ros topic
+        rospy.Subscriber('/speech_hint', String, self.speech_callback)
+        rospy.Subscriber('/game_data', String, self.game_callback)
+        rospy.Subscriber("/emotion", String, self.emotion_callback)
+        rospy.Subscriber('/person_detected', Bool, self.person_detected_callback)
 
     ###############################################################################################################
     #                                                   SETTINGS                                                  #
@@ -62,7 +68,7 @@ class InteractionModule:
 
     def get_player_id(self):
         """Returns id player from Flask server. Used for csv file."""
-        url = "http://192.168.1.94:5000/get_id"
+        url = "http://" + InteractionModule.IP_ADDRESS + ":5000/get_id"
         try:
             response = requests.get(url)
             response.raise_for_status()  # Solleva un'eccezione per errori HTTP
@@ -121,7 +127,7 @@ class InteractionModule:
         # send to Flask
         json_data = ({"speech": "ended"})
         try:
-            requests.post("http://192.168.1.94:5000/robot_speech", json=json_data)
+            requests.post("http://" + InteractionModule.IP_ADDRESS + ":5000/robot_speech", json=json_data)
         except requests.exceptions.RequestException as e:
             rospy.logerr(f"HTTP error request: {e}")
 
@@ -147,6 +153,7 @@ class InteractionModule:
             self.state = 'END'
             self.goodbye()
         else:
+            # if true, the robot will motivate the user based on their emotion (False -> ToM condition only)
             if self.emotional_condition:
                 self.handle_turn(move)
 
@@ -173,6 +180,7 @@ class InteractionModule:
         turn = move['game']['turn']
         match = move['game']['match']
         is_turn_even = turn % 2 == 0
+
         # motivate user only after the outcome of user's move
         if is_turn_even:
             # copy info
@@ -181,20 +189,23 @@ class InteractionModule:
                 emotion = self.last_emotion
                 self.turn = turn
                 self.match = match
-            # Set to 'neutral' if the emotion hasn't been detected.
-            if emotion == '': emotion = 'neutral'
-            # if emotion is 'fear' we take it as a classification error. Therefore, we set it to 'neutral'
-            if emotion == 'fear': emotion = 'neutral'
-            # if one of the current emotion is detected after a match, we consider the emotion detected as a classification error
-            if match and emotion in ['sad', 'angry', 'fear']:
+            
+            # set to 'neutral' if 
+            #   - the emotion hasn't been detected 
+            #   - the emotion is fear: we take it as classification error
+            #   - the emotion is fear/angry/fear while user find a paid -> we take it as classification error
+            if emotion in ['fear', ''] or (match and emotion in ['sad', 'angry', 'fear']):
                 emotion = 'neutral'
+
             # debug
-            print(f"Emotion after match: {emotion}")
+            rospy.loginfo(f"Emotion after match: {emotion}")
+
             # define probability for robot's motivational speech
             probability = 0.75 if match else 0.3
             probability = 1 if (match and emotion == 'happy' or n_pairs == 1) else 0.75
+
             # with 50% of chance the robot will motivate if user has found a pair (i.e match is True), 
-            # otherwise the chance that robot will motivate are 25%
+            # otherwise the chance that robot will motivate are 30%
             if random.random() < probability:
                 self.robot.change_led_color_based_on_emotion(emotion)
                 self.emotion_handler.handle_expression_based_on_emotion(emotion, n_pairs, match)
@@ -202,6 +213,7 @@ class InteractionModule:
                 rospy.loginfo(f"Robot uttering: {motivational_sentence}...")
                 self.speak(motivational_sentence)
                 self.robot.change_led_color_based_on_emotion("neutral")
+
                 # Log to CSV
                 with self.lock: 
                     self.motivated = True
@@ -210,10 +222,8 @@ class InteractionModule:
                 self.logger.log_to_csv(rospy.get_time(), self.logger.csv_file_filtered, emotion, match, 'no')
                 with self.lock:
                     self.motivated = False
-                if match:
-                    self.robot.do_facial_expression("Nod")
-                else:
-                    self.robot.do_facial_expression("Shake")
+                # Perform a facial expression based on match
+                self.robot.do_facial_expression("Nod" if match else "Shake")        
 
     def start_interaction(self):
         """BEGIN state"""
@@ -245,7 +255,10 @@ class InteractionModule:
         rospy.spin()
 
 if __name__ == '__main__':
-    rospy.init_node('interaction_node', anonymous=True)
-    robot = Furhat()
-    interaction_node = InteractionModule(robot)
-    interaction_node.run()
+    try:
+        rospy.init_node('interaction_node', anonymous=True)
+        robot = Furhat()
+        interaction_node = InteractionModule(robot)
+        interaction_node.run()
+    except rospy.ROSInterruptException:
+        pass
