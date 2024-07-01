@@ -17,9 +17,15 @@
         "Ti suggerirò dei consigli per farti vincere il prima possibile. Ovviamente puoi giocare come preferisci. Quindi, potrai anche non ascoltarmi. Però, prima di fare la tua mossa aspetta che io finisca di parlare. Inoltre, ti pregherei di non cliccare troppo velocemente le carte, grazie! Adesso vai avanti nel tutorial e iniziamo a giocare!"
     ],
 
-    "end": [
+    "end_tom": [
         "Bene, abbiamo terminato. Spero che tu abbia trovato questa esperienza interessante! Adesso ti saluto, ciao!",
         "Ora che la partita è conclusa possiamo anche salutarci. Spero che tu abbia trovato questa esperienza interessante! Arrivederci!",
         "Okay, abbiamo finito! Spero che giocare con me ti sia piaciuto. Adesso, però, dobbiamo salutarci: ciao!"
+    ],
+
+    "end_etom": [
+        "Hey, hai trovato tutte le coppie! Ottimo lavoro! Ti ringrazio per aver partecipato, spero che tu abbia trovato questa esperienza interessante! Adesso, però, dobbiamo salutarci, ciao!",
+        "Hey, hai completato il gioco, fantastico! Però, ora che la partita è conclusa possiamo anche salutarci. Spero che ti sia piaciuto giocare con me. Adesso ti saluto: ciao!",
+        "Fantastico! Hai completato il gioco! Sono davvero felice di aver giocato con te! Adesso, però, dobbiamo salutarci! A presto!"
     ]
 }

@@ -164,7 +164,10 @@ class InteractionModule:
     def goodbye(self):
         """Ending state of the interaction."""
         rospy.loginfo(f"Goodbye state...")
-        sentences = self.speech["end"]
+        if self.emotional_condition:
+            sentences = self.speech["end_etom"]
+        else:
+            sentences = self.speech["end_tom"]
         sentence = random.choice(sentences)
         self.speak(sentence)
 
