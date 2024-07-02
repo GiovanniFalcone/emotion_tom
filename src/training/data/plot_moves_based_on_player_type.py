@@ -30,6 +30,8 @@ fig, ax = plt.subplots()
 sns.violinplot(data=data)
 
 # Setting label
+plt.xlabel("Type of Player")
+plt.ylabel("Number of Moves")
 plt.xticks(range(len(data.columns)), data.columns)
 
 # Save the plot
