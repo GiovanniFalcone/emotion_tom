@@ -13,7 +13,7 @@ from plotting import Plotting
 from learning.agent import Agent
 
 class Qlearning:
-    def __init__(self, stats, env, state_space, action_space, states, actions, epsilon, alpha, gamma):
+    def __init__(self, stats, env, state_space, action_space, states, actions, epsilon, alpha, gamma, player_type):
         """
         Initializes the Q table and Q-Learning parameters.
         
@@ -27,6 +27,7 @@ class Qlearning:
             epsilon (float): The probability of choosing a random action during exploration.
             alpha (float): The learning rate.
             gamma (float): The discount factor.
+            player_type (string): the player that agent will simulate
         """
         self.action_space = action_space
         self.state_space = state_space
@@ -40,6 +41,7 @@ class Qlearning:
         self.env = env
         self.agent = Agent(env)
         env.set_agent(self.agent)
+        self.player_type = player_type
     
     def training(self, max_episode):
         """
@@ -101,6 +103,8 @@ class Qlearning:
         Returns:
             int: The selected action.
         """
+        #return constants.SUGGEST_NONE
+    
         is_turn_less_than_seven = self.env.get_turn() < 7
         is_turn_odd = self.env.get_turn() % 2 != 0
         clicks_until_match = self.env.get_flip_number()
@@ -183,10 +187,6 @@ class Qlearning:
             avg_moves = Util.get_cumulative_avg(self.stats.episode_lengths, episode)
             Plotting.save_stats(avg_moves, Plotting.AVERAGE_EPISODE_LENGTH, episode)
 
-            # average suggest for each pair considering n episodes
-            avg_suggest_after_episode = Util.get_avarage(self.stats.avg_of_suggests_after_some_episode, 12, episode)
-            Plotting.save_stats(avg_suggest_after_episode, Plotting.AVERAGE_OF_ACTIONS_TAKEN, episode)
-
             # average of moves until pair is founded considering n episodes
             avg_moves_after_episode = Util.get_avarage(self.stats.avg_of_moves_until_match, 12, episode)
             Plotting.save_stats(avg_moves_after_episode, Plotting.AVERAGE_OF_TURNS_FOR_MATCH, episode)
@@ -195,14 +195,14 @@ class Qlearning:
             avg_rewards = Util.get_cumulative_avg(self.stats.episode_rewards, episode)
             Plotting.save_stats(avg_rewards, Plotting.AVERAGE_EPISODE_REWARDS, episode)
 
-            # suggestions for the first card
-            avg_suggestion_first_card = Util.get_avarage(self.stats.avg_of_suggests_first_card_over_time, 12, episode)
-            Plotting.save_stats(avg_suggestion_first_card, Plotting.AVERAGE_OF_ACTIONS_FIRST_CARD, episode)
+            file_path = "data/" + self.player_type + ".npy"
+            with open(file_path, 'wb') as f:
+                np.save(f, self.stats.episode_lengths)
 
             # number of mistakes
             Plotting.save_stats(None, Plotting.MISTAKES, episode)
 
-            # percentage for each moves over time
+            # percentage for each moves over time: should be commented if condition=game_perfect
             Plotting.save_stats(None, Plotting.PERCENTAGE_MOVES, episode)
 
 

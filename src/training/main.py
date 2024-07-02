@@ -137,6 +137,12 @@ epsilon = 1.0
 alpha = 0.1
 gamma = 0.8
 
+# player type:
+# - perfect: user playing alone with "perfect" memory
+# - imperfect: user playing without agent suggestions with "imperfect" memory
+# - helped: user player with agent suggestion
+player_type = "helped"
+
 # start with training
-Q = Qlearning(stats, env, len(states), len(actions), states, actions, epsilon, alpha, gamma)
+Q = Qlearning(stats, env, len(states), len(actions), states, actions, epsilon, alpha, gamma, player_type)
 Q.training(EPISODES)

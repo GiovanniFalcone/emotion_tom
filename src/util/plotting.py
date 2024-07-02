@@ -24,15 +24,9 @@ class Plotting:
     AVERAGE_EPISODE_REWARDS = 0
     AVERAGE_EPISODE_LENGTH = 1
     AVERAGE_OF_TURNS_FOR_MATCH = 2
-    NUMBER_OF_CLICK_UNTIL_MATCH = 3
-    ACTION_TAKEN_IN_SPECIFIC_EPISODE = 4
-    AVERAGE_OF_ACTIONS_TAKEN = 5
-    AVERAGE_OF_ACTIONS_FIRST_CARD = 6
     PERCENTAGE_MOVES = 7
     MISTAKES = 8
 
-    __array_of_suggests = [] # It is used in order to do the avg of all suggests provided by the robot for every pair.
-    __array_of_suggests_on_first_card = []  # idem, but only for the first card
     state_counts_first = {}
     state_counts_second = {}
     mistakes = np.zeros(100000)                                 # to count all the moves that doesn't end in a match
@@ -83,24 +77,6 @@ class Plotting:
                 
                 plt.savefig('plot/png/Avg_of_moves_until_match/AVG_of_moves_episode_after_' + str(episode) + '.png')
                 plt.savefig('plot/pdf/Avg_of_moves_until_match/AVG_of_moves_episode_after_' + str(episode) + '.pdf')
-
-            case Plotting.AVERAGE_OF_ACTIONS_TAKEN:
-                plt.plot(stats)
-                plt.xlabel("Pairs")
-                plt.ylabel("Most suggested action")
-                plt.title("Average action provided by robot after " + str(episode) + " episode".format(smoothing_window))
-                
-                plt.savefig('plot/png/Avg_of_suggests_after_some_episode/AVG_suggest_after_' + str(episode) + '.png')
-                plt.savefig('plot/pdf/Avg_of_suggests_after_some_episode/AVG_suggest_after_' + str(episode) + '.pdf')
-
-            case Plotting.AVERAGE_OF_ACTIONS_FIRST_CARD:
-                plt.plot(stats)
-                plt.xlabel("Pairs")
-                plt.ylabel("Most suggested action")
-                plt.title("Average action for the first card provided by robot after " + str(episode) + " episode".format(smoothing_window))
-                
-                plt.savefig('plot/png/Avg_of_suggests_on_first_card/AVG_suggest_after_' + str(episode) + '.png')
-                plt.savefig('plot/pdf/Avg_of_suggests_on_first_card/AVG_suggest_after_' + str(episode) + '.pdf')
 
             case Plotting.PERCENTAGE_MOVES:
                 # Calculate percentages for the first and second flips
@@ -174,11 +150,8 @@ class Plotting:
     @staticmethod
     def update_stats(stats, episode, reward, action, env, state_string):
         is_turn_even = (env.get_turn() - 1) % 2 == 0     # turn - 1 because the turn has already been increased
-        is_game_ended = env.get_pairs_found() == 12          # the turn doesn't increase when game is ended
+        is_game_ended = env.get_pairs_found() == 12      # the turn doesn't increase when game is ended
         moves_until_match = env.get_flip_number()/2
-
-        # every even turn append robot's suggestion into the array in order to get the average of suggestions for both card
-        Plotting.__array_of_suggests.append(action)
 
         if 'correct' in state_string:
             state_string = 'correct'
@@ -193,7 +166,6 @@ class Plotting:
 
         # in order to get the average of suggestions for the first card only
         if is_turn_even is False:
-            Plotting.__array_of_suggests_on_first_card.append(action)
             if state_string not in Plotting.state_counts_first:
                 Plotting.state_counts_first[state_string] = {'none': 0, 'row': 0, 'card': 0}
             if action == 0:
@@ -220,17 +192,6 @@ class Plotting:
             pair = env.get_pairs_found() - 1
             # average number of moves until pair is found, considering n episodes
             stats.avg_of_moves_until_match[pair] += moves_until_match
-            # add up all the suggestions given by the robot to make the average later
-            stats.avg_of_suggests_after_some_episode[pair] += stats.avg_of_suggests_in_specific_episode[pair]
-            # add up all the suggestions for the first card in order to plot the average
-            stats.avg_of_suggests_first_card_over_time[pair] += sum(Plotting.__array_of_suggests_on_first_card) / len(Plotting.__array_of_suggests_on_first_card)
-            
-            # just for debug: create a file with all suggests provided by the agent
-            # it will save every 4000 times when the player is the robot
-            Util.save_suggests_into_file(Plotting.__array_of_suggests, episode, is_game_ended)
-
-            Plotting.__array_of_suggests.clear()
-            Plotting.__array_of_suggests_on_first_card.clear()
 
         # cumulative reward 
         stats.episode_rewards[episode] += reward

@@ -1,0 +1,14 @@
+timestamp,emotion,match,motivated
+2024-06-28 22:01:15.930899,happy,True,no
+2024-06-28 22:01:26.188240,happy,True,yes
+2024-06-28 22:02:17.277787,neutral,True,yes
+2024-06-28 22:02:24.377479,neutral,False,yes
+2024-06-28 22:02:26.385484,neutral,True,no
+2024-06-28 22:02:34.256928,neutral,True,yes
+2024-06-28 22:02:36.550775,neutral,True,no
+2024-06-28 22:02:50.266546,neutral,True,yes
+2024-06-28 22:02:56.449794,neutral,True,yes
+2024-06-28 22:03:03.907201,happy,True,yes
+2024-06-28 22:03:10.540282,neutral,True,yes
+2024-06-28 22:03:14.452903,neutral,False,no
+2024-06-28 22:03:20.409401,neutral,True,yes

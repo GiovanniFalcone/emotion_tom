@@ -45,20 +45,6 @@ class Util:
             np.save(matrix_file, Q)
 
     @staticmethod
-    def save_suggests_into_file(array_suggest, episode, is_game_ended):
-        Util.__list_of_suggests_in_episode.append(list(array_suggest))
-        file_name = "hints" 
-                    
-        # if it's the first run then clean the file
-        if episode == 0:
-            open('../util/' + file_name + '.txt', 'w').close()
-
-        # write the contents of list in a file every 4000 episode
-        if (episode % 4000 == 0 and is_game_ended and episode != 0) or \
-            (episode == 99999 and is_game_ended):
-            Util.__write_on_file(file_name)
-
-    @staticmethod
     def __write_on_file(file_name):
         pairs = 0
         with open('../util/' + file_name + '.txt', 'a+') as file:
@@ -128,39 +114,37 @@ class Util:
         """
 
         # create directory if it doesn't exists
-        robot_path_plot = "../robot/plot"
-        if os.path.exists(robot_path_plot) is False:
-            os.mkdir(robot_path_plot)
+        training_path_plot = "../training/plot"
+        if os.path.exists(training_path_plot) is False:
+            os.mkdir(training_path_plot)
 
         # create png folder
-        robot_path_png = "../robot/plot/png"
-        if os.path.exists(robot_path_png):
+        training_path_png = "../training/plot/png"
+        if os.path.exists(training_path_png):
             return
-        os.mkdir(robot_path_png)
-        os.mkdir(robot_path_png + "/avg_of_suggests_in_specific_episode")
-        os.mkdir(robot_path_png + "/Avg_of_moves_until_match")
-        os.mkdir(robot_path_png + "/Avg_of_suggests_after_some_episode")
-        os.mkdir(robot_path_png + "/Episode_Click_until_match")
-        os.mkdir(robot_path_png + "/Rewards")
-        os.mkdir(robot_path_png + "/Episode_length")
-        os.mkdir(robot_path_png + "/Avg_of_suggests_on_first_card")
-        os.mkdir(robot_path_png + "/Mistakes")
-        os.mkdir(robot_path_png + "/Percent")
+        os.mkdir(training_path_png)
+        os.mkdir(training_path_png + "/Avg_of_moves_until_match")
+        os.mkdir(training_path_png + "/Rewards")
+        os.mkdir(training_path_png + "/Episode_length")
+        os.mkdir(training_path_png + "/Mistakes")
+        os.mkdir(training_path_png + "/Percent")
         
         # create pdf folder
-        robot_path_pdf = "../robot/plot/pdf"
-        if os.path.exists(robot_path_pdf):
+        training_path_pdf = "../training/plot/pdf"
+        if os.path.exists(training_path_pdf):
             return
-        os.mkdir(robot_path_pdf)
-        os.mkdir(robot_path_pdf + "/avg_of_suggests_in_specific_episode")
-        os.mkdir(robot_path_pdf + "/Avg_of_moves_until_match")
-        os.mkdir(robot_path_pdf + "/Avg_of_suggests_after_some_episode")
-        os.mkdir(robot_path_pdf + "/Episode_Click_until_match")
-        os.mkdir(robot_path_pdf + "/Rewards")
-        os.mkdir(robot_path_pdf + "/Episode_length")
-        os.mkdir(robot_path_pdf + "/Avg_of_suggests_on_first_card")
-        os.mkdir(robot_path_pdf + "/Mistakes")
-        os.mkdir(robot_path_pdf + "/Percent")
+        os.mkdir(training_path_pdf)
+        os.mkdir(training_path_pdf + "/Avg_of_moves_until_match")
+        os.mkdir(training_path_pdf + "/Rewards")
+        os.mkdir(training_path_pdf + "/Episode_length")
+        os.mkdir(training_path_pdf + "/Mistakes")
+        os.mkdir(training_path_pdf + "/Percent")
+
+        # npy folder for player's type
+        training_path_npy = "../training/data"
+        if os.path.exists(training_path_npy):
+            return
+        os.mkdir(training_path_npy)
     
     @staticmethod
     def print_Q_table(Q, states, actions, module):
@@ -171,7 +155,7 @@ class Util:
 
     @staticmethod
     def put_data_in_csv(csv_data, id_player, n_game):
-        file_path = Path("src/human/app/src/data/user_" + str(id_player) + "/game_data_" + str(n_game) + ".csv")
+        file_path = Path("src/hri/app/src/data/user_" + str(id_player) + "/game_data_" + str(n_game) + ".csv")
         keys = csv_data.keys()
 
         if file_path.is_file() is False:
@@ -192,7 +176,7 @@ class Util:
         if id_player == -1:
             return 
         
-        file_path = Path("src/human/app/src/data/user_" + str(id_player) + "/log_file_" + str(n_game) + ".txt")
+        file_path = Path("src/hri/app/src/data/user_" + str(id_player) + "/log_file_" + str(n_game) + ".txt")
         with open(file_path, "a+", newline='') as outfile:
             outfile.write(data)
 
@@ -202,9 +186,9 @@ class Util:
         This function delete the log file and csv associated to the user.
         It is used in case the user has reloaded the page without finishing the game.
         """
-        file_path = Path("src/human/app/src/data/user_" + str(id_player) + "/log_file_" + str(n_game) + ".txt")
+        file_path = Path("src/hri/app/src/data/user_" + str(id_player) + "/log_file_" + str(n_game) + ".txt")
         os.remove(file_path)
-        file_path = Path("src/human/app/src/data/user_" + str(id_player) + "/game_data_" + str(n_game) + ".csv")
+        file_path = Path("src/hri/app/src/data/user_" + str(id_player) + "/game_data_" + str(n_game) + ".csv")
         try:
             os.remove(file_path)
         except OSError as e:
@@ -229,7 +213,7 @@ class Util:
         Returns the user ID if success.
         """
         # Check if the 'data' directory exists
-        data_dir = "src/human/app/src/data"
+        data_dir = "src/hri/app/src/data"
         if not os.path.exists(data_dir):
             try:
                 os.makedirs(data_dir)
@@ -240,7 +224,7 @@ class Util:
         # get current user ID
         user_number = Util.get_user_number()
         # path for the current user
-        user_path = "src/human/app/src/data/user_" + str(user_number)
+        user_path = "src/hri/app/src/data/user_" + str(user_number)
         # create the directory
         try:
             if not os.path.exists(user_path):

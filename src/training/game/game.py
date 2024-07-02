@@ -178,6 +178,7 @@ class Game:
         if has_received_hint_on_first_flip and is_turn_even and pairs_to_found > 4:
             return self._select_card_based_on_dataset_probability(pairs_found)
         elif is_turn_even and probability_of_match > 50 and random.randint(0, 1) == 1:
+        #elif is_turn_even and probability_of_match > 5 and random.randint(0, 1) == 1:
             return self._select_correct_card()
         else:
             return self._select_random_card()
