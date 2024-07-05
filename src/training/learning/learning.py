@@ -103,7 +103,7 @@ class Qlearning:
         Returns:
             int: The selected action.
         """
-        #return constants.SUGGEST_NONE
+        if self.player_type != "helped": return constants.SUGGEST_NONE
     
         is_turn_less_than_seven = self.env.get_turn() < 7
         is_turn_odd = self.env.get_turn() % 2 != 0
