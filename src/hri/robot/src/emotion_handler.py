@@ -25,41 +25,27 @@ class EmotionHandler:
             self.robot.do_facial_expression("CustomSurprise")
 
     def handle_happy_expression_given_match(self, is_first_pair, is_begin, is_middle):
-        # random condition in order to perform a different gesture
-        prob = random.choice([0, 1]) == 0 
         if(is_begin or is_middle or is_first_pair):
-            if prob:
-                self.robot.do_facial_expression("happy_0")
-                time.sleep(0.5)
-                self.robot.do_facial_expression("Wink" if random.choice([True, False]) else "BigSmile")
-            else:
-                self.robot.do_facial_expression("happy_1")
-                time.sleep(0.5)
-                self.robot.do_facial_expression("BigSmile")
+            self.robot.do_facial_expression("happy_1")
+            time.sleep(0.5)
+            self.robot.do_facial_expression("BigSmile")
         else:
             # end
-            if random.choice([True, False]):
-                self.robot.do_facial_expression("happy_0")
-            else:
-                self.robot.do_facial_expression("happy_1")
+            self.robot.do_facial_expression("happy_1")
             self.robot.do_facial_expression("BigSmile")
 
     def handle_neutral_expression_given_match(self, is_first_pair, is_end):
         if is_first_pair:
-            self.robot.do_facial_expression("happy_0" if random.choice([True, False]) else "happy_1")
+            self.robot.do_facial_expression("happy_1")
             self.robot.do_facial_expression("BigSmile")
         else:
-            if random.choice([True, False]):
-                self.robot.do_facial_expression("happy_0")
-                self.robot.do_facial_expression("BigSmile")
-            else:
-                self.robot.do_facial_expression("happy_1")
-                if not is_end: time.sleep(0.5)
-                self.robot.do_facial_expression("Wink")
+            self.robot.do_facial_expression("happy_1")
+            if not is_end: time.sleep(0.5)
+            self.robot.do_facial_expression("Wink" if random.choice([True, False]) else "BigSmile")
 
     def handle_expression_given_unmatch(self, emotion, is_begin, is_end):
         if emotion in ['happy', 'neutral']:
-            self.robot.do_facial_expression("happy_0" if random.choice([True, False]) else "happy_1")
+            self.robot.do_facial_expression("happy_1")
             self.robot.do_facial_expression("BigSmile")
         elif emotion == 'sad':
             if(is_begin or is_end):
