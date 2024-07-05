@@ -8,17 +8,17 @@
             ],
 
             "happy_beg_mid": [
-                "Sembra che tu ti stia divertendo. Continua così!",
-                "Sei felice di aver trovato un'altra coppia, vero? Stai andando bene!",
+                "Sembra che tu ti stia divertendo. Continua così! Una coppia in meno!",
+                "Sei felice di aver trovato un'altra coppia, vero? Stai andando benissimo!",
                 "Mi fa piacere che tu sia felice di aver trovato un'altra coppia!",
                 "Noto con piacere che tu ti stia divertendo. Continua così!",
                 "Benissimo, un'altra coppia trovata! Mi sembri felice del risultato!",
-                "Mi fa piacere che tu ti stia divertendo! Continua così!",
-                "Mi fa piacere vedere che stai passando un bel momento! Anche io mi sto divertendo tanto!",
+                "Ehy, hai trovato un'altra coppia! Sei contento, vero? Continua così!",
+                "Hai fatto match, ottimo! Mi fa piacere vedere che stai passando un bel momento! Anche io mi sto divertendo tanto!",
                 "Il fatto che ti stia divertendo è la cosa più importante, e mi fa davvero piacere vederlo!",
-                "Il tuo entusiasmo è contagioso! Sono felice che tu ti stia divertendo!",
-                "Il tuo divertimento è evidente e mi fa davvero piacere!",
-                "Vedo che ti stai godendo il gioco, e questo è fantastico!"
+                "Complimenti, un altro match! Il tuo entusiasmo è contagioso! Sono felice che tu ti stia divertendo!",
+                "Hey! Hai trovato un'altra coppia! Il tuo divertimento è evidente e mi fa davvero piacere!",
+                "Vedo che ti stai divertendo nel trovare le coppie. Benissimo!"
             ],
 
             "happy_end": [
@@ -45,18 +45,18 @@
                 "Hey complimenti, un'altro passo verso la fine. Continua così!",
                 "Hey, ottimo lavoro, un altro match! Sei sulla strada giusta!",
                 "Ottimo! Un'altra coppia trovata! Stai facendo un lavoro straordinario!",
-                "Perfetto! Continua così, stai giocando bene!"
+                "Perfetto! Continua così, stai giocando bene, non preoccuparti!"
             ],
 
             "neutral_end": [
-                "Dai, ci siamo quasi!",
+                "Hey, un altro match, benissimo! Dai, ci siamo quasi!",
                 "Complimenti, siamo quasi arrivati alla fine. Ottimo lavoro!",
-                "Benissimo, stiamo quasi per finire!"
+                "Benissimo, hai trovato un'altra coppia! Dai, stiamo quasi per finire!"
             ],
 
             "neutral_last_pair": [
-                "Congratulazioni, hai trovato l'ultima coppia! Spero che questa esperienza ti abbia fatto piacere!",
-                "Ottimo lavoro, hai trovato l'ultima coppia!"
+                "Congratulazioni, hai trovato l'ultima coppia! Ottimo lavoro!",
+                "Ottimo lavoro! Hai trovato l'ultima coppia! Mi fa molto piacere!"
             ]
         },
 
