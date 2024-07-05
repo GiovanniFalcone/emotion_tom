@@ -49,9 +49,14 @@ class Furhat:
             self.robot.gesture(body=expression)
 
     def _get_custom_expression(self, filename):
-        file_path = "gestures/" + filename + ".json"
-        with open(file_path, "r") as f:
-            gesture = json.load(f)
+        file_path = "../emotion_tom/src/hri/robot/src/gestures/" + filename + ".json"
+        gesture = ''
+        try:
+            with open(file_path, "r") as f:
+                gesture = json.load(f)
+        except Exception as e:
+            import os
+            print(f"Error: {e}\n Current path is: {os.getcwd()}")
         return gesture
 
     def change_led_color_based_on_emotion(self, emotion):

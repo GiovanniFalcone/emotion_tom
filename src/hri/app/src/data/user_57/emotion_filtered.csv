@@ -1,0 +1,7 @@
+id,timestamp,emotion,match,motivated,condition
+2024-07-06 00:02:43.643621,neutral,False,yes,E-ToM
+2024-07-06 00:03:01.143373,neutral,True,yes,E-ToM
+2024-07-06 00:03:09.301704,neutral,False,yes,E-ToM
+2024-07-06 00:03:15.899128,neutral,False,yes,E-ToM
+2024-07-06 00:03:30.333466,neutral,False,yes,E-ToM
+2024-07-06 00:04:00.739731,neutral,True,yes,E-ToM

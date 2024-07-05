@@ -155,7 +155,7 @@ class Util:
 
     @staticmethod
     def put_data_in_csv(csv_data, id_player, n_game):
-        file_path = Path("src/hri/app/src/data/user_" + str(id_player) + "/game_data_" + str(n_game) + ".csv")
+        file_path = Path("../emotion_tom/src/hri/app/src/data/user_" + str(id_player) + "/game_data_" + str(n_game) + ".csv")
         keys = csv_data.keys()
 
         if file_path.is_file() is False:
@@ -176,9 +176,12 @@ class Util:
         if id_player == -1:
             return 
         
-        file_path = Path("src/hri/app/src/data/user_" + str(id_player) + "/log_file_" + str(n_game) + ".txt")
-        with open(file_path, "a+", newline='') as outfile:
-            outfile.write(data)
+        file_path = Path("../emotion_tom/src/hri/app/src/data/user_" + str(id_player) + "/log_file_" + str(n_game) + ".txt")
+        try:
+            with open(file_path, "a+", newline='') as outfile:
+                outfile.write(data)
+        except Exception as e:
+            print(f"Error: {e}\n {os.getcwd()}")
 
     @staticmethod
     def delete_files(id_player, n_game):
@@ -186,9 +189,9 @@ class Util:
         This function delete the log file and csv associated to the user.
         It is used in case the user has reloaded the page without finishing the game.
         """
-        file_path = Path("src/hri/app/src/data/user_" + str(id_player) + "/log_file_" + str(n_game) + ".txt")
+        file_path = Path("../emotion_tom/src/hri/app/src/data/user_" + str(id_player) + "/log_file_" + str(n_game) + ".txt")
         os.remove(file_path)
-        file_path = Path("src/hri/app/src/data/user_" + str(id_player) + "/game_data_" + str(n_game) + ".csv")
+        file_path = Path("../emotion_tom/src/hri/app/src/data/user_" + str(id_player) + "/game_data_" + str(n_game) + ".csv")
         try:
             os.remove(file_path)
         except OSError as e:
@@ -213,7 +216,7 @@ class Util:
         Returns the user ID if success.
         """
         # Check if the 'data' directory exists
-        data_dir = "src/hri/app/src/data"
+        data_dir = "../emotion_tom/src/hri/app/src/data"
         if not os.path.exists(data_dir):
             try:
                 os.makedirs(data_dir)
@@ -224,7 +227,7 @@ class Util:
         # get current user ID
         user_number = Util.get_user_number()
         # path for the current user
-        user_path = "src/hri/app/src/data/user_" + str(user_number)
+        user_path = "../emotion_tom/src/hri/app/src/data/user_" + str(user_number)
         # create the directory
         try:
             if not os.path.exists(user_path):

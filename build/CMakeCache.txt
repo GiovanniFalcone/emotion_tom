@@ -401,13 +401,13 @@ _gtest_INCLUDES:FILEPATH=/usr/include/gtest/gtest.h
 _gtest_SOURCES:FILEPATH=/usr/src/gtest/src/gtest.cc
 
 //Value Computed by CMake
-app_BINARY_DIR:STATIC=/home/giovanni/emotion_tom/build/human/app
+app_BINARY_DIR:STATIC=/home/giovanni/emotion_tom/build/hri/app
 
 //Value Computed by CMake
 app_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
-app_SOURCE_DIR:STATIC=/home/giovanni/emotion_tom/src/human/app
+app_SOURCE_DIR:STATIC=/home/giovanni/emotion_tom/src/hri/app
 
 //The directory containing a CMake configuration file for catkin.
 catkin_DIR:PATH=/opt/ros/noetic/share/catkin/cmake
@@ -416,13 +416,13 @@ catkin_DIR:PATH=/opt/ros/noetic/share/catkin/cmake
 cpp_common_DIR:PATH=/opt/ros/noetic/share/cpp_common/cmake
 
 //Value Computed by CMake
-emotion_BINARY_DIR:STATIC=/home/giovanni/emotion_tom/build/human/emotion
+emotion_BINARY_DIR:STATIC=/home/giovanni/emotion_tom/build/hri/emotion
 
 //Value Computed by CMake
 emotion_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
-emotion_SOURCE_DIR:STATIC=/home/giovanni/emotion_tom/src/human/emotion
+emotion_SOURCE_DIR:STATIC=/home/giovanni/emotion_tom/src/hri/emotion
 
 //Value Computed by CMake
 gmock_BINARY_DIR:STATIC=/home/giovanni/emotion_tom/build/gtest/googlemock
@@ -486,13 +486,13 @@ lib:FILEPATH=/opt/ros/noetic/lib/libxmlrpcpp.so
 message_runtime_DIR:PATH=/opt/ros/noetic/share/message_runtime/cmake
 
 //Value Computed by CMake
-robot_BINARY_DIR:STATIC=/home/giovanni/emotion_tom/build/human/robot
+robot_BINARY_DIR:STATIC=/home/giovanni/emotion_tom/build/hri/robot
 
 //Value Computed by CMake
 robot_IS_TOP_LEVEL:STATIC=OFF
 
 //Value Computed by CMake
-robot_SOURCE_DIR:STATIC=/home/giovanni/emotion_tom/src/human/robot
+robot_SOURCE_DIR:STATIC=/home/giovanni/emotion_tom/src/hri/robot
 
 //The directory containing a CMake configuration file for rosconsole.
 rosconsole_DIR:PATH=/opt/ros/noetic/share/rosconsole/cmake

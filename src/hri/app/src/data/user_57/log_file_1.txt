@@ -1,0 +1,227 @@
+
+Experimental condition:tom
+
+id_player: 57panda penguin pelican pelican bird  walrus
+goose panda koala walrus penguin duck 
+tiger horse shark flamingo koala goose
+tiger bird  horse shark flamingo duck 
+
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 1
+Position_clicked: [0, 0]
+Card_clicked: panda
+Time_game: 13:37
+Time_before_match: 13:37
+Match: False
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 2
+Position_clicked: [1, 0]
+Card_clicked: goose
+Time_game: 13:39
+Time_before_match: 13:39
+Match: False
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 3
+Position_clicked: [0, 1]
+Card_clicked: penguin
+Time_game: 13:40
+Time_before_match: 13:40
+Match: False
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 4
+Position_clicked: [1, 1]
+Card_clicked: panda
+Time_game: 13:41
+Time_before_match: 13:41
+Match: False
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 5
+Position_clicked: [0, 0]
+Card_clicked: panda
+Time_game: 20:56
+Time_before_match: 20:56
+Match: False
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 6
+Position_clicked: [1, 0]
+Card_clicked: goose
+Time_game: 20:57
+Time_before_match: 20:57
+Match: False
+
+Hint: (none, None, None)
+(no_help, beg, f_wrong, high_attempts)
+Turn: 7
+Position_clicked: [0, 0]
+Card_clicked: panda
+Time_game: 23:10
+Time_before_match: 23:10
+Match: False
+
+Hint: (card, panda, (1, 1))
+(no_help, beg, s_wrong, high_attempts)
+Turn: 8
+Position_clicked: [1, 1]
+Card_clicked: panda
+Time_game: 25:16
+Time_before_match: 25:16
+Match: True
+
+Hint: (none, None, None)
+(sugg_card, beg, f_correct)
+Turn: 9
+Position_clicked: [0, 1]
+Card_clicked: penguin
+Time_game: 26:43
+Time_before_match: 1:27
+Match: False
+
+Hint: (none, None, None)
+(no_help, beg, s_correct)
+Turn: 10
+Position_clicked: [2, 2]
+Card_clicked: shark
+Time_game: 26:45
+Time_before_match: 1:29
+Match: False
+
+Hint: (none, None, None)
+(no_help, beg, f_wrong, low_attempts)
+Turn: 11
+Position_clicked: [0, 1]
+Card_clicked: penguin
+Time_game: 27:52
+Time_before_match: 2:36
+Match: False
+
+Hint: (none, None, None)
+(no_help, beg, s_wrong, low_attempts)
+Turn: 12
+Position_clicked: [1, 2]
+Card_clicked: koala
+Time_game: 27:54
+Time_before_match: 2:38
+Match: False
+
+Hint: (none, None, None)
+(no_help, beg, f_wrong, medium_attempts)
+Turn: 13
+Position_clicked: [0, 1]
+Card_clicked: penguin
+Time_game: 31:27
+Time_before_match: 6:11
+Match: False
+
+Hint: (row, penguin, (1, -1))
+(no_help, beg, s_wrong, medium_attempts)
+Turn: 14
+Position_clicked: [1, 0]
+Card_clicked: goose
+Time_game: 31:29
+Time_before_match: 6:13
+Match: False
+
+Hint: (none, None, None)
+(sugg_row, beg, f_wrong, high_attempts)
+Turn: 15
+Position_clicked: [1, 2]
+Card_clicked: koala
+Time_game: 31:35
+Time_before_match: 6:19
+Match: False
+
+Hint: (card, koala, (2, 4))
+(no_help, beg, s_wrong, high_attempts)
+Turn: 16
+Position_clicked: [2, 4]
+Card_clicked: koala
+Time_game: 31:36
+Time_before_match: 6:20
+Match: True
+
+Hint: (none, None, None)
+(sugg_card, beg, f_correct)
+Turn: 17
+Position_clicked: [3, 0]
+Card_clicked: tiger
+Time_game: 31:44
+Time_before_match: 0:8
+Match: False
+
+Hint: (none, None, None)
+(no_help, beg, s_correct)
+Turn: 18
+Position_clicked: [0, 4]
+Card_clicked: bird
+Time_game: 31:46
+Time_before_match: 0:10
+Match: False
+
+Hint: (none, None, None)
+(no_help, beg, f_wrong, low_attempts)
+Turn: 19
+Position_clicked: [2, 3]
+Card_clicked: flamingo
+Time_game: 31:51
+Time_before_match: 0:15
+Match: False
+
+Hint: (none, None, None)
+(no_help, beg, s_wrong, low_attempts)
+Turn: 20
+Position_clicked: [0, 5]
+Card_clicked: walrus
+Time_game: 31:55
+Time_before_match: 0:19
+Match: False
+
+Hint: (none, None, None)
+(no_help, beg, f_wrong, medium_attempts)
+Turn: 21
+Position_clicked: [3, 5]
+Card_clicked: duck
+Time_game: 31:58
+Time_before_match: 0:22
+Match: False
+
+Hint: (row, duck, (1, -1))
+(no_help, beg, s_wrong, medium_attempts)
+Turn: 22
+Position_clicked: [1, 0]
+Card_clicked: goose
+Time_game: 32:0
+Time_before_match: 0:24
+Match: False
+
+Hint: (none, None, None)
+(sugg_row, beg, f_wrong, high_attempts)
+Turn: 23
+Position_clicked: [1, 5]
+Card_clicked: duck
+Time_game: 32:15
+Time_before_match: 0:39
+Match: False
+
+Hint: (card, duck, (3, 5))
+(no_help, beg, s_wrong, high_attempts)
+Turn: 24
+Position_clicked: [3, 5]
+Card_clicked: duck
+Time_game: 32:21
+Time_before_match: 0:45
+Match: True
+
+Hint: (none, None, None)
+(sugg_card, beg, f_correct)

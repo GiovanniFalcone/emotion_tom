@@ -136,9 +136,9 @@ endif()
 if(NOT CMAKE_INSTALL_LOCAL_ONLY)
   # Include the install script for each subdirectory.
   include("/home/giovanni/emotion_tom/build/gtest/cmake_install.cmake")
-  include("/home/giovanni/emotion_tom/build/human/app/cmake_install.cmake")
-  include("/home/giovanni/emotion_tom/build/human/emotion/cmake_install.cmake")
-  include("/home/giovanni/emotion_tom/build/human/robot/cmake_install.cmake")
+  include("/home/giovanni/emotion_tom/build/hri/app/cmake_install.cmake")
+  include("/home/giovanni/emotion_tom/build/hri/emotion/cmake_install.cmake")
+  include("/home/giovanni/emotion_tom/build/hri/robot/cmake_install.cmake")
 
 endif()
 

@@ -38,13 +38,13 @@ class InteractionModule:
         self.person_detected = False
         self.last_emotion = ''
         # Get id player for csv: analysis for emotion
-        self.id_player = self.get_player_id()
+        self.id_player = ''
         # game info for csv file
         self.turn = 0
         self.match = False
         self.motivated = False
         self.lock = Lock()
-        self.logger = EmotionCSV(self.id_player)
+        self.logger = None 
         # get sentences from interaction file (greetings, rules, goodbye)
         self.speech = self.load_interaction_sentences()
         # connect to robot and do randomic movement with robot's head in order to look more natural
@@ -114,6 +114,8 @@ class InteractionModule:
         if msg.data and self.state == 'IDLE': 
             self.person_detected = True
             self.start_interaction()
+            self.id_player = self.get_player_id()
+            self.logger = EmotionCSV(self.id_player, self.emotional_condition)
             self.state = 'GAME'
         
     def speech_callback(self, data):
@@ -136,7 +138,8 @@ class InteractionModule:
         rospy.loginfo(f"Emotion Received: {data.data}")
         with self.lock:
             self.last_emotion = data.data
-        self.logger.log_to_csv(rospy.get_time(), self.logger.csv_file_full, self.last_emotion, self.match, self.motivated)
+        if self.logger: 
+            self.logger.log_to_csv(rospy.get_time(), "full", self.last_emotion, self.match, self.motivated)
 
     def game_callback(self, data):
         """
@@ -220,9 +223,9 @@ class InteractionModule:
                 # Log to CSV
                 with self.lock: 
                     self.motivated = True
-                self.logger.log_to_csv(rospy.get_time(), self.logger.csv_file_filtered, emotion, match, 'yes')
+                self.logger.log_to_csv(rospy.get_time(), "filtered", emotion, match, 'yes')
             else:
-                self.logger.log_to_csv(rospy.get_time(), self.logger.csv_file_filtered, emotion, match, 'no')
+                self.logger.log_to_csv(rospy.get_time(), "filtered", emotion, match, 'no')
                 with self.lock:
                     self.motivated = False
                 # Perform a facial expression based on match
