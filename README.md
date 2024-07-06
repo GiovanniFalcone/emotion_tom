@@ -13,7 +13,7 @@ chmod u+x src/hri/robot/src/perception.py
 ## How to play
 
 ```sh
-roslaunch usb_cam usb_cam-test.launch _video_device:=/dev/video0
+roslaunch robot usb_cam-test.launch
 roslaunch app app.launch condition:=0
 roslaunch robot controller.launch emotion_condition:=true
 ```
