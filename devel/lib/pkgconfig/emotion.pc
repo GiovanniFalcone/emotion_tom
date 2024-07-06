@@ -3,6 +3,6 @@ prefix=/home/giovanni/emotion_tom/devel
 Name: emotion
 Description: Description of emotion
 Version: 0.0.0
-Cflags: 
+Cflags: -I/home/giovanni/emotion_tom/devel/include
 Libs: -L${prefix}/lib 
-Requires: 
+Requires: roscpp rospy std_msgs message_runtime

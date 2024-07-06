@@ -483,6 +483,162 @@ std_msgs_generate_messages_py/fast:
 	$(MAKE) $(MAKESILENT) -f hri/app/CMakeFiles/std_msgs_generate_messages_py.dir/build.make hri/app/CMakeFiles/std_msgs_generate_messages_py.dir/build
 .PHONY : std_msgs_generate_messages_py/fast
 
+#=============================================================================
+# Target rules for targets named emotion_generate_messages
+
+# Build rule for target.
+emotion_generate_messages: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emotion_generate_messages
+.PHONY : emotion_generate_messages
+
+# fast build rule for target.
+emotion_generate_messages/fast:
+	$(MAKE) $(MAKESILENT) -f hri/emotion/CMakeFiles/emotion_generate_messages.dir/build.make hri/emotion/CMakeFiles/emotion_generate_messages.dir/build
+.PHONY : emotion_generate_messages/fast
+
+#=============================================================================
+# Target rules for targets named _emotion_generate_messages_check_deps_emotion
+
+# Build rule for target.
+_emotion_generate_messages_check_deps_emotion: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 _emotion_generate_messages_check_deps_emotion
+.PHONY : _emotion_generate_messages_check_deps_emotion
+
+# fast build rule for target.
+_emotion_generate_messages_check_deps_emotion/fast:
+	$(MAKE) $(MAKESILENT) -f hri/emotion/CMakeFiles/_emotion_generate_messages_check_deps_emotion.dir/build.make hri/emotion/CMakeFiles/_emotion_generate_messages_check_deps_emotion.dir/build
+.PHONY : _emotion_generate_messages_check_deps_emotion/fast
+
+#=============================================================================
+# Target rules for targets named emotion_generate_messages_cpp
+
+# Build rule for target.
+emotion_generate_messages_cpp: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emotion_generate_messages_cpp
+.PHONY : emotion_generate_messages_cpp
+
+# fast build rule for target.
+emotion_generate_messages_cpp/fast:
+	$(MAKE) $(MAKESILENT) -f hri/emotion/CMakeFiles/emotion_generate_messages_cpp.dir/build.make hri/emotion/CMakeFiles/emotion_generate_messages_cpp.dir/build
+.PHONY : emotion_generate_messages_cpp/fast
+
+#=============================================================================
+# Target rules for targets named emotion_gencpp
+
+# Build rule for target.
+emotion_gencpp: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emotion_gencpp
+.PHONY : emotion_gencpp
+
+# fast build rule for target.
+emotion_gencpp/fast:
+	$(MAKE) $(MAKESILENT) -f hri/emotion/CMakeFiles/emotion_gencpp.dir/build.make hri/emotion/CMakeFiles/emotion_gencpp.dir/build
+.PHONY : emotion_gencpp/fast
+
+#=============================================================================
+# Target rules for targets named emotion_generate_messages_eus
+
+# Build rule for target.
+emotion_generate_messages_eus: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emotion_generate_messages_eus
+.PHONY : emotion_generate_messages_eus
+
+# fast build rule for target.
+emotion_generate_messages_eus/fast:
+	$(MAKE) $(MAKESILENT) -f hri/emotion/CMakeFiles/emotion_generate_messages_eus.dir/build.make hri/emotion/CMakeFiles/emotion_generate_messages_eus.dir/build
+.PHONY : emotion_generate_messages_eus/fast
+
+#=============================================================================
+# Target rules for targets named emotion_geneus
+
+# Build rule for target.
+emotion_geneus: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emotion_geneus
+.PHONY : emotion_geneus
+
+# fast build rule for target.
+emotion_geneus/fast:
+	$(MAKE) $(MAKESILENT) -f hri/emotion/CMakeFiles/emotion_geneus.dir/build.make hri/emotion/CMakeFiles/emotion_geneus.dir/build
+.PHONY : emotion_geneus/fast
+
+#=============================================================================
+# Target rules for targets named emotion_generate_messages_lisp
+
+# Build rule for target.
+emotion_generate_messages_lisp: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emotion_generate_messages_lisp
+.PHONY : emotion_generate_messages_lisp
+
+# fast build rule for target.
+emotion_generate_messages_lisp/fast:
+	$(MAKE) $(MAKESILENT) -f hri/emotion/CMakeFiles/emotion_generate_messages_lisp.dir/build.make hri/emotion/CMakeFiles/emotion_generate_messages_lisp.dir/build
+.PHONY : emotion_generate_messages_lisp/fast
+
+#=============================================================================
+# Target rules for targets named emotion_genlisp
+
+# Build rule for target.
+emotion_genlisp: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emotion_genlisp
+.PHONY : emotion_genlisp
+
+# fast build rule for target.
+emotion_genlisp/fast:
+	$(MAKE) $(MAKESILENT) -f hri/emotion/CMakeFiles/emotion_genlisp.dir/build.make hri/emotion/CMakeFiles/emotion_genlisp.dir/build
+.PHONY : emotion_genlisp/fast
+
+#=============================================================================
+# Target rules for targets named emotion_generate_messages_nodejs
+
+# Build rule for target.
+emotion_generate_messages_nodejs: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emotion_generate_messages_nodejs
+.PHONY : emotion_generate_messages_nodejs
+
+# fast build rule for target.
+emotion_generate_messages_nodejs/fast:
+	$(MAKE) $(MAKESILENT) -f hri/emotion/CMakeFiles/emotion_generate_messages_nodejs.dir/build.make hri/emotion/CMakeFiles/emotion_generate_messages_nodejs.dir/build
+.PHONY : emotion_generate_messages_nodejs/fast
+
+#=============================================================================
+# Target rules for targets named emotion_gennodejs
+
+# Build rule for target.
+emotion_gennodejs: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emotion_gennodejs
+.PHONY : emotion_gennodejs
+
+# fast build rule for target.
+emotion_gennodejs/fast:
+	$(MAKE) $(MAKESILENT) -f hri/emotion/CMakeFiles/emotion_gennodejs.dir/build.make hri/emotion/CMakeFiles/emotion_gennodejs.dir/build
+.PHONY : emotion_gennodejs/fast
+
+#=============================================================================
+# Target rules for targets named emotion_generate_messages_py
+
+# Build rule for target.
+emotion_generate_messages_py: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emotion_generate_messages_py
+.PHONY : emotion_generate_messages_py
+
+# fast build rule for target.
+emotion_generate_messages_py/fast:
+	$(MAKE) $(MAKESILENT) -f hri/emotion/CMakeFiles/emotion_generate_messages_py.dir/build.make hri/emotion/CMakeFiles/emotion_generate_messages_py.dir/build
+.PHONY : emotion_generate_messages_py/fast
+
+#=============================================================================
+# Target rules for targets named emotion_genpy
+
+# Build rule for target.
+emotion_genpy: cmake_check_build_system
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/Makefile2 emotion_genpy
+.PHONY : emotion_genpy
+
+# fast build rule for target.
+emotion_genpy/fast:
+	$(MAKE) $(MAKESILENT) -f hri/emotion/CMakeFiles/emotion_genpy.dir/build.make hri/emotion/CMakeFiles/emotion_genpy.dir/build
+.PHONY : emotion_genpy/fast
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -496,9 +652,21 @@ help:
 	@echo "... list_install_components"
 	@echo "... rebuild_cache"
 	@echo "... test"
+	@echo "... _emotion_generate_messages_check_deps_emotion"
 	@echo "... clean_test_results"
 	@echo "... download_extra_data"
 	@echo "... doxygen"
+	@echo "... emotion_gencpp"
+	@echo "... emotion_generate_messages"
+	@echo "... emotion_generate_messages_cpp"
+	@echo "... emotion_generate_messages_eus"
+	@echo "... emotion_generate_messages_lisp"
+	@echo "... emotion_generate_messages_nodejs"
+	@echo "... emotion_generate_messages_py"
+	@echo "... emotion_geneus"
+	@echo "... emotion_genlisp"
+	@echo "... emotion_gennodejs"
+	@echo "... emotion_genpy"
 	@echo "... roscpp_generate_messages_cpp"
 	@echo "... roscpp_generate_messages_eus"
 	@echo "... roscpp_generate_messages_lisp"

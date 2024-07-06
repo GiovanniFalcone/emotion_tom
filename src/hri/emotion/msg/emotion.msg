@@ -1,0 +1,3 @@
+string dominant_emotion
+bool face_found
+float64 model_confidence

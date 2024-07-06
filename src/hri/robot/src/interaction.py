@@ -37,6 +37,7 @@ class InteractionModule:
         self.emotional_condition = False
         self.person_detected = False
         self.last_emotion = ''
+        self.emotion_score = 0
         # Get id player for csv: analysis for emotion
         self.id_player = ''
         # game info for csv file
@@ -135,11 +136,12 @@ class InteractionModule:
 
     def emotion_callback(self, data):
         """Save the emotion received"""
-        rospy.loginfo(f"Emotion Received: {data.data}")
+        rospy.loginfo(f"Emotion Received: {data.dominant_emotion}")
         with self.lock:
-            self.last_emotion = data.data
-        if self.logger: 
-            self.logger.log_to_csv(rospy.get_time(), "full", self.last_emotion, self.match, self.motivated)
+            self.last_emotion = data.dominant_emotion
+            self.emotion_score = data.model_confidence
+            if self.logger: 
+                self.logger.log_to_csv(rospy.get_time(), "full", self.last_emotion, self.emotion_score, self.match, self.motivated)
 
     def game_callback(self, data):
         """
@@ -193,6 +195,7 @@ class InteractionModule:
             with self.lock:
                 # copy last emotion
                 emotion = self.last_emotion
+                emotion_score = self.emotion_score
                 self.turn = turn
                 self.match = match
             
@@ -208,7 +211,7 @@ class InteractionModule:
 
             # define probability for robot's motivational speech
             probability = 0.75 if match else 0.3
-            probability = 1 if (match and emotion == 'happy' or n_pairs == 1) else 0.75
+            probability = 1 if (match and (emotion == 'happy' or emotion == 'surprise') or n_pairs == 1) else 0.75
 
             # with 50% of chance the robot will motivate if user has found a pair (i.e match is True), 
             # otherwise the chance that robot will motivate are 30%
@@ -221,13 +224,9 @@ class InteractionModule:
                 self.robot.change_led_color_based_on_emotion("neutral")
 
                 # Log to CSV
-                with self.lock: 
-                    self.motivated = True
-                self.logger.log_to_csv(rospy.get_time(), "filtered", emotion, match, 'yes')
+                self.logger.log_to_csv(rospy.get_time(), "filtered", emotion, emotion_score, match, 'yes')
             else:
-                self.logger.log_to_csv(rospy.get_time(), "filtered", emotion, match, 'no')
-                with self.lock:
-                    self.motivated = False
+                self.logger.log_to_csv(rospy.get_time(), "filtered", emotion, emotion_score, match, 'no')
                 # Perform a facial expression based on match
                 self.robot.do_facial_expression("Nod" if match else "Shake")        
 
