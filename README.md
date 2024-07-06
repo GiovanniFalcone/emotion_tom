@@ -20,3 +20,5 @@ roslaunch robot controller.launch emotion_condition:=true
 
 ## Slide
 https://drive.google.com/file/d/147Aj5_smTKgTa9YJSGVJN1RKqXD2_QNm/view?usp=sharing
+
+cose da fare: slavare confizenda modello emozioni e creare messaggio ros: volto (bool), emotion, confidence
