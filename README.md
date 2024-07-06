@@ -17,3 +17,6 @@ roslaunch robot usb_cam-test.launch
 roslaunch app app.launch condition:=0
 roslaunch robot controller.launch emotion_condition:=true
 ```
+
+## Slide
+https://drive.google.com/file/d/147Aj5_smTKgTa9YJSGVJN1RKqXD2_QNm/view?usp=sharing
