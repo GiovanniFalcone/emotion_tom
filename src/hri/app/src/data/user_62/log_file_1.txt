@@ -1,0 +1,31 @@
+id_player: 62
+Experimental condition:tom
+
+bird    tiger   goose   flamingo shark   koala  
+bird    pelican panda   penguin walrus  duck   
+koala   horse   goose   tiger   panda   pelican
+penguin walrus  duck    flamingo shark   horse  
+
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 1
+Position_clicked: [0, 0]
+Card_clicked: bird
+Time_game: 0:6
+Time_before_match: 0:6
+Match: False
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 2
+Position_clicked: [1, 0]
+Card_clicked: bird
+Time_game: 0:7
+Time_before_match: 0:7
+Match: True
+
+Hint: (none, None, None)
+(no_help, beg, f_correct)id_player: 62
+Experimental condition:tom
+

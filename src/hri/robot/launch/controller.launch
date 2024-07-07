@@ -1,16 +1,16 @@
 <launch>
 	<!-- Perception node: human detection -->
-    	<node name="perception_node" pkg="robot" type="perception.py" output="screen"/>
+    <node name="perception_node" pkg="robot" type="perception.py" output="screen"/>
 
-   		<!-- Interaction node: speech -->
-    	<node name="interaction_node" pkg="robot" type="interaction.py" output="screen"/>
+   	<!-- Maanger node: handle interaction (speech) -->
+    <node name="manager_node" pkg="robot" type="manager_node.py" output="screen"/>
     
-    	<!-- Define the argument -->
-    	<arg name="launch_emotion_node" default="false" />
+    <!-- Define the argument -->
+    <arg name="launch_emotion_node" default="false" />
     	
-    	<arg name="emotion_condition" /> 
-    	<param name="emotion_condition" value="$(arg emotion_condition)"/>
+    <arg name="emotion_condition" /> 
+    <param name="emotion_condition" value="$(arg emotion_condition)"/>
     
-    	<!-- Emotion node: emotion recognition -->
-       <node name="emotion" pkg="emotion" type="emotion_node.py" output="screen"/>
+    <!-- Emotion node: emotion recognition -->
+    <node name="emotion_node" pkg="emotion" type="emotion_node.py" output="screen"/>
 </launch>

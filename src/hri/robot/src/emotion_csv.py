@@ -23,13 +23,13 @@ class EmotionCSV:
         
     def init_csv(self, filename):
         """Initialize the CSV file with headers."""
-        headers = ['id', 'timestamp', 'emotion', 'model_confidence', 'match', 'motivated', 'condition']
+        headers = ['id', 'timestamp', 'emotion', 'model_confidence', 'match', 'turn', 'motivated', 'condition']
         # file containing emotion only when robot speaks
         with open(filename, 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(headers)
 
-    def log_to_csv(self, timestamp, filename, emotion, model_confidence, match, motivated):
+    def log_to_csv(self, id, timestamp, filename, emotion, model_confidence, match, turn, motivated):
         """Log the interaction data to the CSV file."""
         dt_object = datetime.fromtimestamp(timestamp)
         formatted_time = dt_object.strftime('%Y-%m-%d %H:%M:%S.%f') 
@@ -37,11 +37,11 @@ class EmotionCSV:
         if "filtered" == filename:
             with open(self.csv_file_filtered, 'a', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow([formatted_time, emotion, model_confidence, match, motivated, condition])
+                writer.writerow([formatted_time, id, emotion, model_confidence, match, turn, motivated, condition])
         elif "full" == filename:
             with open(self.csv_file_full, 'a', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow([formatted_time, emotion, model_confidence, match, motivated, condition])
+                writer.writerow([formatted_time, id, emotion, model_confidence, match, turn, motivated, condition])
         else:
             raise FileNotFoundError(f"The file {filename} does not exist. \
                                     File must be: \n\t - {self.csv_file_filtered} \n\t - {self.csv_file_full}")

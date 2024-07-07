@@ -19,9 +19,14 @@ class EmotionModule:
         # Load face cascade classifier
         self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
         rospy.Subscriber("/usb_cam/image_raw", Image, self.detect_emotion_callback, queue_size=1)
-        self.emotion_publisher = rospy.Publisher('emotion', emotion, queue_size=10)
+        # used to save all emotion in the csv
+        self.full_emotion_publisher = rospy.Publisher('full_emotion', emotion, queue_size=10)
+        # this is synchronized with game information (if user has find a pair)
+        self.filtered_emotion_publisher = rospy.Publisher('filtered_emotion', emotion, queue_size=10)
+        self.rate = rospy.Rate(10)  # 10 Hz
 
     def detect_emotion_callback(self, ros_image):
+        rospy.loginfo("Emotion detection")
         frame = self.bridge.imgmsg_to_cv2(ros_image, "bgr8")
         # Convert frame to grayscale
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
@@ -29,8 +34,7 @@ class EmotionModule:
             start_time = time.time()
             result = DeepFace.analyze(frame, actions=['emotion'])
             end_time = time.time()
-            print("Time to extract face: ",end_time-start_time, "\nEmotion:", result[0]['dominant_emotion'])
-
+            #print("Time to extract face: ",end_time-start_time, "\nEmotion:", result[0]['dominant_emotion'])
             self.handle_emotion(result)
         except Exception as e:
             self.handle_emotion(None)
@@ -42,8 +46,8 @@ class EmotionModule:
             emotion_msg.face_found = False
             emotion_msg.dominant_emotion = ''
             emotion_msg.model_confidence = 0
-            rospy.loginfo(f"Msg: {emotion_msg} \n")
-            self.emotion_publisher.publish(emotion_msg)
+            self.full_emotion_publisher.publish(emotion_msg)
+            self.filtered_emotion_publisher.publish(emotion_msg)
             return
         
         # else a face was found and emotion was analyzed
@@ -54,8 +58,9 @@ class EmotionModule:
         emotion_msg.model_confidence = score_dominant_emotion
         emotion_msg.dominant_emotion = dominant_emotion
 
-        rospy.loginfo(f"Msg: {emotion_msg} \n")
-        self.emotion_publisher.publish(emotion_msg)
+        rospy.loginfo(f"Written emotion on topic: \n{emotion_msg} \n")
+        self.full_emotion_publisher.publish(emotion_msg)
+        self.filtered_emotion_publisher.publish(emotion_msg)
 
 
     def detect_emotion_callback_2(self, ros_image):

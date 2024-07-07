@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-from std_msgs.msg import String
+from std_msgs.msg import String, Int32
 
 import json
 import logging
@@ -47,6 +47,7 @@ id_player = -1                  # only used for HRI
 rospy.init_node('flask_to_ros_node')
 game_publisher = rospy.Publisher('game_data', String, queue_size=10)
 speech_publisher = rospy.Publisher('speech_hint', String, queue_size=10)
+start_publisher = rospy.Publisher('start', Int32, queue_size=10)
 
 try:
     expertiment_condition = int(rospy.get_param("condition"))
@@ -82,7 +83,11 @@ def clear_session():
 
 def send_to_ros(request, flag):
     # send on correct topic
-    if flag == 'speech':
+    if flag == 'start':
+        ros_message = Int32()
+        ros_message.data = request
+        start_publisher.publish(ros_message)
+    elif flag == 'speech':
         # unpack and get only the sentence
         data = request.get_json()
         sentence = data['action']['sentence']
@@ -163,6 +168,8 @@ def show_game():
         id = get_id()
         Util.formatted_debug_message(f"Showing game page to user with ID={id}", level='INFO')
         if id not in client_instances:
+            # write on topic player's id in order to understand that the game is started (using to start writing emotions)
+            send_to_ros(id, "start")
             # create instance for user
             client_instances[id] = UtilityFlask() 
             # handle player and run Q-learning
