@@ -60,7 +60,9 @@ class Furhat:
         return gesture
 
     def change_led_color_based_on_emotion(self, emotion):
-        if emotion == 'happy' or emotion == 'surprise':
+        if emotion == '':
+            self.robot.set_led(red=0, green=0, blue=0)
+        elif emotion == 'happy' or emotion == 'surprise':
             # orange 
             self.robot.set_led(red=255, green=165, blue=0)
         else:

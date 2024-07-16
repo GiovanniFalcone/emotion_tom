@@ -26,15 +26,12 @@ class EmotionModule:
         self.rate = rospy.Rate(10)  # 10 Hz
 
     def detect_emotion_callback(self, ros_image):
-        rospy.loginfo("Emotion detection")
+        #rospy.loginfo("Emotion detection")
         frame = self.bridge.imgmsg_to_cv2(ros_image, "bgr8")
         # Convert frame to grayscale
         gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
         try:
-            start_time = time.time()
             result = DeepFace.analyze(frame, actions=['emotion'])
-            end_time = time.time()
-            #print("Time to extract face: ",end_time-start_time, "\nEmotion:", result[0]['dominant_emotion'])
             self.handle_emotion(result)
         except Exception as e:
             self.handle_emotion(None)
@@ -58,7 +55,7 @@ class EmotionModule:
         emotion_msg.model_confidence = score_dominant_emotion
         emotion_msg.dominant_emotion = dominant_emotion
 
-        rospy.loginfo(f"Written emotion on topic: \n{emotion_msg} \n")
+        #rospy.loginfo(f"Written emotion on topic: \n{emotion_msg} \n")
         self.full_emotion_publisher.publish(emotion_msg)
         self.filtered_emotion_publisher.publish(emotion_msg)
 
@@ -84,10 +81,10 @@ class EmotionModule:
                     pass
     
                 # Draw rectangle around face and label with predicted emotion
-                #cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
 
-            #cv2.imshow('Emotion Node - Face Emotion', frame)
-            #cv2.waitKey(1)
+            cv2.imshow('Emotion Node - Face Emotion', frame)
+            cv2.waitKey(1)
 
         except CvBridgeError as e:
             print(e)

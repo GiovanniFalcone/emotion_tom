@@ -3,7 +3,7 @@ import os
 from furhat_remote_api import FurhatRemoteAPI
 
 class RobotConnectionManager:
-    _FURHAT_IP = "127.0.0.1"
+    _FURHAT_IP = "143.225.85.138"
     _FURHAT_PORT = ""
     _session = None
     
@@ -14,7 +14,7 @@ class RobotConnectionManager:
         """
         if RobotConnectionManager._session is None:
             try:
-                RobotConnectionManager._session = FurhatRemoteAPI("localhost")
+                RobotConnectionManager._session = FurhatRemoteAPI(RobotConnectionManager._FURHAT_IP)
                 print("Connection with Furhat successfully established!")
             except Exception as e:
                 print("Unable to connect to Furhat:", e)

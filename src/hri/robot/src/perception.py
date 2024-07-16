@@ -20,11 +20,13 @@ class PerceptionModule:
         self.user_found = False
 
     def run(self):
-        while not rospy.is_shutdown():
+        counter = 0
+        while not rospy.is_shutdown() and counter < 10:
             self.detect_person()
             if self.user_found:
                 self.pub.publish(self.user_found)
                 rospy.loginfo("Write on topic '/person_detected'!")
+                counter += 1
             self.rate.sleep()
 
     def run1(self):

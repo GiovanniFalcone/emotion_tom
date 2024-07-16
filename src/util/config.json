@@ -1,5 +1,5 @@
 {
-    "ip": "192.168.1.94", 
+    "ip": "172.17.0.1", 
     "port": 6000,
     "language": "ita",
     "one_terminal": true,

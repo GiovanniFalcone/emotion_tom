@@ -40,6 +40,8 @@ class ManagerNode:
         self.person_detected = False
         self.last_emotion = ''
         self.emotion_score = 0
+        # if true than the robot can say motivational sentence
+        self.uttering_hint = False
         # id player for csv: analysis for emotion
         self.id_player = -1
         # game info for csv file
@@ -100,6 +102,7 @@ class ManagerNode:
         """
         print("start")
         self.id_player = msg.data
+        print(f"***** PLAYER: {self.id_player} **********")
         self.logger = EmotionCSV(self.id_player, self.emotional_condition)
 
     def speech_callback(self, data):
@@ -119,13 +122,13 @@ class ManagerNode:
 
     def emotion_callback(self, data):
         """Save the emotion received"""
-        rospy.loginfo(f"Emotion Received: {data.dominant_emotion}")
+        #rospy.loginfo(f"Emotion Received: {data.dominant_emotion}")
         emotion = data.dominant_emotion
         emotion_score = data.model_confidence
         if emotion != '':
             with self.lock:
-                if self.logger: 
-                    self.logger.log_to_csv(rospy.get_time(), self.id_player, "full", emotion, 
+                if self.logger and self.state != 'END': 
+                    self.logger.log_to_csv(self.id_player, "full", emotion, 
                                            emotion_score, self.match, self.turn, self.motivated)
 
     def handle_emotional_intelligence(self, emotion_data, game_data):
@@ -195,16 +198,16 @@ class ManagerNode:
                 motivational_sentence = self.interaction.get_motivational_sentence(emotion, n_pairs, match)
                 rospy.loginfo(f"Robot uttering: {motivational_sentence}...")
                 self.interaction.speak(motivational_sentence)
-                self.robot.change_led_color_based_on_emotion("neutral")
+                self.robot.change_led_color_based_on_emotion("")
 
                 with self.lock:
                     self.motivate = 'yes'
                 # Log to CSV
-                self.logger.log_to_csv(rospy.get_time(), self.id_player, "filtered", emotion, emotion_score, match, turn, 'yes')
+                self.logger.log_to_csv(self.id_player, "filtered", emotion, emotion_score, match, turn, 'yes')
             else:
                 with self.lock:
                     self.motivate = 'no'
-                self.logger.log_to_csv(rospy.get_time(), self.id_player, "filtered", emotion, emotion_score, match, turn, 'no')
+                self.logger.log_to_csv(self.id_player, "filtered", emotion, emotion_score, match, turn, 'no')
                 # Perform a facial expression based on match
                 self.robot.do_facial_expression("Nod" if match else "Shake")        
 

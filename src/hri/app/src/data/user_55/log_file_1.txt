@@ -1,4 +1,0 @@
-
-Experimental condition:tom
-
-id_player: 55

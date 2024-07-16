@@ -29,19 +29,25 @@ class EmotionCSV:
             writer = csv.writer(file)
             writer.writerow(headers)
 
-    def log_to_csv(self, id, timestamp, filename, emotion, model_confidence, match, turn, motivated):
+    def get_time(self):
+        # getting the current date and time
+        current_datetime = datetime.now()
+        # getting the date and time from the current date and time in the given format
+        current_date_time = current_datetime.strftime("%m/%d/%Y, %H:%M:%S")
+        return current_date_time
+
+    def log_to_csv(self, id, filename, emotion, model_confidence, match, turn, motivated):
         """Log the interaction data to the CSV file."""
-        dt_object = datetime.fromtimestamp(timestamp)
-        formatted_time = dt_object.strftime('%Y-%m-%d %H:%M:%S.%f') 
+        timestamp = self.get_time()
         condition = "E-ToM" if self.emotional_condition else "ToM"
         if "filtered" == filename:
             with open(self.csv_file_filtered, 'a', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow([formatted_time, id, emotion, model_confidence, match, turn, motivated, condition])
+                writer.writerow([id, timestamp, emotion, model_confidence, match, turn, motivated, condition])
         elif "full" == filename:
             with open(self.csv_file_full, 'a', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow([formatted_time, id, emotion, model_confidence, match, turn, motivated, condition])
+                writer.writerow([id, timestamp, emotion, model_confidence, match, turn, motivated, condition])
         else:
             raise FileNotFoundError(f"The file {filename} does not exist. \
                                     File must be: \n\t - {self.csv_file_filtered} \n\t - {self.csv_file_full}")

@@ -44,7 +44,7 @@ class EmotionGenerator:
             
             if emotion == 'sad':
                 if n_pairs < 4:
-                    emotion = emotion + '_begin'
+                    emotion = emotion + '_beg'
                 elif 3 < n_pairs < 8:
                     emotion = emotion + '_mid'
                 else:
