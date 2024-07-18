@@ -29,18 +29,6 @@ class PerceptionModule:
                 counter += 1
             self.rate.sleep()
 
-    def run1(self):
-        while not rospy.is_shutdown():
-            if not self.user_found:
-                self.detect_person()
-                if self.user_found:
-                    self.pub.publish(self.user_found)
-                    rospy.loginfo("Write on topic!")
-            else:
-                rospy.loginfo("Still in camera!")
-                self.rate = rospy.Rate(1)
-            self.rate.sleep()
-
     def detect_person(self):
         # Get the users detected by the robot 
         users = self.robot.user_detection()

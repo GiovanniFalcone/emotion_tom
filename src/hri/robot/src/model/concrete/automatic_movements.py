@@ -9,7 +9,7 @@ class AutomaticMovements:
     enable_variable_head_movements = True
 
     @staticmethod
-    def get_scale_parameter(scale=5.0, offset=0.55):
+    def get_scale_parameter(scale=4.0, offset=0.55):
         return random.choice([-1, 1]) * (random.random() * scale + offset)
 
     @staticmethod

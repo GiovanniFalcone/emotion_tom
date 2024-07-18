@@ -41,7 +41,7 @@ class ManagerNode:
         self.last_emotion = ''
         self.emotion_score = 0
         # if true than the robot can say motivational sentence
-        self.uttering_hint = False
+        self.is_hint_first_flip = False
         # id player for csv: analysis for emotion
         self.id_player = -1
         # game info for csv file
@@ -102,8 +102,10 @@ class ManagerNode:
         """
         print("start")
         self.id_player = msg.data
-        print(f"***** PLAYER: {self.id_player} **********")
+        rospy.loginfo(f"ID player received: {self.id_player}...")
         self.logger = EmotionCSV(self.id_player, self.emotional_condition)
+        if self.logger:
+            rospy.loginfo(f"Emotion csv initialized...\n\n")
 
     def speech_callback(self, data):
         """
@@ -119,6 +121,11 @@ class ManagerNode:
             requests.post("http://" + ManagerNode.IP_ADDRESS + ":5000/robot_speech", json=json_data)
         except requests.exceptions.RequestException as e:
             rospy.logerr(f"HTTP error request: {e}")
+        # if hint is provided for first flip 
+        with self.lock:
+            self.is_hint_first_flip = self.turn % 2 != 0
+            print("Hint is provided on first flip: ", self.is_hint_first_flip)
+            
 
     def emotion_callback(self, data):
         """Save the emotion received"""
@@ -137,7 +144,9 @@ class ManagerNode:
         If the move is the last one of the game, the robot enters the final state (Goodbye) and says goodbye to the user. 
         Otherwise, if emotional condition is setted, the robot will motivate the user based on user's emotion.
         """
-        rospy.loginfo(f"Game data Received: {game_data.data}\nEmotion Received: {emotion_data.dominant_emotion}")
+        rospy.loginfo(f"Game data Received: {game_data.data}")
+        rospy.loginfo(f"Emotion Received: {emotion_data.dominant_emotion}")
+
         move = json.loads(game_data.data) 
         # get info game 
         n_pairs = move['game']['pairs']
@@ -160,19 +169,20 @@ class ManagerNode:
         the robot will motivate the user based on user's emotion, 
         by uttering a motivational sentence, making a facial expression, and changing the LED color.
         """
-        rospy.loginfo(f"Handle match with emotion...")
+        rospy.loginfo(f"Handle move with emotion...")
         # get info about game
         n_pairs = move['game']['pairs']
         turn = move['game']['turn']
         match = move['game']['match']
         is_turn_even = turn % 2 == 0
 
+        # copy info
+        with self.lock:
+            self.turn = turn
+            self.match = match
+
         # motivate user only after the outcome of user's move
         if is_turn_even:
-            # copy info
-            with self.lock:
-                self.turn = turn
-                self.match = match
             emotion = emotion_data.dominant_emotion
             emotion_score = emotion_data.model_confidence
             
@@ -192,11 +202,14 @@ class ManagerNode:
 
             # with 50% of chance the robot will motivate if user has found a pair (i.e match is True), 
             # otherwise the chance that robot will motivate are 30%
-            if random.random() < probability:
+            with self.lock:
+                is_hint_provided_on_first_flip = self.is_hint_first_flip
+            print("In callback: ", is_hint_provided_on_first_flip)
+            if random.random() < probability and not is_hint_provided_on_first_flip:
                 self.robot.change_led_color_based_on_emotion(emotion)
                 self.emotion_handler.handle_expression_based_on_emotion(emotion, n_pairs, match)
                 motivational_sentence = self.interaction.get_motivational_sentence(emotion, n_pairs, match)
-                rospy.loginfo(f"Robot uttering: {motivational_sentence}...")
+                rospy.loginfo(f"Robot uttering: '{motivational_sentence}'...")
                 self.interaction.speak(motivational_sentence)
                 self.robot.change_led_color_based_on_emotion("")
 
@@ -209,7 +222,11 @@ class ManagerNode:
                     self.motivate = 'no'
                 self.logger.log_to_csv(self.id_player, "filtered", emotion, emotion_score, match, turn, 'no')
                 # Perform a facial expression based on match
-                self.robot.do_facial_expression("Nod" if match else "Shake")        
+                self.robot.do_facial_expression("Nod" if match else "Shake")   
+            self.is_hint_first_flip = False  
+            print("\n\n")
+        else:
+            print("\n\n")
 
     def run(self):
         rospy.spin()

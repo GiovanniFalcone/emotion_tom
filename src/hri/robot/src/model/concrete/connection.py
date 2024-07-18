@@ -3,7 +3,7 @@ import os
 from furhat_remote_api import FurhatRemoteAPI
 
 class RobotConnectionManager:
-    _FURHAT_IP = "143.225.85.138"
+    _FURHAT_IP = "localhost" #"143.225.85.138"
     _FURHAT_PORT = ""
     _session = None
     
