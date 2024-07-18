@@ -24,3 +24,7 @@ class RobotInterface(ABC):
     @abstractmethod
     def change_led_color_based_on_emotion(self, emotion):
         pass
+
+    @abstractmethod
+    def listen(self):
+        pass

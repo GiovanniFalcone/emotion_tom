@@ -6,7 +6,7 @@
         "Ciao, io sono Furhat, un robot parlante, piacere di conoscerti!"
     ],
 
-    "greeting_etom": [
+    "greetings_etom": [
         "Ciao, io sono Furhat, un robot parlante. Piacere di fare la tua conoscenza! E tu, come ti chiami?",
         "Ehy, ciao, il mio nome è Furhat e sono un robot parlante, piacere di conoscerti! Tu, invece, come ti chiami?",
         "Ciao, piacere di conoscerti! Io sono Furhat, un robot parlante. E tu, invece, come ti chiami?",
@@ -31,8 +31,8 @@
     ],
 
     "end_etom": [
-        "Hey, hai trovato tutte le coppie! Ottimo lavoro! Ti ringrazio per aver partecipato, spero che tu abbia trovato questa esperienza interessante! Adesso, però, dobbiamo salutarci, ciao!",
-        "Hey, hai completato il gioco, fantastico! Però, ora che la partita è conclusa possiamo anche salutarci. Spero che ti sia piaciuto giocare con me. Adesso ti saluto: ciao!",
-        "Fantastico! Hai completato il gioco! Sono davvero felice di aver giocato con te! Adesso, però, dobbiamo salutarci! A presto!"
+        "Hey, hai trovato tutte le coppie! Ottimo lavoro! Ti ringrazio per aver partecipato %s, spero che tu abbia trovato questa esperienza interessante! Adesso, però, dobbiamo salutarci, ciao!",
+        "Hey, hai completato il gioco, fantastico! Però, ora che la partita è conclusa possiamo anche salutarci. Spero che ti sia piaciuto giocare con me. %s adesso ti saluto: ciao!",
+        "Fantastico! Hai completato il gioco! Sono davvero felice di aver giocato con te! Adesso, però, dobbiamo salutarci! A presto %s!"
     ]
 }

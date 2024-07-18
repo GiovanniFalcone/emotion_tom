@@ -27,7 +27,7 @@ class InteractionModule:
         # initialize variable
         self.robot = robot
         self.language = language
-        self.player_name = ''
+        self.player_name = 'Gio'
         # do randomic movement with robot's head in order to look more natural
         self.robot.random_head_movements()
         # get sentences from interaction file (greetings, rules, goodbye)
@@ -65,28 +65,34 @@ class InteractionModule:
         else:
             sentences = self.speech["end_tom"]
         sentence = random.choice(sentences)
+        # check for placeholders to replace with player name
+        placeholders = sentence.count('%s')
+        if placeholders > 0:
+            sentence = sentence % (self.player_name)
         self.speak(sentence)
 
-    def start_interaction(self):
+    def start_interaction(self, emotional_condition):
         """BEGIN state"""
         rospy.loginfo("Start interaction...")
-        self.greetings()
+        self.greetings(emotional_condition)
         self.rules()
 
     def greetings(self, emotional_condition):
         """The robot will start the interation."""
         rospy.loginfo("Greetings...")
         if emotional_condition:
-            sentences = self.speech["greetings"]
+            sentences = self.speech["greetings_etom"]
         else:
-            sentences = self.speech["greeting_etom"]
+            sentences = self.speech["greeting"]
         sentence = random.choice(sentences)
         self.speak(sentence)
         # ask name to user if emotional condition
         if emotional_condition:
-            while self.player_name == '':
+            while self.player_name == '' or self.player_name is None:
+                rospy.loginfo("Asking name...")
                 self.player_name = self.robot.listen()
                 sentence = f"Piacere di conoscerti {self.player_name}"
+                rospy.loginfo(f"Player's name is {self.player_name}...")
             self.speak(sentence)
 
     def rules(self):

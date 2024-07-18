@@ -16,7 +16,7 @@ def run_q_learning(id_player, instance, experimental_condition, n_game, stop_eve
     SERVER_IP = Util.get_from_json_file("config")['ip'] 
 
     # get string and send it to server
-    # if experimental_condition is None:
+    if experimental_condition is None:
         # Choose one of the following experimental conditions:
         # - TOM (currently selected)
         # - NO_TOM
@@ -24,7 +24,7 @@ def run_q_learning(id_player, instance, experimental_condition, n_game, stop_eve
         # - SUPERFICIAL_DECEPTION
         # - HIDDEN_DECEPTION
         # - EXTERNAL_DECEPTION
-        # experimental_condition = constants.EXTERNAL_DECEPTION
+        experimental_condition = constants.TOM
     experimental_condition_str = Util.get_experimental_condition(experimental_condition)
     Util.update_log_file("\nExperimental condition:" + experimental_condition_str + "\n\n", id_player, n_game)
     Util.formatted_debug_message("Experiment condition:" + experimental_condition_str, level='INFO')

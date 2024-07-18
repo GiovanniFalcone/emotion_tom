@@ -32,7 +32,7 @@ class EmotionModule:
     def run(self):
         #rospy.spin()
         frame_count = 0
-        analyze_frequency = 1  
+        analyze_frequency = 1 
 
         while not rospy.is_shutdown():
             ret, frame = self.cap.read()
@@ -45,7 +45,7 @@ class EmotionModule:
                     face_roi = rgb_frame[y:y + h, x:x + w]
                     result = DeepFace.analyze(face_roi, actions=['emotion'], enforce_detection=False)
                     emotion = result[0]['dominant_emotion']
-                    print(f"Emotion: {emotion}")
+                    #print(f"Emotion: {emotion}")
                     self.handle_emotion(result)
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
                     cv2.putText(frame, emotion, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)

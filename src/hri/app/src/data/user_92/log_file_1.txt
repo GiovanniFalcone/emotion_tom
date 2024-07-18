@@ -1,0 +1,80 @@
+id_player: 92
+Experimental condition:Unknown
+
+goose   koala   bird    tiger   walrus  pelican
+panda   penguin shark   horse   goose   flamingo
+duck    bird    koala   tiger   pelican panda  
+penguin walrus  horse   shark   flamingo duck   
+
+Turn: 1
+Position_clicked: [0, 0]
+Card_clicked: goose
+Time_game: 0:1
+Time_before_match: 0:1
+Match: False
+Turn: 2
+Position_clicked: [0, 1]
+Card_clicked: koala
+Time_game: 0:2
+Time_before_match: 0:2
+Match: False
+Turn: 3
+Position_clicked: [0, 2]
+Card_clicked: bird
+Time_game: 0:7
+Time_before_match: 0:7
+Match: False
+Turn: 4
+Position_clicked: [0, 3]
+Card_clicked: tiger
+Time_game: 0:9
+Time_before_match: 0:9
+Match: False
+Turn: 5
+Position_clicked: [0, 4]
+Card_clicked: walrus
+Time_game: 0:11
+Time_before_match: 0:11
+Match: False
+Turn: 6
+Position_clicked: [0, 5]
+Card_clicked: pelican
+Time_game: 0:12
+Time_before_match: 0:12
+Match: False
+Turn: 7
+Position_clicked: [1, 0]
+Card_clicked: panda
+Time_game: 0:17
+Time_before_match: 0:17
+Match: False
+Turn: 8
+Position_clicked: [1, 1]
+Card_clicked: penguin
+Time_game: 0:18
+Time_before_match: 0:18
+Match: False
+Turn: 9
+Position_clicked: [0, 5]
+Card_clicked: pelican
+Time_game: 0:20
+Time_before_match: 0:20
+Match: False
+Turn: 10
+Position_clicked: [1, 2]
+Card_clicked: shark
+Time_game: 0:21
+Time_before_match: 0:21
+Match: False
+Turn: 11
+Position_clicked: [1, 3]
+Card_clicked: horse
+Time_game: 0:25
+Time_before_match: 0:25
+Match: False
+Turn: 12
+Position_clicked: [1, 4]
+Card_clicked: goose
+Time_game: 0:27
+Time_before_match: 0:27
+Match: False

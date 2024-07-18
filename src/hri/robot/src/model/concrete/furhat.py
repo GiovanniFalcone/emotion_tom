@@ -22,6 +22,10 @@ class Furhat:
     def say(self, sentence):
         self.robot.say(text=sentence, blocking=True)
 
+    def listen(self):
+        answer = self.robot.listen()
+        return answer.message
+
     def user_detection(self):
         users = self.robot.get_users()
         # Attend the user closest to the robot
@@ -63,8 +67,8 @@ class Furhat:
         if emotion == '':
             self.robot.set_led(red=0, green=0, blue=0)
         elif emotion == 'happy' or emotion == 'surprise':
-            # orange 
-            self.robot.set_led(red=255, green=165, blue=0)
+            # yellow 
+            self.robot.set_led(red=255, green=255, blue=0)
         else:
             # green in order to calm
             self.robot.set_led(red=0, green=255, blue=0)

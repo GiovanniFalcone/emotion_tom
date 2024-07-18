@@ -103,19 +103,19 @@
             "%s non preoccuparti, stai andando bene",
             "%s non è un problema se sbagli, può capitare!",
             "Non dare peso a questi errori, l'importante è divertirsi!",
-            "Capita di sbagliare %s, in fondo siamo umani. Tranne me ovviamente, visto che sono un robot!"
+            "Capita di sbagliare %s, in fondo siamo umani. Beh, io no, visto che sono un robot!"
         ],
 
         "sad_beg": [
             "Sei triste perchè non hai trovato la coppia? Non preoccuparti, puoi farcela! Infondo sei ancora all'inizio!",
-            "Non preoccuparti, può capitare di sbagliare, soprattutto all'inizio. L'importante è divertirsi.",
-            "Lo so, può essere difficile ricordare tutte le locazioni, in particolar modo all'inizio, ma non preoccuparti perchè ci sono io!",
+            "Non essere triste, può capitare di sbagliare, soprattutto all'inizio. L'importante è divertirsi.",
+            "Lo so, può essere difficile ricordare tutte le locazioni, in particolar modo all'inizio, ma non essere triste perchè ci sono io!",
             "Può capitare di sbagliare all'inizio, non è un problema. L'importante è non abbattersi e cercare di divertirsi."
         ],
 
         "sad_mid": [
             "Sei triste perchè non hai trovato la coppia? Non preoccuparti, puoi farcela!",
-            "Non preoccuparti, può capitare di sbagliare. L'importante è divertirsi.",
+            "Non essere triste, può capitare di sbagliare. L'importante è divertirsi.",
             "Lo so, può essere difficile ricordare tutte le locazioni, ma non preoccuparti perchè ci sono io!",
             "Può capitare di sbagliare, non è un problema. L'importante è non abbattersi."
         ],
@@ -129,8 +129,8 @@
 
         "angry": [
             "Ehy, non arrabbiarti! Non fa niente se non hai trovato la coppia: l'importante è divertirsi.",
-            "Dai, non arrabbiarti, può capitare di sbagliare. Ci sono io a sollevarti il morale",
-            "Coraggio, non arrabbiarti, l'importante è arrivare alla fine. Punta a divertirti!",
+            "Dai, non arrabbiarti %s, può capitare di sbagliare. Ci sono io a sollevarti il morale",
+            "Coraggio %s, non arrabbiarti, l'importante è arrivare alla fine. Punta a divertirti!",
             "Lo so, può essere difficile ricordare tutte le locazioni, ma non preoccuparti perchè ci sono io!"
         ],
 
@@ -138,8 +138,8 @@
             "Non importa se non ricordi le locazioni, ti aiuterò io, continua così!",
             "Non ricordi le locazioni? Non preoccuparti, è solo un gioco. L'importante è divertersi!",
             "Non preoccuparti se non trovi le coppie, ti aiuterò io! Punta a divertirti!",
-            "Ehy, capita di sbagliare. Continua a giocare puntando a divertirti!",
-            "Non preoccuparti, capita di sbagliare. Stai andando bene, continua così!"
+            "Ehy %s, capita di sbagliare. Continua a giocare puntando a divertirti!",
+            "Non preoccuparti %s, capita di sbagliare. Stai andando bene, continua così!"
         ]
     }
 }
