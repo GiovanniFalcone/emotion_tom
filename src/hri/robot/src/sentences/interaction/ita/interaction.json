@@ -6,6 +6,13 @@
         "Ciao, io sono Furhat, un robot parlante, piacere di conoscerti!"
     ],
 
+    "greeting_etom": [
+        "Ciao, io sono Furhat, un robot parlante. Piacere di fare la tua conoscenza! E tu, come ti chiami?",
+        "Ehy, ciao, il mio nome è Furhat e sono un robot parlante, piacere di conoscerti! Tu, invece, come ti chiami?",
+        "Ciao, piacere di conoscerti! Io sono Furhat, un robot parlante. E tu, invece, come ti chiami?",
+        "Ciao, io sono Furhat, un robot parlante, piacere di conoscerti! E tu come ti chiami?"
+    ],
+
     "before_rules": [
         "Come già saprai, giocheremo insieme al memory game!",
         "Come ti è già stato detto, giocheremo insieme al memory game!"

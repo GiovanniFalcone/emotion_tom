@@ -22,7 +22,7 @@ class EmotionGenerator:
             print(f"Error decoding JSON file {filename}.")
             return None
         
-    def get_sentence(self, emotion, n_pairs, match):
+    def get_sentence(self, emotion, n_pairs, match, player_name):
         
         if match:
             if emotion in ['happy', 'neutral']:
@@ -57,5 +57,13 @@ class EmotionGenerator:
                     emotion = emotion + '_mid_end'
 
             sentences = self.sentences['unmatch'][emotion]
+
+        # get a random sentence
+        sentence = random.choice(sentences)
+        # check for placeholders to replace with player name
+        placeholders = sentence.count('%s')
         
-        return random.choice(sentences)
+        if placeholders == 0:
+            return sentence
+        else:
+            return sentence % (player_name)

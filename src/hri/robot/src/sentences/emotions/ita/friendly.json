@@ -2,21 +2,21 @@
     "match":{
         "happy":{
             "happy_first_pair": [
-                "Benissimo! Sei felice di aver trovato la prima coppia, vero? Anche io!",
-                "Perfetto!! Hai trovato la prima coppia! Mi fa piacere che tu ti stia divertendo!",
-                "Ehy, mi fa davvero piacere che tu sia felice di aver trovato la prima coppia! Continua così"
+                "Benissimo %s! Sei felice di aver trovato la prima coppia, vero? Anche io!",
+                "Perfetto %s!! Hai trovato la prima coppia! Mi fa piacere che tu ti stia divertendo!",
+                "Ehy %s, mi fa davvero piacere che tu sia felice di aver trovato la prima coppia! Continua così"
             ],
 
             "happy_beg_mid": [
-                "Sembra che tu ti stia divertendo. Continua così! Una coppia in meno!",
+                "%s sembra che tu ti stia divertendo. Continua così! Una coppia in meno!",
                 "Sei felice di aver trovato un'altra coppia, vero? Stai andando benissimo!",
                 "Mi fa piacere che tu sia felice di aver trovato un'altra coppia!",
                 "Noto con piacere che tu ti stia divertendo. Continua così!",
-                "Benissimo, un'altra coppia trovata! Mi sembri felice del risultato!",
-                "Ehy, hai trovato un'altra coppia! Sei contento, vero? Continua così!",
-                "Hai fatto match, ottimo! Mi fa piacere vedere che stai passando un bel momento! Anche io mi sto divertendo tanto!",
+                "Benissimo %s, un'altra coppia trovata! Mi sembri felice del risultato!",
+                "Ehy %s, hai trovato un'altra coppia! Sei contento, vero? Continua così!",
+                "%s hai fatto match, ottimo! Mi fa piacere vedere che stai passando un bel momento! Anche io mi sto divertendo tanto!",
                 "Il fatto che ti stia divertendo è la cosa più importante, e mi fa davvero piacere vederlo!",
-                "Complimenti, un altro match! Il tuo entusiasmo è contagioso! Sono felice che tu ti stia divertendo!",
+                "Complimenti %s, un altro match! Il tuo entusiasmo è contagioso! Sono felice che tu ti stia divertendo!",
                 "Hey! Hai trovato un'altra coppia! Il tuo divertimento è evidente e mi fa davvero piacere!",
                 "Vedo che ti stai divertendo nel trovare le coppie. Benissimo!"
             ],
@@ -35,17 +35,17 @@
 
         "neutral":{
             "neutral_first_pair":[
-                "Fantastico! Hai trovato la prima coppia! Sono davvero felice per te!",
-                "Hai trovato la prima coppia, stai andando benissimo! Sono davvero felice per te!"
+                "Fantastico %s! Hai trovato la prima coppia! Sono davvero felice per te!",
+                "Hai trovato la prima coppia, stai andando benissimo %s! Sono davvero felice per te!"
             ],
 
             "neutral_beg_mid": [
-                "Fantastico! Hai trovato un'altra coppia! Sei davvero in gamba!",
+                "Fantastico %s! Hai trovato un'altra coppia! Sei davvero in gamba!",
                 "Hai trovato un'altra coppia, stai andando benissimo! Continua così!",
-                "Hey complimenti, un'altro passo verso la fine. Continua così!",
+                "Hey %s, complimenti, un'altro passo verso la fine. Continua così!",
                 "Hey, ottimo lavoro, un altro match! Sei sulla strada giusta!",
-                "Ottimo! Un'altra coppia trovata! Stai facendo un lavoro straordinario!",
-                "Perfetto! Continua così, stai giocando bene, non preoccuparti!"
+                "Ottimo! Un'altra coppia trovata! Stai facendo un ottimo lavoro %s!",
+                "Perfetto %s! Continua così, stai giocando bene, non preoccuparti!"
             ],
 
             "neutral_end": [
@@ -69,38 +69,41 @@
     "unmatch": {
         "happy": [
             "Anche se non hai trovato la coppia noto che tu ti stia comunque divertendo, mi fa molto piacere!",
-            "Non fa niente se sbagli, continua così! Continua a divertirti proprio come stai facendo adesso!",
+            "Hey %s non fa niente se sbagli, continua così! Continua a divertirti proprio come stai facendo adesso!",
             "Noto con piacere che tu ti stia divertendo! La cosa è reciproca!",
             "Non preoccuparti se fai degli errori, l'importante è divertirsi! Continua così!",
             "Non preoccuparti se commetti qualche errore, l'importante è divertirsi! Continua così!",
             "Mi fa piacere vedere che stai passando un bel momento! Anche io mi sto divertendo tanto!",
             "Il fatto che ti stia divertendo è la cosa più importante, e mi fa davvero piacere vederlo!",
             "Anche se non hai trovato la coppia, il tuo entusiasmo è contagioso!",
-            "Il tuo divertimento è evidente e mi fa davvero piacere!",
-            "Vedo che ti stai godendo il gioco, e questo è fantastico!"
+            "%s il tuo divertimento è evidente e mi fa davvero piacere!",
+            "%s vedo che ti stai godendo il gioco, e questo è fantastico!"
         ],
 
         "neutral_begin": [
-            "Non preoccuparti, è comune non ricordare le locazioni all'inizio.",
+            "%s non preoccuparti, è comune non ricordare le locazioni all'inizio.",
             "Capita di sbagliare, soprattutto all'inizio. Prenditi il tuo tempo!",
-            "Non fa niente, stai andando bene.",
-            "Non preoccuparti, quando sarai in difficoltà ti aiutero io!",
+            "Non fa niente, stai andando bene! Continua così!",
+            "%s non preoccuparti, quando sarai in difficoltà ti aiutero io!",
             "Siamo solo agli inizi, è naturale non ricordare le varie locazioni",
             "È comprensibile fare errori all'inizio. Prenditi il tuo tempo!",
             "Non c'è problema, capita di non ricordare le locazioni agli inizi.",
-            "Hey, non preoccuparti! Capita di sbagliare! L'importante è divertirsi!",
-            "Non preoccuparti, stai giocando bene!",
-            "Hey, l'importante è divertirsi, non è mica una gara!",
+            "Hey %s, non preoccuparti! Capita di sbagliare! L'importante è divertirsi!",
+            "Non preoccuparti %s, stai giocando bene!",
+            "Hey %s, l'importante è divertirsi, non è mica una gara!",
             "Anche io delle volte sbaglio, e sono letteralmente un robot!",
             "Va bene anche se sbagli, non preoccuparti!"
         ],
 
         "neutral_mid_end": [
-            "Hey, non importa se non ricordi le locazioni, ti aiuterò io!",
+            "Hey %s, non importa se non ricordi le locazioni, ti aiuterò io!",
             "Non ricordi le locazioni? Non preoccuparti, è solo un gioco! L'importante è divertirsti!",
             "Non fa niente se sbagli, ti aiuterò io!",
             "Ehy, capita di sbagliare. Ricorda che è solo un gioco",
-            "Non preoccuparti, stai andando bene"
+            "%s non preoccuparti, stai andando bene",
+            "%s non è un problema se sbagli, può capitare!",
+            "Non dare peso a questi errori, l'importante è divertirsi!",
+            "Capita di sbagliare %s, in fondo siamo umani. Tranne me ovviamente, visto che sono un robot!"
         ],
 
         "sad_beg": [

@@ -18,7 +18,6 @@ class EmotionModule:
         self.bridge = CvBridge()
         # Load face cascade classifier
         self.face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_frontalface_default.xml')
-        #rospy.Subscriber("/usb_cam/image_raw", Image, self.detect_emotion_callback, queue_size=1)
         # used to save all emotion in the csv
         self.full_emotion_publisher = rospy.Publisher('full_emotion', emotion, queue_size=10)
         # this is synchronized with game information (if user has find a pair)
@@ -26,24 +25,14 @@ class EmotionModule:
         self.rate = rospy.Rate(10)  # 10 Hz
         self.cap = cv2.VideoCapture(2)
         # Set camera parameters
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 480)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 360)
+        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
+        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.cap.set(cv2.CAP_PROP_FPS, 30)
-
-    def detect_emotion_callback(self, ros_image):
-        #rospy.loginfo("Emotion detection")
-        frame = self.bridge.imgmsg_to_cv2(ros_image, "bgr8")
-        try:
-            result = DeepFace.analyze(frame, actions=['emotion'])
-            self.handle_emotion(result)
-        except Exception as e:
-            self.handle_emotion(None)
-            pass
 
     def run(self):
         #rospy.spin()
         frame_count = 0
-        analyze_frequency = 1#5  
+        analyze_frequency = 1  
 
         while not rospy.is_shutdown():
             ret, frame = self.cap.read()
@@ -56,6 +45,7 @@ class EmotionModule:
                     face_roi = rgb_frame[y:y + h, x:x + w]
                     result = DeepFace.analyze(face_roi, actions=['emotion'], enforce_detection=False)
                     emotion = result[0]['dominant_emotion']
+                    print(f"Emotion: {emotion}")
                     self.handle_emotion(result)
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
                     cv2.putText(frame, emotion, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)

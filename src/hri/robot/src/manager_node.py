@@ -37,7 +37,6 @@ class ManagerNode:
         self.language = language
         self.state = 'IDLE'
         self.emotional_condition = False
-        self.person_detected = False
         self.last_emotion = ''
         self.emotion_score = 0
         # if true than the robot can say motivational sentence
@@ -92,8 +91,7 @@ class ManagerNode:
         """
         if msg.data and self.state == 'IDLE': 
             self.state = 'GAME'
-            self.person_detected = True
-            #self.interaction.start_interaction()
+            #self.interaction.start_interaction(self.emotional_condition)
         
     def game_started(self, msg):
         """
