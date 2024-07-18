@@ -50,7 +50,7 @@ class Furhat:
                 expression = self._get_custom_expression("surprise_gesture")
             else:
                 raise ValueError(f"Gesture '{expression}' not defined!")
-            self.robot.gesture(body=expression)
+            self.robot.gesture(body=expression, blocking=False)
 
     def _get_custom_expression(self, filename):
         file_path = "../emotion_tom/src/hri/robot/src/gestures/" + filename + ".json"

@@ -51,8 +51,6 @@ class EmotionHandler:
             if(is_begin or is_end):
                 self.robot.do_facial_expression("CustomSad")
                 self.robot.do_facial_expression("BigSmile")
-                time.sleep(5)
-                self.robot.do_facial_expression("BigSmile")
             else:
                 # middle
                 self.robot.do_facial_expression("CustomSad")
@@ -60,5 +58,5 @@ class EmotionHandler:
         else:
             # angry, other
             self.robot.do_facial_expression("CustomSad")
-            time.sleep(5)
+            time.sleep(0.5)
             self.robot.do_facial_expression("BigSmile")

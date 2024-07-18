@@ -7,9 +7,6 @@ import random
 import json
 import sys
 
-# in order to use and save correctly in csv file
-from threading import Lock
-
 # to access to config file
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'util'))
 from util import Util
