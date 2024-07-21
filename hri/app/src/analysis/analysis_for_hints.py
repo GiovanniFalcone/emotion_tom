@@ -17,7 +17,7 @@ path ="..\data\\"
 df_append = pd.DataFrame()
 for root, dirs, files in sorted(os.walk(path)):
     for file in files:
-        if(file.endswith(".csv")):
+        if(file.endswith("_1.csv")):
             print(os.path.join(root,file))
             # one data frame for file
             df = pd.read_csv(os.path.join(root,file), sep=';')
