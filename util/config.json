@@ -1,0 +1,7 @@
+{
+    "ip": "172.17.0.1", 
+    "port": 6000,
+    "language": "ita",
+    "HRI": true,
+    "multithreading": true
+}

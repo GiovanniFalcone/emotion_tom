@@ -1,8 +1,0 @@
-{
-    "ip": "172.17.0.1", 
-    "port": 6000,
-    "language": "ita",
-    "one_terminal": true,
-    "HRI": true,
-    "multithreading": true
-}

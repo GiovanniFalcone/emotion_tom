@@ -1,0 +1,11 @@
+id_player: 122
+Experimental condition:tom
+
+bird   panda  koala  pelican tiger  horse 
+panda  goose  pelican penguin walrus penguin
+walrus shark  flamingo duck   flamingo goose 
+shark  koala  bird   horse  duck   tiger 
+
+
+Hint: (none, None, None)
+INIT_STATE

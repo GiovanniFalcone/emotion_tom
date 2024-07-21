@@ -1,0 +1,74 @@
+id_player: 115
+Experimental condition:tom
+
+panda   shark   shark   flamingo flamingo horse  
+horse   pelican duck    duck    bird    walrus 
+penguin goose   panda   tiger   koala   pelican
+bird    goose   walrus  koala   tiger   penguin
+
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 1
+Position_clicked: [0, 0]
+Card_clicked: panda
+Time_game: 0:1
+Time_before_match: 0:1
+Match: False
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 2
+Position_clicked: [0, 1]
+Card_clicked: shark
+Time_game: 0:2
+Time_before_match: 0:2
+Match: False
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 3
+Position_clicked: [1, 0]
+Card_clicked: horse
+Time_game: 0:3
+Time_before_match: 0:3
+Match: False
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 4
+Position_clicked: [1, 1]
+Card_clicked: pelican
+Time_game: 0:4
+Time_before_match: 0:4
+Match: False
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 5
+Position_clicked: [2, 0]
+Card_clicked: penguin
+Time_game: 0:8
+Time_before_match: 0:8
+Match: False
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 6
+Position_clicked: [2, 1]
+Card_clicked: goose
+Time_game: 0:10
+Time_before_match: 0:10
+Match: False
+
+Hint: (none, None, None)
+(no_help, beg, f_wrong, high_attempts)
+Turn: 7
+Position_clicked: [3, 0]
+Card_clicked: bird
+Time_game: 0:12
+Time_before_match: 0:12
+Match: False
+
+Hint: (card, bird, (1, 4))
+(no_help, beg, s_wrong, high_attempts)
