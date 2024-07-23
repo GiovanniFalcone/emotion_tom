@@ -1,5 +1,0 @@
-id,timestamp,emotion,model_confidence,match,turn,motivated,condition
-98,"07/20/2024, 19:58:22",neutral,53.64019274711609,False,4,yes,E-ToM
-98,"07/20/2024, 19:58:28",neutral,0.0,False,6,yes,E-ToM
-98,"07/20/2024, 19:58:37",neutral,0.0,True,8,no,E-ToM
-98,"07/20/2024, 19:58:48",neutral,0.0,True,10,yes,E-ToM

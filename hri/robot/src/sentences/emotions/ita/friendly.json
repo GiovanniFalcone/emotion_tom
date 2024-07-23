@@ -129,9 +129,13 @@
 
         "angry": [
             "Ehy, non arrabbiarti! Non fa niente se non hai trovato la coppia: l'importante è divertirsi.",
-            "Dai, non arrabbiarti %s, può capitare di sbagliare. Ci sono io a sollevarti il morale",
+            "Dai, non arrabbiarti %s, può capitare di sbagliare. Ci sono io a sollevarti il morale!",
             "Coraggio %s, non arrabbiarti, l'importante è arrivare alla fine. Punta a divertirti!",
-            "Lo so, può essere difficile ricordare tutte le locazioni, ma non preoccuparti perchè ci sono io!"
+            "%s non arrabbiarti! Non importa quanto tempo impieghi, non vinci mica il premio nobel se finisci prima!",
+            "Non abbatterti, capita di non ricordare qualche carta. Ricorda che è solo un gioco!",
+            "Coraggio, non perdere la pazienza solo perchè ti è andata male, può capitare. Continua così!",
+            "Lo so, può essere difficile ricordare tutte le locazioni, ma non arrabbiarti perchè ci sono io!",
+            "%s non abbatterti. L'importante è arrivare fino alla fine. Puoi farcela!"
         ],
 
         "other": [

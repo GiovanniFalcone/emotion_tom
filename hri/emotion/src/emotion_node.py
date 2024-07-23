@@ -29,7 +29,19 @@ class EmotionModule:
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
         self.cap.set(cv2.CAP_PROP_FPS, 30)
 
+    def measure_distance(self, face_width_pixels):
+        focal_length = 600  # Set the focal length based on your camera specifications
+        avg_face_width = 14  # Set the average width of a face in centimeters
+        return (avg_face_width * focal_length) / face_width_pixels
+
     def run(self):
+        """
+        This function does emotion recognition.
+        First it detects faces using cascade classfier. 
+        Then it consider the largest area only.
+        If the face detected is at a reasonable distance then analyze that face to get the emotion.
+        The emotion will be sended on ros topic: if a face is not detected or the distance is greater than 80cm emotion will be the empty string.
+        """
         #rospy.spin()
         frame_count = 0
         # how many frame should be analyzed for emotion recognition
@@ -53,9 +65,24 @@ class EmotionModule:
                     rgb_frame = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2RGB)
                     face_roi = rgb_frame[y:y + h, x:x + w]
                     
-                    # Analyze the largest face
-                    result = DeepFace.analyze(face_roi, actions=['emotion'], enforce_detection=False)
-                    emotion = result[0]['dominant_emotion']
+                    # Calculate the width of the detected face in pixels
+                    face_width_pixels = w
+                    # Measure the distance to the detected face
+                    distance = self.measure_distance(face_width_pixels)
+                    # if distance is greater then 100cm do not consider that face 
+                    # (maybe classification error: sometimes it has classified objects as faces when I was not in camera)
+                    if distance > 100:
+                        rospy.loginfo(f"Face distance greater than 100cm. Distance is {distance:.2f} ...")
+                        continue
+                    else:
+                        # Analyze the largest face
+                        result = DeepFace.analyze(face_roi, actions=['emotion'], enforce_detection=False)
+                        emotion = result[0]['dominant_emotion']
+                        #print(f"Emotion: {emotion}")
+                        self.handle_emotion(result)
+                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
+                        cv2.putText(frame, emotion, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
+                    
                     
                     # Handle the detected emotion
                     self.handle_emotion(result)
@@ -63,16 +90,6 @@ class EmotionModule:
                     # Draw rectangle and text around the largest face
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
                     cv2.putText(frame, emotion, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
-
-                """for (x, y, w, h) in faces:
-                    rgb_frame = cv2.cvtColor(gray_frame, cv2.COLOR_GRAY2RGB)
-                    face_roi = rgb_frame[y:y + h, x:x + w]
-                    result = DeepFace.analyze(face_roi, actions=['emotion'], enforce_detection=False)
-                    emotion = result[0]['dominant_emotion']
-                    #print(f"Emotion: {emotion}")
-                    self.handle_emotion(result)
-                    cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
-                    cv2.putText(frame, emotion, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)"""
             else:
                 self.handle_emotion(None)
 

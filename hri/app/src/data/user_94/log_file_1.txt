@@ -1,7 +1,0 @@
-id_player: 94
-Experimental condition:Unknown
-
-bird    goose   tiger   shark   koala   bird   
-panda   pelican penguin tiger   koala   goose  
-walrus  flamingo horse   duck    pelican panda  
-penguin walrus  shark   flamingo duck    horse  

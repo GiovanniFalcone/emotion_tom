@@ -24,7 +24,7 @@ class InteractionModule:
         # initialize variable
         self.robot = robot
         self.language = language
-        self.player_name = 'Gio'
+        self.player_name = 'gio'
         # do randomic movement with robot's head in order to look more natural
         self.robot.random_head_movements()
         # get sentences from interaction file (greetings, rules, goodbye)
@@ -80,7 +80,7 @@ class InteractionModule:
         if emotional_condition:
             sentences = self.speech["greetings_etom"]
         else:
-            sentences = self.speech["greeting"]
+            sentences = self.speech["greetings"]
         sentence = random.choice(sentences)
         self.speak(sentence)
         # ask name to user if emotional condition
@@ -93,7 +93,8 @@ class InteractionModule:
                     sentence = self.speech["asking_name"]
                     self.speak(sentence % self.player_name)
                     answer = self.robot.listen()
-                    if answer.message in ["yes", "si", "certo", "yep", "si si"]:
+                    print(f"Answer is {answer}")
+                    if answer in ["yes", "si", "certo", "yep", "si si"]:
                         break
                     else:
                         self.speak(self.speech["repeating_name"])

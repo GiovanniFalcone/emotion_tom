@@ -46,7 +46,7 @@ class ManagerNode:
         # game info for csv file
         self.turn = 1
         self.match = False
-        self.motivated = False
+        self.motivated = 'no'
         self.lock = Lock()
         self.logger = None 
         # interaction module (must be initialized after robot connection!)
@@ -80,6 +80,12 @@ class ManagerNode:
                 "Usage: roslaunch robot controller.launch emotion_condition:=<value> (where value can be true or false)")
             sys.exit(1)
 
+    def send_to_flask_robot_has_finished_to_speak(self, json_data):
+        try:
+            requests.post("http://" + ManagerNode.IP_ADDRESS + ":5000/robot_speech", json=json_data)
+        except requests.exceptions.RequestException as e:
+            rospy.logerr(f"HTTP error request: {e}")
+
     ###############################################################################################################
     #                                                  CALLBACKS                                                  #
     ###############################################################################################################    
@@ -91,7 +97,7 @@ class ManagerNode:
         """
         if msg.data and self.state == 'IDLE': 
             self.state = 'GAME'
-            self.interaction.start_interaction(self.emotional_condition)
+            #self.interaction.start_interaction(self.emotional_condition)
         
     def game_started(self, msg):
         """
@@ -124,10 +130,7 @@ class ManagerNode:
             self.interaction.speak(sentence)
             # send to Flask
             json_data = ({"speech": "ended"})
-            try:
-                requests.post("http://" + ManagerNode.IP_ADDRESS + ":5000/robot_speech", json=json_data)
-            except requests.exceptions.RequestException as e:
-                rospy.logerr(f"HTTP error request: {e}")
+            self.send_to_flask_robot_has_finished_to_speak(json_data)
             
 
     def emotion_callback(self, data):
@@ -157,10 +160,9 @@ class ManagerNode:
         if is_game_ended:
             self.state = 'END'
             self.interaction.goodbye(self.emotional_condition)
+            self.interaction.player_name = ''
         else:
-            # if true, the robot will motivate the user based on their emotion (False -> ToM condition only)
-            if self.emotional_condition:
-                self.handle_turn(move, emotion_data)
+            self.handle_turn(move, emotion_data)
 
     ###############################################################################################################
     #                                                   HANDLER                                                   #
@@ -213,6 +215,14 @@ class ManagerNode:
                 is_hint_provided_on_first_flip = self.is_hint_first_flip
             if is_hint_provided_on_first_flip: rospy.loginfo("Robot can't motivate because of hint provided on first flip...")
 
+            # if true, the robot will motivate the user based on their emotion (False -> ToM condition only)
+            if not self.emotional_condition:
+                with self.lock:
+                    self.motivated = 'no'
+                # Log to CSV
+                self.logger.log_to_csv(self.id_player, "filtered", emotion, emotion_score, match, turn, 'yes')
+                return 
+
             # if probability and hint is not provided on first flip then motivate user
             if random.random() < probability and not is_hint_provided_on_first_flip:
                 self.robot.change_led_color_based_on_emotion(emotion)
@@ -223,12 +233,12 @@ class ManagerNode:
                 self.robot.change_led_color_based_on_emotion("")
 
                 with self.lock:
-                    self.motivate = 'yes'
+                    self.motivated = 'yes'
                 # Log to CSV
                 self.logger.log_to_csv(self.id_player, "filtered", emotion, emotion_score, match, turn, 'yes')
             else:
                 with self.lock:
-                    self.motivate = 'no'
+                    self.motivated = 'no'
                 self.logger.log_to_csv(self.id_player, "filtered", emotion, emotion_score, match, turn, 'no')
                 # Perform a facial expression based on match
                 self.robot.do_facial_expression("Nod" if match else "Shake")   
@@ -236,6 +246,35 @@ class ManagerNode:
             print("\n")
         else:
             print("\n")
+
+    def sync_emotion_game_on_csv(self, move, emotion_data):
+        rospy.loginfo(f"Handle move with emotion...")
+        turn = move['game']['turn']
+        match = move['game']['match']
+        is_turn_even = turn % 2 == 0
+
+        # copy info
+        with self.lock:
+            self.turn = turn
+            self.match = match
+
+        # do not speak if user has not found a pair in the first 4 turns
+        if not match and turn < 3: 
+            print("\n")
+            return
+
+        # motivate user only after the outcome of user's move
+        if is_turn_even:
+            emotion = emotion_data.dominant_emotion
+            emotion_score = emotion_data.model_confidence
+            
+            # set to 'neutral' if 
+            #   - the emotion hasn't been detected 
+            #   - the emotion is fear: we take it as classification error
+            #   - the emotion is fear/angry/fear while user find a paid -> we take it as classification error
+            if emotion in ['fear', ''] or (match and emotion in ['sad', 'angry', 'fear']):
+                emotion = 'neutral'
+
 
     def run(self):
         rospy.spin()

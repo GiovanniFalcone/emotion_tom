@@ -399,7 +399,7 @@ function hintReceivedByRobot(msg) {
         speechFinished = true;
         hidePopup();
     }
-
+    
     function handleRobotHintEvent(msg) {
         const obj = JSON.parse(msg);
         const isRobotConnected = obj.action.isRobotConnected;
