@@ -51,10 +51,12 @@ class EmotionGenerator:
                     emotion = emotion + '_end'
 
             if emotion == 'neutral':
-                if n_pairs <= 4:
+                if n_pairs < 4:
                     emotion = emotion + '_begin'
+                elif 3 < n_pairs < 8:
+                    emotion = emotion + '_mid'
                 else:
-                    emotion = emotion + '_mid_end'
+                    emotion = emotion + '_end'
 
             sentences = self.sentences['unmatch'][emotion]
 

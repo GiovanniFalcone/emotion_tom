@@ -6,6 +6,9 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 from emotion.msg import emotion
 
+import os
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
+
 from deepface import DeepFace
 import cv2
 
@@ -23,7 +26,7 @@ class EmotionModule:
         # this is synchronized with game information (if user has find a pair)
         self.filtered_emotion_publisher = rospy.Publisher('filtered_emotion', emotion, queue_size=10)
         self.rate = rospy.Rate(10)  # 10 Hz
-        self.cap = cv2.VideoCapture(2)
+        self.cap = cv2.VideoCapture(0)
         # Set camera parameters
         self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
         self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
@@ -49,8 +52,11 @@ class EmotionModule:
 
         while not rospy.is_shutdown():
             ret, frame = self.cap.read()
+            # Resize frame for faster processing
+            frame = cv2.resize(frame, (480, 360))
             gray_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
-            faces = self.face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+            #faces = self.face_cascade.detectMultiScale(gray_frame, scaleFactor=1.1, minNeighbors=5, minSize=(30, 30))
+            faces = self.face_cascade.detectMultiScale(gray_frame, scaleFactor=1.2, minNeighbors=5, minSize=(35, 35))
 
             if frame_count % analyze_frequency == 0:
                 # if there is no face then handle ros message 
@@ -76,16 +82,13 @@ class EmotionModule:
                         continue
                     else:
                         # Analyze the largest face
+                        start_time = time.time()
                         result = DeepFace.analyze(face_roi, actions=['emotion'], enforce_detection=False)
+                        end_time = time.time()
+                        analysis_time = end_time - start_time
                         emotion = result[0]['dominant_emotion']
-                        #print(f"Emotion: {emotion}")
+                        rospy.loginfo(f"Time taken for DeepFace analysis: {analysis_time:.2f} seconds -> {emotion}")
                         self.handle_emotion(result)
-                        cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
-                        cv2.putText(frame, emotion, (x, y - 10), cv2.FONT_HERSHEY_SIMPLEX, 0.9, (0, 0, 255), 2)
-                    
-                    
-                    # Handle the detected emotion
-                    self.handle_emotion(result)
                     
                     # Draw rectangle and text around the largest face
                     cv2.rectangle(frame, (x, y), (x + w, y + h), (0, 0, 255), 2)
@@ -93,7 +96,7 @@ class EmotionModule:
             else:
                 self.handle_emotion(None)
 
-            self.rate.sleep()
+            #self.rate.sleep()
             frame_count += 1
             cv2.imshow('Real-time Emotion Detection', frame)
 

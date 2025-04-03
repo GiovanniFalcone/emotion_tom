@@ -12,7 +12,7 @@ import requests
 import sys
 
 # in order to use and save correctly in csv file
-from threading import Lock
+from threading import Lock, Event
 
 # to access to config file
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'util'))
@@ -27,6 +27,7 @@ from interaction import InteractionModule
 from emotion_handler import EmotionHandler
 # emotion csv
 from emotion_csv import EmotionCSV
+#from util import Util
 
 class ManagerNode:
     IP_ADDRESS = Util.get_from_json_file("config")['ip']
@@ -48,6 +49,7 @@ class ManagerNode:
         self.match = False
         self.motivated = 'no'
         self.lock = Lock()
+        self.motivated_ready = Event()
         self.logger = None 
         # interaction module (must be initialized after robot connection!)
         self.interaction = InteractionModule(robot, language)
@@ -107,6 +109,7 @@ class ManagerNode:
         self.id_player = msg.data
         rospy.loginfo(f"ID player received: {self.id_player}...")
         self.logger = EmotionCSV(self.id_player, self.emotional_condition)
+        self.logger.set_starting_time()
         if self.logger:
             rospy.loginfo(f"Emotion csv initialized...\n\n")
 
@@ -132,17 +135,42 @@ class ManagerNode:
             json_data = ({"speech": "ended"})
             self.send_to_flask_robot_has_finished_to_speak(json_data)
             
-
     def emotion_callback(self, data):
         """Save the emotion received"""
+        timestamp = None
+        game_time = None
+
         #rospy.loginfo(f"Emotion Received: {data.dominant_emotion}")
         emotion = data.dominant_emotion
         emotion_score = data.model_confidence
+        # update csv iff face has been detected
         if emotion != '':
+            if self.logger:
+                timestamp = self.logger.get_time()
+                game_time = self.logger.get_game_time()
+
             with self.lock:
-                if self.logger and self.state != 'END': 
-                    self.logger.log_to_csv(self.id_player, "full", emotion, 
-                                           emotion_score, self.match, self.turn, self.motivated)
+                condition = self.logger and self.state != 'END'
+                is_turn_even = self.turn % 2 == 0
+                match_copy = self.match
+                turn_copy = self.turn
+                motivated_copy = self.motivated
+            
+            if self.logger and condition:
+                if is_turn_even:
+                    # set to 'neutral' if 
+                    #   - the emotion hasn't been detected 
+                    #   - the emotion is fear: we take it as classification error
+                    #   - the emotion is fear/angry/fear while user find a paid -> we take it as classification error
+                    if emotion in ['fear', ''] or (self.match and emotion in ['sad', 'angry', 'fear']):
+                        emotion = 'neutral'
+                        emotion_score = 0
+                    
+                    # only for even turns???
+                    # update csv
+                    print(f"Game time 'full' {game_time}")
+                    self.logger.log_to_csv(timestamp, game_time, self.id_player, "full", emotion, 
+                                        emotion_score, match_copy, turn_copy, motivated_copy)
 
     def handle_emotional_intelligence(self, emotion_data, game_data):
         """
@@ -179,17 +207,20 @@ class ManagerNode:
         n_pairs = move['game']['pairs']
         turn = move['game']['turn']
         match = move['game']['match']
+        time_js = move['game']['time_game']
         is_turn_even = turn % 2 == 0
 
         # copy info
         with self.lock:
             self.turn = turn
             self.match = match
-
+            
         # do not speak if user has not found a pair in the first 4 turns
         if not match and turn < 3: 
             print("\n")
             return
+
+        print(f"Card clicked in ros time {self.logger.get_game_time()}")
 
         # motivate user only after the outcome of user's move
         if is_turn_even:
@@ -202,6 +233,7 @@ class ManagerNode:
             #   - the emotion is fear/angry/fear while user find a paid -> we take it as classification error
             if emotion in ['fear', ''] or (match and emotion in ['sad', 'angry', 'fear']):
                 emotion = 'neutral'
+                emotion_score = 0
 
             # debug
             rospy.loginfo(f"Emotion after move: {emotion}")
@@ -215,12 +247,18 @@ class ManagerNode:
                 is_hint_provided_on_first_flip = self.is_hint_first_flip
             if is_hint_provided_on_first_flip: rospy.loginfo("Robot can't motivate because of hint provided on first flip...")
 
+            # get time
+            timestamp = self.logger.get_time()
+            game_time = self.logger.get_game_time()
+            rospy.loginfo(f"Game time ros received: '{game_time}'...")
+            rospy.loginfo(f"Js time received:   '{time_js}'...")
+
             # if true, the robot will motivate the user based on their emotion (False -> ToM condition only)
             if not self.emotional_condition:
                 with self.lock:
                     self.motivated = 'no'
                 # Log to CSV
-                self.logger.log_to_csv(self.id_player, "filtered", emotion, emotion_score, match, turn, 'yes')
+                self.logger.log_to_csv(timestamp, game_time, self.id_player, "filtered", emotion, emotion_score, match, turn, 'no')
                 return 
 
             # if probability and hint is not provided on first flip then motivate user
@@ -228,53 +266,27 @@ class ManagerNode:
                 self.robot.change_led_color_based_on_emotion(emotion)
                 self.emotion_handler.handle_expression_based_on_emotion(emotion, n_pairs, match)
                 motivational_sentence = self.interaction.get_motivational_sentence(emotion, n_pairs, match)
-                rospy.loginfo(f"Robot uttering: '{motivational_sentence}'...")
-                self.interaction.speak(motivational_sentence)
-                self.robot.change_led_color_based_on_emotion("")
-
+                # set to 'yes' for full emotion csv
                 with self.lock:
                     self.motivated = 'yes'
-                # Log to CSV
-                self.logger.log_to_csv(self.id_player, "filtered", emotion, emotion_score, match, turn, 'yes')
+                rospy.loginfo(f"Robot uttering: '{motivational_sentence}'...")
+                self.interaction.speak(motivational_sentence)
+                rospy.loginfo(f"Robot ended uttering at: '{self.logger.get_game_time()}'...")
+                self.robot.change_led_color_based_on_emotion("")
+                # Log to CSV ('yes' because is 'filtered' csv - it only save the emotion on each move)
+                self.logger.log_to_csv(timestamp, game_time, self.id_player, "filtered", emotion, emotion_score, match, turn, 'yes')
             else:
                 with self.lock:
                     self.motivated = 'no'
-                self.logger.log_to_csv(self.id_player, "filtered", emotion, emotion_score, match, turn, 'no')
+                self.logger.log_to_csv(timestamp, game_time, self.id_player, "filtered", emotion, emotion_score, match, turn, 'no')
                 # Perform a facial expression based on match
                 self.robot.do_facial_expression("Nod" if match else "Shake")   
             self.is_hint_first_flip = False  
             print("\n")
         else:
+            with self.lock:
+                    self.motivated = 'no'
             print("\n")
-
-    def sync_emotion_game_on_csv(self, move, emotion_data):
-        rospy.loginfo(f"Handle move with emotion...")
-        turn = move['game']['turn']
-        match = move['game']['match']
-        is_turn_even = turn % 2 == 0
-
-        # copy info
-        with self.lock:
-            self.turn = turn
-            self.match = match
-
-        # do not speak if user has not found a pair in the first 4 turns
-        if not match and turn < 3: 
-            print("\n")
-            return
-
-        # motivate user only after the outcome of user's move
-        if is_turn_even:
-            emotion = emotion_data.dominant_emotion
-            emotion_score = emotion_data.model_confidence
-            
-            # set to 'neutral' if 
-            #   - the emotion hasn't been detected 
-            #   - the emotion is fear: we take it as classification error
-            #   - the emotion is fear/angry/fear while user find a paid -> we take it as classification error
-            if emotion in ['fear', ''] or (match and emotion in ['sad', 'angry', 'fear']):
-                emotion = 'neutral'
-
 
     def run(self):
         rospy.spin()

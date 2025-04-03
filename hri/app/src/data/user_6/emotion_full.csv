@@ -1,0 +1,23 @@
+id,timestamp,game_time,emotion,model_confidence,match,turn,motivated,condition
+6,"04/03/2025, 18:48:38",0:20,neutral,0,True,2,no,E-ToM
+6,"04/03/2025, 18:48:38",0:21,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:38",0:21,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:39",0:21,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:39",0:22,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:39",0:22,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:39",0:22,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:40",0:22,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:40",0:23,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:40",0:23,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:40",0:23,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:41",0:23,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:41",0:23,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:41",0:24,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:41",0:24,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:42",0:24,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:42",0:24,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:42",0:25,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:42",0:25,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:43",0:25,neutral,0,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:43",0:25,neutral,51.07073783874512,True,2,yes,E-ToM
+6,"04/03/2025, 18:48:43",0:26,neutral,0,True,2,yes,E-ToM

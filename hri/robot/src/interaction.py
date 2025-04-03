@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 
 import rospy
+from std_msgs.msg import String
 
 import os
 import random
@@ -31,6 +32,8 @@ class InteractionModule:
         self.speech = self.load_interaction_sentences()
         # get motivational sentences
         self.emotion_sentence = EmotionGenerator('friendly', self.language)
+        # once the robot said the feedback write on publisher in order to update the csv correctly
+        self.publisher = rospy.Publisher('feedback', String, queue_size=10)
 
     ###############################################################################################################
     #                                                   SETTINGS                                                  #

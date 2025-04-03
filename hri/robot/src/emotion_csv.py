@@ -20,14 +20,19 @@ class EmotionCSV:
         # initialize csv file
         self.init_csv(self.csv_file_filtered)
         self.init_csv(self.csv_file_full)
+        # start time will be initialized only after game is started
+        self.starting_time = None
         
     def init_csv(self, filename):
         """Initialize the CSV file with headers."""
-        headers = ['id', 'timestamp', 'emotion', 'model_confidence', 'match', 'turn', 'motivated', 'condition']
+        headers = ['id', 'timestamp', 'game_time', 'emotion', 'model_confidence', 'match', 'turn', 'motivated', 'condition']
         # file containing emotion only when robot speaks
         with open(filename, 'w', newline='') as file:
             writer = csv.writer(file)
             writer.writerow(headers)
+
+    def set_starting_time(self):
+        self.starting_time = datetime.now()
 
     def get_time(self):
         # getting the current date and time
@@ -35,19 +40,30 @@ class EmotionCSV:
         # getting the date and time from the current date and time in the given format
         current_date_time = current_datetime.strftime("%m/%d/%Y, %H:%M:%S")
         return current_date_time
+    
+    def get_game_time(self):
+        current_datetime = datetime.now()
+        elapsed_time = current_datetime - self.starting_time
+        minutes = elapsed_time.seconds // 60
+        seconds = elapsed_time.seconds % 60
+        
+        return f"{minutes}:{seconds}"
 
-    def log_to_csv(self, id, filename, emotion, model_confidence, match, turn, motivated):
+    def log_to_csv(self, timestamp, game_time, id, filename, emotion, model_confidence, match, turn, motivated):
         """Log the interaction data to the CSV file."""
-        timestamp = self.get_time()
+        # tempo non calcolato qui perchè a causa dei lock (ed eventuali overhead) c'è uno sfasamento di qualche secondo
+        #timestamp = self.get_time()
+        #game_time2 = self.get_game_time()
         condition = "E-ToM" if self.emotional_condition else "ToM"
         if "filtered" == filename:
+            #print(f'Game tim2 received: {game_time2}...')
             with open(self.csv_file_filtered, 'a', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow([id, timestamp, emotion, model_confidence, match, turn, motivated, condition])
+                writer.writerow([id, timestamp, game_time, emotion, model_confidence, match, turn, motivated, condition])
         elif "full" == filename:
             with open(self.csv_file_full, 'a', newline='') as file:
                 writer = csv.writer(file)
-                writer.writerow([id, timestamp, emotion, model_confidence, match, turn, motivated, condition])
+                writer.writerow([id, timestamp, game_time, emotion, model_confidence, match, turn, motivated, condition])
         else:
             raise FileNotFoundError(f"The file {filename} does not exist. \
                                     File must be: \n\t - {self.csv_file_filtered} \n\t - {self.csv_file_full}")

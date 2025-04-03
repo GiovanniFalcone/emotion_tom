@@ -1,0 +1,224 @@
+id_player: 5
+Experimental condition:tom
+
+tiger   shark   tiger   goose   goose   koala  
+bird    koala   bird    panda   walrus  horse  
+pelican duck    penguin flamingo shark   flamingo
+duck    horse   pelican panda   penguin walrus 
+
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 1
+Position_clicked: [0, 3]
+Card_clicked: goose
+Time_game: 0:14
+Time_before_match: 0:14
+Match: False
+
+Hint: (none, None, None)
+INIT_STATE
+Turn: 2
+Position_clicked: [0, 4]
+Card_clicked: goose
+Time_game: 0:20
+Time_before_match: 0:20
+Match: True
+
+Hint: (none, None, None)
+(no_help, beg, f_correct)
+Turn: 3
+Position_clicked: [1, 4]
+Card_clicked: walrus
+Time_game: 0:21
+Time_before_match: 0:1
+Match: False
+
+Hint: (none, None, None)
+(no_help, beg, s_correct)
+Turn: 4
+Position_clicked: [3, 5]
+Card_clicked: walrus
+Time_game: 0:59
+Time_before_match: 0:39
+Match: True
+
+Hint: (none, None, None)
+(no_help, beg, f_correct)
+Turn: 5
+Position_clicked: [2, 5]
+Card_clicked: flamingo
+Time_game: 1:2
+Time_before_match: 0:3
+Match: False
+
+Hint: (none, None, None)
+(no_help, beg, s_correct)
+Turn: 6
+Position_clicked: [2, 3]
+Card_clicked: flamingo
+Time_game: 1:5
+Time_before_match: 0:6
+Match: True
+
+Hint: (none, None, None)
+(no_help, beg, f_correct)
+Turn: 7
+Position_clicked: [1, 2]
+Card_clicked: bird
+Time_game: 1:9
+Time_before_match: 0:4
+Match: False
+
+Hint: (none, None, None)
+(no_help, beg, s_correct)
+Turn: 8
+Position_clicked: [1, 0]
+Card_clicked: bird
+Time_game: 1:9
+Time_before_match: 0:4
+Match: True
+
+Hint: (none, None, None)
+(no_help, mid, f_correct)
+Turn: 9
+Position_clicked: [0, 0]
+Card_clicked: tiger
+Time_game: 1:15
+Time_before_match: 0:6
+Match: False
+
+Hint: (none, None, None)
+(no_help, mid, s_correct)
+Turn: 10
+Position_clicked: [0, 2]
+Card_clicked: tiger
+Time_game: 1:16
+Time_before_match: 0:7
+Match: True
+
+Hint: (none, None, None)
+(no_help, mid, f_correct)
+Turn: 11
+Position_clicked: [0, 1]
+Card_clicked: shark
+Time_game: 1:20
+Time_before_match: 0:4
+Match: False
+
+Hint: (none, None, None)
+(no_help, mid, s_correct)
+Turn: 12
+Position_clicked: [2, 4]
+Card_clicked: shark
+Time_game: 1:22
+Time_before_match: 0:6
+Match: True
+
+Hint: (none, None, None)
+(no_help, mid, f_correct)
+Turn: 13
+Position_clicked: [0, 5]
+Card_clicked: koala
+Time_game: 1:28
+Time_before_match: 0:6
+Match: False
+
+Hint: (none, None, None)
+(no_help, mid, s_correct)
+Turn: 14
+Position_clicked: [1, 1]
+Card_clicked: koala
+Time_game: 1:33
+Time_before_match: 0:11
+Match: True
+
+Hint: (none, None, None)
+(no_help, mid, f_correct)
+Turn: 15
+Position_clicked: [3, 0]
+Card_clicked: duck
+Time_game: 1:35
+Time_before_match: 0:2
+Match: False
+
+Hint: (none, None, None)
+(no_help, mid, s_correct)
+Turn: 16
+Position_clicked: [2, 1]
+Card_clicked: duck
+Time_game: 1:37
+Time_before_match: 0:4
+Match: True
+
+Hint: (none, None, None)
+(no_help, end, f_correct)
+Turn: 17
+Position_clicked: [3, 1]
+Card_clicked: horse
+Time_game: 1:39
+Time_before_match: 0:2
+Match: False
+
+Hint: (none, None, None)
+(no_help, end, s_correct)
+Turn: 18
+Position_clicked: [1, 5]
+Card_clicked: horse
+Time_game: 1:45
+Time_before_match: 0:8
+Match: True
+
+Hint: (none, None, None)
+(no_help, end, f_correct)
+Turn: 19
+Position_clicked: [3, 3]
+Card_clicked: panda
+Time_game: 1:47
+Time_before_match: 0:2
+Match: False
+
+Hint: (none, None, None)
+(no_help, end, s_correct)
+Turn: 20
+Position_clicked: [1, 3]
+Card_clicked: panda
+Time_game: 1:48
+Time_before_match: 0:3
+Match: True
+
+Hint: (none, None, None)
+(no_help, end, f_correct)
+Turn: 21
+Position_clicked: [3, 4]
+Card_clicked: penguin
+Time_game: 1:50
+Time_before_match: 0:2
+Match: False
+
+Hint: (none, None, None)
+(no_help, end, s_correct)
+Turn: 22
+Position_clicked: [2, 2]
+Card_clicked: penguin
+Time_game: 1:51
+Time_before_match: 0:3
+Match: True
+
+Hint: (none, None, None)
+(no_help, end, f_correct)
+Turn: 23
+Position_clicked: [3, 2]
+Card_clicked: pelican
+Time_game: 1:53
+Time_before_match: 0:2
+Match: False
+
+Hint: (none, None, None)
+(no_help, end, s_correct)
+Turn: 24
+Position_clicked: [2, 0]
+Card_clicked: pelican
+Time_game: 1:55
+Time_before_match: 0:4
+Match: True

@@ -1,1 +1,12 @@
-id,timestamp,emotion,model_confidence,match,turn,motivated,condition
+id,timestamp,game_time,emotion,model_confidence,match,turn,motivated,condition
+1,"04/02/2025, 22:34:43",0:19,neutral,0,True,2,yes,E-ToM
+1,"04/02/2025, 22:34:51",0:26,neutral,0,True,4,yes,E-ToM
+1,"04/02/2025, 22:35:04",0:40,happy,99.67479705810547,True,6,yes,E-ToM
+1,"04/02/2025, 22:35:13",0:48,neutral,0,True,8,no,E-ToM
+1,"04/02/2025, 22:35:17",0:52,neutral,0,True,10,yes,E-ToM
+1,"04/02/2025, 22:35:24",0:59,neutral,0,True,12,yes,E-ToM
+1,"04/02/2025, 22:35:30",1:5,neutral,0,True,14,yes,E-ToM
+1,"04/02/2025, 22:35:46",1:21,neutral,0,True,16,no,E-ToM
+1,"04/02/2025, 22:35:56",1:31,neutral,0,True,18,yes,E-ToM
+1,"04/02/2025, 22:36:03",1:38,neutral,0,True,20,yes,E-ToM
+1,"04/02/2025, 22:36:12",1:47,neutral,0,True,22,yes,E-ToM

@@ -41,6 +41,12 @@
 
             "neutral_beg_mid": [
                 "Fantastico %s! Hai trovato un'altra coppia! Sei davvero in gamba!",
+                "Benissimo! Hai fatto un altro match. Stai giocando benissimo!",
+                "Hey continua così! Una coppia in meno da trovare, ottimo lavoro!",
+                "%s credo che nessuno abbia fatto meglio di te fino ad ora. Complimenti!",
+                "Mi sembra che tu sia ancora in prima posizione tra quelli che hanno giocato. Sono felice per te!",
+                "%s continua così! Hai fatto un altro passo in avanti verso la fine!",
+                "Benissimo, hai trovato una coppia! Sono davvero felice per te!",
                 "Hai trovato un'altra coppia, stai andando benissimo! Continua così!",
                 "Hey %s, complimenti, un'altro passo verso la fine. Continua così!",
                 "Hey, ottimo lavoro, un altro match! Sei sulla strada giusta!",
@@ -51,7 +57,9 @@
             "neutral_end": [
                 "Hey, un altro match, benissimo! Dai, ci siamo quasi!",
                 "Complimenti, siamo quasi arrivati alla fine. Ottimo lavoro!",
-                "Benissimo, hai trovato un'altra coppia! Dai, stiamo quasi per finire!"
+                "Benissimo, hai trovato un'altra coppia! Dai, stiamo quasi per finire!",
+                "%s abbiamo quasi finito! Stai andando benissimo!",
+                "Ci siamo quasi %s! Hai quasi terminato il gioco, continua così!"
             ],
 
             "neutral_last_pair": [
@@ -92,10 +100,12 @@
             "Non preoccuparti %s, stai giocando bene!",
             "Hey %s, l'importante è divertirsi, non è mica una gara!",
             "Anche io delle volte sbaglio, e sono letteralmente un robot!",
-            "Va bene anche se sbagli, non preoccuparti!"
+            "Va bene anche se sbagli, non preoccuparti!",
+            "É normale sbagliare all'inizio, anzi è necessario per ricordare poi le locazioni!",
+            "Non c'è problema se sbagli. L'importante è partecipare! Continua così %s!"
         ],
 
-        "neutral_mid_end": [
+        "neutral_mid": [
             "Hey %s, non importa se non ricordi le locazioni, ti aiuterò io!",
             "Non ricordi le locazioni? Non preoccuparti, è solo un gioco! L'importante è divertirsti!",
             "Non fa niente se sbagli, ti aiuterò io!",
@@ -104,6 +114,16 @@
             "%s non è un problema se sbagli, può capitare!",
             "Non dare peso a questi errori, l'importante è divertirsi!",
             "Capita di sbagliare %s, in fondo siamo umani. Beh, io no, visto che sono un robot!"
+        ],
+
+        "neutral_end": [
+            "%s non preoccuparti! Capita di sbagliare, anche a fine gioco, non c'è nessun problema!",
+            "Non fa niente, l'importante è che hai quasi finito il gioco, continua così!",
+            "Ormai hai quasi finito, non preoccuparti se sbagli. Puoi farcela!",
+            "Coraggio %s, manca poco ormai. Non dare peso a questi errori!",
+            "%s stai giocando bene, non preoccuparti se sbagli! Coraggio!",
+            "Non è un problema se non ricordi le locazioni a questo punto della partita, perchè hai quasi finito. Coraggio!",
+            "Anche alla fine si può sbagliare, non sei mica un robot! Beh, io però lo sono!"
         ],
 
         "sad_beg": [
