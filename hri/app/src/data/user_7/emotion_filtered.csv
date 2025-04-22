@@ -1,2 +1,0 @@
-id,timestamp,game_time,emotion,model_confidence,match,turn,motivated,condition
-7,"04/03/2025, 18:50:39",0:15,neutral,0,True,2,yes,E-ToM

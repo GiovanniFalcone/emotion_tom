@@ -16,7 +16,6 @@ class RobotConnectionManager:
         if RobotConnectionManager._session is None:
             try:
                 RobotConnectionManager._session = FurhatRemoteAPI(RobotConnectionManager._FURHAT_IP)
-                print("Connection with Furhat successfully established!")
             except Exception as e:
                 print("Unable to connect to Furhat:", e)
                 os._exit(1)
