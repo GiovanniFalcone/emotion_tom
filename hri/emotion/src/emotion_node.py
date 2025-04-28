@@ -110,7 +110,7 @@ class EmotionModule:
                     cv2.rectangle(mirrored_frame, (mirrored_x, y), (mirrored_x + w, y + h), (0, 0, 255), 2)
                     #result = self.analyze_emotion(frame, mirrored_frame, face_detected, face_coordinates, 100)
                 # rospy.loginfo(f"Time taken for DeepFace analysis: {analysis_time:.2f} seconds -> {emotion}")
-                self.handle_emotion(result)
+                self.handle_emotion(text_pose, pose_coordinates, result)
 
             # Calculate the FPS
             fps = frame_counter / (time.time() - start_time)
@@ -127,43 +127,48 @@ class EmotionModule:
         self.cap.release()
         cv2.destroyAllWindows()
 
-    def handle_emotion(self, result):
+    def handle_emotion(self, text_pose, pose_coordinates, result):
+        # Mapping of the emotion to valence
+        valence_mapping = {
+            'angry': -1,
+            'disgust': -1,
+            'fear': -1,
+            'sad': -1,
+            'happy': 1,
+            'surprise': 1,
+            'neutral': 0
+        }
+
+        # Initialize the emotion message
         emotion_msg = emotion()
+        emotion_msg.timestamp = time.time()
+
+        # Default values for pose
+        emotion_msg.head_pose = text_pose if text_pose else ""
+        emotion_msg.x = pose_coordinates[0] if pose_coordinates else 0
+        emotion_msg.y = pose_coordinates[1] if pose_coordinates else 0
+        emotion_msg.z = pose_coordinates[2] if pose_coordinates else 0
+
         if result is None:
+            # No emotion detected
             emotion_msg.face_found = False
             emotion_msg.dominant_emotion = ''
             emotion_msg.model_confidence = 0
-            emotion_msg.valence = 0 # if not face -> neutral
-            emotion_msg.timestamp = time.time()
-            # write on topic
-            self.full_emotion_publisher.publish(emotion_msg)
-            return
-        
-        # mapping of the emotion to valence
-        valence_mapping = {
-        'angry': -1,
-        'disgust': -1,
-        'fear': -1,
-        'sad': -1,
-        'happy': 1,
-        'surprise': 1,
-        'neutral': 0
-        }
-        
-        # else a face was found and emotion was analyzed
-        dominant_emotion = result[0]['dominant_emotion']
-        score_dominant_emotion = result[0]["emotion"][dominant_emotion]
-        # create ros msg
-        emotion_msg.face_found = True
-        emotion_msg.valence = valence_mapping.get(dominant_emotion, 0)
-        emotion_msg.model_confidence = score_dominant_emotion
-        emotion_msg.dominant_emotion = dominant_emotion
-        emotion_msg.timestamp = time.time()
+            emotion_msg.valence = 0  # Neutral valence if no face
+        else:
+            # Emotion detected
+            dominant_emotion = result[0]['dominant_emotion']
+            score_dominant_emotion = result[0]["emotion"][dominant_emotion]
 
-        # rospy.loginfo(f"Written emotion on topic: \n{emotion_msg}")
-        self.add_emotion(dominant_emotion)
+            emotion_msg.face_found = True
+            emotion_msg.dominant_emotion = dominant_emotion
+            emotion_msg.model_confidence = score_dominant_emotion
+            emotion_msg.valence = valence_mapping.get(dominant_emotion, 0)
 
-        # write on topic
+            # Add emotion to the rolling window
+            self.add_emotion(dominant_emotion)
+
+        # Publish the emotion message
         self.full_emotion_publisher.publish(emotion_msg)
 
 if __name__ == '__main__':

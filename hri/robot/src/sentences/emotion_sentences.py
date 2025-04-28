@@ -22,9 +22,16 @@ class EmotionGenerator:
             print(f"Error decoding JSON file {filename}.")
             return None
         
-    def get_sentence(self, emotion, n_pairs, match, player_name):
-        
-        if match:
+    def get_sentence(self, emotion, n_pairs, match, player_name, board_changed=False):
+        if board_changed:
+            if n_pairs < 4:
+                key = emotion + '_beg'
+            elif 3 < n_pairs < 8:
+                key = emotion + '_mid'
+            else:
+                key = emotion + '_end'
+            sentences = self.sentences['shuffle'][emotion][key]
+        elif match:
             if emotion in ['happy', 'neutral']:
                 if n_pairs == 1:
                     key = emotion + '_first_pair'
@@ -36,8 +43,16 @@ class EmotionGenerator:
                     key = emotion + '_beg_mid'
                 sentences = self.sentences['match'][emotion][key]
             else:
-                # surprise
-                sentences = self.sentences['match'][emotion]
+                if emotion == 'sad':
+                    if n_pairs < 4:
+                        emotion = emotion + '_beg'
+                    elif 3 < n_pairs < 8:
+                        emotion = emotion + '_mid'
+                    else:
+                        emotion = emotion + '_end'
+                else:
+                    # surprise
+                    sentences = self.sentences['match'][emotion]
         else:
             if emotion not in ['angry', 'sad', 'neutral', 'happy']:
                 emotion = 'other'

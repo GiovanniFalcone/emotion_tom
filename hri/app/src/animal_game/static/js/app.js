@@ -10,6 +10,8 @@ let numMatch = 0;
 let numMoves = 0;
 let turns = 0;
 let isMatch = false;
+let clickedCardName = '';           // Name of the card clicked
+let clickedCardPosition = [];       // Position of the card clicked  
 // When agent/robot helps
 let hintCards = [];
 let timeHint = 3500;
@@ -25,9 +27,16 @@ let myT;
 // For communication with Server
 var sessionId = document.getElementById('session-data-id').dataset.sessionId;
 var language = document.getElementById('session-data').dataset.sessionLan;
+const shuffleDiv = document.getElementById('session-data-shuffle');
+const shuffleBoard = shuffleDiv.getAttribute('data-session-shuffle') == 'True'
 let id_player = sessionId
 let socket_address = ''
 const url = ''
+// reset cards
+let allCardNames = [];                   // All cards names of new board
+let consecutiveUnsuccessfulAttempts = 0; // moves
+let trailsBeforeShuffle = 2;             // After how many moves should the board be reset? Only the first shuffle, then it will be modified (check cardClick)
+let boardChanging = false;
 // Congrats Message
 const finishImg = ['walrus', 'penguin', 'tiger'];
 const finishMsg = ['Oh man... even a walrus can do better', 'Good job, pal! Well done', 'Geez, That\'s amazing!'];
@@ -56,7 +65,7 @@ function initializeGame() {
     console.log("beginning addr", socket_address)
     hintReceivedByRobot(socket_address)
 
-    document.querySelector('.overlay').style.display = 'none';
+    //document.querySelector('.overlay').style.display = 'none';
     document.querySelector('.deck').innerHTML = '';
     
     //alert(window.innerWidth);
@@ -68,6 +77,7 @@ function initializeGame() {
     myRunTimer();
     printStars();
     printMoves();
+    printTrials();
     changeLanguage()
 
     createCards();
@@ -107,6 +117,7 @@ function createCards() {
         cardElement.classList.add('card');
         cardElement.id = index;
         cardElement.innerHTML = `<img src="/static/images/${card}.svg"/>`;
+        cardElement.setAttribute('data-name', card);
         cardElement.addEventListener('click', () => cardClickListener(cardElement, card));
         document.querySelector('.deck').appendChild(cardElement);
     });
@@ -117,40 +128,65 @@ function createCards() {
  */
 function cardClickListener(cardElement, card) {
     // if pair is already found the card of pair can't be clicked
-    if (cardElement.classList.contains('match')) {
+    // or the game board is changing
+    if (cardElement.classList.contains('match') || boardChanging) {
         return;
     }
+
+    card = cardElement.getAttribute('data-name');
 
     setTimeout(() => {
         document.querySelectorAll(".card").forEach(card => {
             card.classList.remove('hint');
             card.classList.remove('flipInY');
+            document.querySelector('.speech-bubble').style.display = 'none';
         });
 
         if (cardElement.classList.contains('show')) {
             return;
         }
 
-        // remove bubble message after click
-        document.querySelector('.speech-bubble').style.display = 'none';
-
         cardElement.classList.add('show', 'animated', 'flipInY');
         opened.push(card);
+        console.log("Opened: " + opened)
 
         const filename = card.replace(/^.*[\\\/]/, '');
-        const clickedCardName = filename.replace(/\..+$/, '');
+        clickedCardName = filename.replace(/\..+$/, '');
 
         const positionCard = Number(cardElement.id);
         const indexRow = Math.floor(positionCard / 6);
         const indexCol = positionCard % 6;
 
-        const clickedCardPosition = [indexRow, indexCol];
+        clickedCardPosition = [indexRow, indexCol];
 
         if (opened.length > 1) {
             if (card === opened[0]) {
                 match();
+                consecutiveUnsuccessfulAttempts=0;
             } else {
-                unmatch();
+                console.log("Shuffle board is " + shuffleBoard)
+                // if shuffle is True check if the board should be changed
+                if(shuffleBoard == true){
+                    // after 6 turn the counter will be updated
+                    if(turns > 6)
+                        consecutiveUnsuccessfulAttempts++;
+                    console.log("Trials: " + consecutiveUnsuccessfulAttempts)
+                    unmatch();
+                    if (trailsBeforeShuffle == consecutiveUnsuccessfulAttempts) {
+                        printTrials();
+                        trailsBeforeShuffle = 4;
+                        consecutiveUnsuccessfulAttempts = 0 // reset since the board will change
+                        boardChanging = true;
+                        starCount();
+                        printMoves();
+                        setTimeout(() => {
+                            changeBoard();
+                            printTrials();
+                        }, 750);
+                        console.log("New shuffle")
+                        return;
+                    } 
+                }
             }
         } else {
             isMatch = false;
@@ -158,6 +194,7 @@ function cardClickListener(cardElement, card) {
 
         starCount();
         printMoves();
+        printTrials();
 
         if(numMatch === maxMatch ) {
             stopTimer();
@@ -173,8 +210,11 @@ function cardClickListener(cardElement, card) {
             "pairs": numMatch,
             "turn": turns,
             "match": isMatch,
+            "n_face_up": opened.length,
             "time_until_match": `${myMinutes}:${mySeconds}`,
-            "time_game": `${minutes}:${seconds}`
+            "time_game": `${minutes}:${seconds}`,
+            "board_changed": false,
+            "new_board": allCardNames
         }, "/player_move");
 
         if (isMatch) {
@@ -222,7 +262,7 @@ function unmatch() {
  * Calculate Stars by the moves and print it
  */
 function starCount() {
-    if (numMoves <= 24) {
+    if (numMoves <= 20) {
         numStars = 3;
     } else if (numMoves <= 27) {
         numStars = 2;
@@ -238,7 +278,11 @@ function printStars() {
 }
 
 function printMoves() {
-    document.querySelectorAll('.moves').forEach(move => move.textContent = numMoves);
+    document.querySelectorAll('.moves').forEach(move => move.innerHTML = `<b>${numMoves}</b>`);
+}
+
+function printTrials() {
+    document.querySelectorAll('.trials').forEach(move => move.innerHTML = `<b>${consecutiveUnsuccessfulAttempts}</b>`);
 }
 
 // Timer functions
@@ -301,6 +345,187 @@ function myStopTimer() {
 }
 
 /** ******************************************************************************************************************
+ *                                           ANIMATION BWHEN OARD CHANGES                                            *                                               
+ * ******************************************************************************************************************* 
+ * */ 
+
+function changeBoard(){
+    /* Once the user has done many consecutive attempts the board game will change */
+    stopTimer();
+    myStopTimer();
+
+    changeBoardPopUp();
+    printTrials();
+    setTimeout(() => {
+        hideBoardPopup();
+    }, 500);
+
+    setTimeout(() => {
+        shuffleUnmatchedCards();
+    }, 1500);
+}
+
+// Pop-up when the robot provide a suggestion
+function changeBoardPopUp() {
+    const popup = document.getElementById('blur-popup');
+    const title = popup.querySelector('.popup-title');
+    const desc = popup.querySelector('.popup-description');
+
+    if (language === 'en') {
+        title.textContent = 'Oh no! The board game is changing!';
+        desc.textContent = 'Please wait while the new board is being generated.';
+    } else {
+        title.textContent = 'Oh no! Il tabellone sta cambiando!';
+        desc.textContent = 'Attendi un momento mentre il nuovo tabellone viene generato.';
+    }
+
+    setTimeout(() => {
+        popup.style.display = 'flex';
+    }, 10);
+    
+}
+
+// Hide pop-up
+function hideBoardPopup() {
+    const popup = document.getElementById('blur-popup');
+    const card = popup.querySelector('.popup-card');
+
+    // after 1250 ms the animation will go
+    setTimeout(() => {
+        card.style.transition = 'opacity 0.4s ease';
+        card.style.opacity = '0';
+
+        popup.style.backgroundColor = 'transparent';
+        popup.style.backdropFilter = 'none';
+
+        setTimeout(() => {
+            popup.style.display = 'none';
+
+            card.style.opacity = '1';
+            popup.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+            popup.style.backdropFilter = 'blur(8px)';
+        }, 200); // transition animation time
+    }, 1250); // time of popup
+}
+
+
+// shuffle un-matched cards and send to flask the last move and new board
+function shuffleUnmatchedCards() {
+    const deck = document.querySelector('.deck');
+    const allCards = Array.from(deck.querySelectorAll('.card'));
+    const unmatchedCards = allCards.filter(card => !card.classList.contains('match'));
+    const matchedCards = allCards.filter(card => card.classList.contains('match'));
+
+    const deckRect = deck.getBoundingClientRect();
+
+    document.querySelectorAll(".card").forEach(card => {
+        card.classList.remove('hint');
+        card.classList.remove('flipInY');
+        document.querySelector('.speech-bubble').style.display = 'none';
+    });
+
+    // Get center of grid
+    const centerX = deckRect.width / 2;
+    const centerY = deckRect.height / 2;
+
+    // 0: hide pairs already found
+    matchedCards.forEach(card => {
+        card.classList.add('matched-hidden');
+    });
+
+    // 1. Animation towards the center of the board
+    unmatchedCards.forEach(card => {
+        const cardRect = card.getBoundingClientRect();
+        const offsetX = centerX - (cardRect.left - deckRect.left + cardRect.width / 2);
+        const offsetY = centerY - (cardRect.top - deckRect.top + cardRect.height / 2);
+
+        card.style.setProperty('--center-x', `${offsetX}px`);
+        card.style.setProperty('--center-y', `${offsetY}px`);
+
+        // add first animation
+        card.classList.add('shuffle-start', 'trail');
+    });
+
+    // Shuffle cards 
+    requestAnimationFrame(() => {
+        setTimeout(() => {
+            // get the images of unmatched cards
+            const unmatchedImages = unmatchedCards.map(card => {
+                const img = card.querySelector('img');
+                return img.getAttribute('src');
+            });
+            // shuffle them
+            const shuffledImages = shuffle(unmatchedImages);
+            // get the name of each card
+            const unmatchedNames = shuffledImages.map(imgPath => {
+                const filename = imgPath.replace(/^.*[\\\/]/, '');
+                return filename.replace(/\..+$/, '');
+            });
+
+            // update unmatched cards (name and new index)
+            unmatchedCards.forEach((card, index) => {
+                const img = card.querySelector('img');
+                img.setAttribute('src', shuffledImages[index]);
+
+                const newName = shuffledImages[index].replace(/^.*[\\\/]/, '').replace(/\..+$/, '');
+                card.setAttribute('data-name', newName);
+
+                // hide cards
+                card.classList.remove('show', 'animated', 'flipInY');
+            });
+
+            // the cards have been shuffled -> add the second animation
+            unmatchedCards.forEach(card => {
+                card.classList.remove('shuffle-start');
+                card.classList.add('shuffle-end');
+            });
+
+            // Combines the pairs not found and those already found so that you have the whole board
+            allCardNames = allCards.map(card => card.getAttribute('data-name'));
+
+            // remove animations and send the new board to flask
+            setTimeout(() => {
+                unmatchedCards.forEach(card => {
+                    card.classList.remove('shuffle-end', 'trail');
+                });
+                
+                matchedCards.forEach(card => {
+                    card.classList.remove('matched-hidden');
+                });
+
+                console.log("All new cards: " + allCardNames)
+                console.log("New cards: " + unmatchedNames)
+
+                // update turns number
+                turns++;
+
+                // if board is changed do not send the move just done
+                console.log("Board changed? " + boardChanging)
+                if(boardChanging) {
+                    console.log("Board changed. This is new deck: " + allCardNames)
+                    sendFlask("game", {
+                        "open_card_name": clickedCardName,
+                        "position": clickedCardPosition,
+                        "pairs": numMatch,
+                        "turn": turns,
+                        "match": isMatch,
+                        "n_face_up": opened.length,
+                        "time_until_match": `${myMinutes}:${mySeconds}`,
+                        "time_game": `${minutes}:${seconds}`,
+                        "board_changed": true,
+                        "new_board": allCardNames
+                        }, "/player_move"
+                    );
+                }
+                boardChanging = false;
+            }, 850); // total time between start -> end
+            runTimer();
+            myRunTimer();
+        }, 1000); // Waiting time for movement to the center
+    });
+}
+
+/** ******************************************************************************************************************
  *                                                     POP-UP                                                        *                                               
  * ******************************************************************************************************************* 
  * */ 
@@ -313,21 +538,17 @@ function lookRobotPopup() {
     stopTimer();
     myStopTimer();
 
-    if(language == 'en'){
-        // get sentence of pop-up
-        var suggestionHeading = document.querySelector('.suggestion-content h2');
-        // set in english
-        suggestionHeading.textContent = 'Hey, the robot is about to say something!';
-    }
+    const popup = document.getElementById('suggestion-popup');
+    const title = popup.querySelector('.popup-title');
+    const desc = popup.querySelector('.popup-description');
 
-    document.querySelector('.msg').innerHTML =
-        `
-            <img src="/static/images/robot.svg" alt="" width="250">
-        `
-    document.querySelector('.suggestion-content').classList.add('animated', 'bounceIn')
+    if (language === 'en') {
+        title.textContent = 'Hey, the robot is about to say something!';
+        desc.textContent = "Remember that you can decide to not follow robot's suggestions";
+    } 
 
     setTimeout(() => {
-        document.querySelector('.suggestion').style.display = 'block'
+        popup.style.display = 'flex';
     }, 10);
 }
 
@@ -335,19 +556,30 @@ function lookRobotPopup() {
  * Hide pop-up when robot has finished to speak.
  */
 function hidePopup() {
-    stopTimer();
-    myStopTimer();
+    const popup = document.getElementById('suggestion-popup');
+    const card = popup.querySelector('.popup-cardHint');
 
     setTimeout(() => {
-        document.querySelector('.suggestion').style.display = 'block'
-    }, 10);
+        card.style.transition = 'opacity 0.4s ease';
+        card.style.opacity = '0';
 
-    runTimer();
-    myRunTimer();
+        popup.style.backgroundColor = 'transparent';
+        popup.style.backdropFilter = 'none';
 
-    setTimeout(() => {
-        document.querySelector(".suggestion").style.display = "none";
-    }, 500)
+        setTimeout(() => {
+            popup.style.display = 'none';
+
+            card.style.opacity = '1';
+            popup.style.backgroundColor = 'rgba(0, 0, 0, 0.6)';
+            popup.style.backdropFilter = 'blur(8px)';
+        }, 200); // transition animation time
+
+        stopTimer();
+        myStopTimer();
+
+        runTimer();
+        myRunTimer();
+    }, 500); // time of popup
 }
 
 /**
@@ -356,28 +588,24 @@ function hidePopup() {
  */
 function congrats() {
     stopTimer();
+    myStopTimer()
+    const popup = document.getElementById('congrats-popup');
+
+    // html elements to update
+    const title = popup.querySelector('label[for="formText"] h1');
+    const image = popup.querySelector('#congrats-image');
+
+    
+    // msg and image based on the number of stars
+    title.textContent = finishMsg[numStars - 1] + '!'; 
+    image.src = `static/images/${finishImg[numStars - 1]}.svg`;
+
+    // show the pop-up
     setTimeout(() => {
-        document.querySelector('.switch-msg').innerHTML = ''; 
-
-        // get html items
-        const label = document.querySelector('#endingForm label[for="formText"] h1');
-        const image = document.getElementById('congrats-image');
-
-        // Updating final message based on stars
-        label.textContent = finishMsg[numStars - 1] + '!';
-
-        // Update img based on stars
-        image.src = `static/images/${finishImg[numStars - 1]}.svg`;
-
-        // show form with animation
-        document.querySelector('.overlay-content').classList.add('animated', 'bounceIn')
-        document.getElementById('endingForm').style.display = 'block';
-    }, 100);
-
-    setTimeout(() => {
-        document.querySelector('.overlay').style.display = 'block'
-    }, 300);
+        popup.style.display = 'flex';
+    }, 500);
 };
+
 
 /** ******************************************************************************************************************
  *                                                     HINT                                                          *                                               
@@ -393,11 +621,33 @@ function hintReceivedByRobot(msg) {
 
     socket.on(socket_address, handleRobotHintEvent);
     socket.on('Speech', handleSpeechEvent);
+    socket.on('Feedback', handleFeedbackEvent);
     
     // Once the robot has finished uttering the suggestion, remove the pop-up 
     function handleSpeechEvent(msg) {
         speechFinished = true;
         hidePopup();
+    }
+
+    // if robot will provide a feedback, an alert will be shown (using robot icon on panel)
+    function handleFeedbackEvent(msg) {
+        console.log("feedback");
+
+        // get message for speech-bubble
+        if(language == 'italiano') 
+            msg = '<span class="hint-text"> Sto per parlare! </span>';
+        else 
+            msg = 'span class="hint-text"> I\'m about to speak! </span>';
+
+        // Show message near to robot icon if app is multithread
+        const speechBubble = document.querySelector('.speech-bubble');
+        speechBubble.innerHTML = msg;
+        speechBubble.style.display = 'block';
+
+        // Hide the speech bubble after 2.5 seconds
+        setTimeout(() => {
+            speechBubble.style.display = 'none';
+        }, 2500);
     }
     
     function handleRobotHintEvent(msg) {
@@ -562,7 +812,7 @@ function checkFirstVisit() {
 /**
  * Once the user press "exit", Flask will show the home page
  */
-document.getElementById('endingForm').querySelector('.exit').addEventListener('click', function() {
+document.getElementById('congrats-popup').querySelector('.exit').addEventListener('click', function() {
     console.log("User has pressed exit!")
     fetch('/exit', {
         method: 'GET', 

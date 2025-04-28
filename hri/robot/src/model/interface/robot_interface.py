@@ -22,9 +22,9 @@ class RobotInterface(ABC):
         pass
 
     @abstractmethod
-    def change_led_color_based_on_emotion(self, emotion):
+    def listen(self):
         pass
 
     @abstractmethod
-    def listen(self):
+    def set_color_led(self, red, green, blue):
         pass

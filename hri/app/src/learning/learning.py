@@ -52,7 +52,7 @@ class Qlearning():
         
         Note: tom and hidden_deception acts the same, differ in how they provide suggestions.
         """
-        if condition == constants.TOM:
+        if condition in [constants.TOM, constants.E_TOM]:
             return TomStrategy(self.env)
         elif condition == constants.NO_TOM:
             return NoTomStrategy(self.env)
@@ -90,7 +90,7 @@ class Qlearning():
                                            self.actions[current_action], self.states[current_state])
                 
                 # if res is not None page was reloaded in the middle of the game -> stop Q-learning
-                if reloaded: break
+                if reloaded == 'stopped': break
 
                 # S <- S'
                 current_state = next_state

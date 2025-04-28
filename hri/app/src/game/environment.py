@@ -21,8 +21,8 @@ class Environment:
         self._player = Player(self._game)
         self._agent = None
         self._ID_PLAYER = ID_PLAYER
-        self.classification = ''
         self.instance_flask = instance_flask
+        self._turn_after_board_changed = 0
 
     def set_agent(self, agent):
         self._agent = agent
@@ -57,12 +57,32 @@ class Environment:
                 Util.formatted_debug_message("Stopping update_environment due to stop_event.", level='INFO')
                 return "stopped"
         self.instance_flask.board_changed.clear()
+        # wait for move
         data = self.instance_flask.move
 
         # if user has reloaded web page it could cause an expcetion
         if data is None:
             Util.formatted_debug_message("Killing script since page has been reloaded by " + str(self._ID_PLAYER), level='INFO')
-            return
+            return "stopped"
+        
+        # after to many attemtps (js file) the board change -> create new board and reset player history
+        # so, if the board has changed, we need to reset the board and the player history
+        if data['game']['board_changed']:
+            # update old board (for debug, ecc)
+            clicked_card_name = data['game']['open_card_name']
+            clicked_card_position = data['game']['position']
+            match = data['game']['match']
+            self._game.update_state_of_game(clicked_card_name, clicked_card_position, match)
+            self._player.update_data_player(clicked_card_name, clicked_card_position, match)
+            # update new 
+            Util.formatted_debug_message(f"Game board changed for {self._ID_PLAYER}!", level='INFO')
+            game_board = data['game']['new_board']
+            self._game.change_board(game_board)
+            self._player.reset_history_after_changing_boardgame()
+            self._player.game = self._game
+            self._player.create_history()
+            self._turn_after_board_changed = 0
+            return 'matrix'
 
         clicked_card_name = data['game']['open_card_name']
         clicked_card_position = data['game']['position']
@@ -202,7 +222,7 @@ class Environment:
 
         # get sentence based on provided hint
         sentence = self._agent.generate_sentence(suggest, flip_type, flag_ToM, card, position)
-        print(sentence)
+        print(f"Hint: {sentence}")
 
         # Check if the agent provided a wrong card
         wrong_hint = self.check_wrong_hint(action, suggest, position)
@@ -222,12 +242,12 @@ class Environment:
         )
 
         # update player's history and game state, it's not None if page has been reloaded (this means the current Q-learning thread must be stopped)
-        reloaded = self.update_environment()
+        result = self.update_environment()
 
         # move to next state
-        next_state = self.get_next_state(action)
+        next_state = self.get_next_state(action, result)
 
-        return next_state, reloaded
+        return next_state, result
 
     def _determine_TOM_and_flip_type(self, suggest, card, position):
         """
@@ -292,13 +312,14 @@ class Environment:
     #                                                   State                                                        #
     ##################################################################################################################
 
-    def get_next_state(self, action):
+    def get_next_state(self, action, result):
         """
         Returns the next state based on the current state and the agent's action.
 
         Parameters
         ----------
             action (int): the action the agent takes, represented by an integer code
+            result (str): a string used to figure out whether the board has changed or not
 
         Returns
         ----------
@@ -313,8 +334,16 @@ class Environment:
         is_turn_odd = ((self.get_turn() - 1) % 2) != 0
         is_turn_less_than_six = self.get_turn() - 1 < 6
         attemps_number = self._player.flip_number//2
-
-        if is_turn_less_than_six and pairs == 0:
+        
+        # init_state in the first six turns (if the user has not find a pair yet)
+        # or returns into init_state if board is changed
+        if (is_turn_less_than_six and pairs == 0) or (result == 'matrix'):
+            if result == 'matrix': self._turn_after_board_changed += 1
+            return getattr(constants, 'INIT_STATE')
+        
+        # when the board changes, do not provide any hint for 3 turns
+        if 1 <=  self._turn_after_board_changed < 3:
+            self._turn_after_board_changed += 1
             return getattr(constants, 'INIT_STATE')
 
         state_suffix = "CORRECT" if self.was_last_move_a_match() else "WRONG"

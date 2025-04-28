@@ -51,6 +51,11 @@ class Player:
         self.pairs_found = 0
         self.previous_card_name = ''
 
+    def reset_history_after_changing_boardgame(self):
+        self.previous_card_name = ''
+        self.flip_number = 0
+        self.history = {}
+
     def create_history(self):
         k = 0
         for i in range(self.game.num_rows):

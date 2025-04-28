@@ -33,6 +33,35 @@
             ]
         },
 
+        "sad": {
+            "sad_beg": [
+                "%s, non essere triste, in fondo hai appena trovato una coppia!",
+                "%s, siamo lontani dal terminare, però non essere triste!",
+                "Hey, non essere triste! Mancano ancora tante coppie ma ne hai appena trovato una nuova!",
+                "Complimenti %s per la nuova coppia trovata! Quindi, non avere quell'espressione triste!",
+                "Nuova coppia trovata, ottimo! Tuttavia la tua espressione mi dice che non sei molto felice.",
+                "Siamo ancora agli inizi, ma hai comunque trovato una nuova coppia. Quindi, non essere triste!"
+            ],
+
+            "sad_mid": [
+                "%s, non essere triste, in fondo hai appena trovato una coppia!",
+                "%s, siamo lontani dal terminare, però non essere triste!",
+                "Hey, non essere triste! Non mancano molte coppie e ne hai appena trovato una nuova!",
+                "Complimenti %s per la nuova coppia trovata! Quindi, non avere quell'espressione triste!",
+                "Non essere triste, in fondo hai appena trovato una nuova coppia e siamo a metà del gioco!",
+                "Siamo a metà e hai trovato una nuova coppia. Quindi, non essere triste!"
+            ],
+
+            "sad_end": [
+                "%s, non essere triste, in fondo hai appena trovato una coppia!",
+                "%s, manca poco dai, non essere triste!",
+                "Hey, non essere triste! Mancano poche coppie, ci siamo quasi!",
+                "Complimenti %s per la nuova coppia trovata! Quindi, non avere quell'espressione triste!",
+                "Non essere triste, in fondo hai appena trovato una nuova coppia e siamo nelle fasi finali del gioco!",
+                "Siamo arrivati quasi alla fine e hai trovato una nuova coppia. Quindi, non essere triste!"
+            ]
+        },
+
         "neutral":{
             "neutral_first_pair":[
                 "Fantastico %s! Hai trovato la prima coppia! Sono davvero felice per te!",
@@ -165,5 +194,123 @@
             "Ehy %s, capita di sbagliare. Continua a giocare puntando a divertirti!",
             "Non preoccuparti %s, capita di sbagliare. Stai andando bene, continua così!"
         ]
+    },
+
+    "shuffle": {
+        "happy": {
+            "happy_beg": [
+                "Il tabellone è cambiato ma sono felice che tu ti stia comunque divertendo!",
+                "Il tabellone è cambiato, ma noto che ti stai comunque divertendo, e questo mi fa molto piacere.",
+                "è molto probabile che all'inizio il tabellone cambi. Però mi fa piacere vedere che tu ti stia divertento.",
+                "Sono felice che tu ti stia divertendo %s. Capita di sbagliare nelle prime fasi del gioco, continua così!"
+            ],
+
+            "happy_mid": [
+                "Il tabellone è cambiato ma sono felice che tu ti stia comunque divertendo!",
+                "Le carte sono state mescolate, ma vedo che sei comunque felice. Benissimo!",
+                "Può capitare in queste fasi di fare molti tentativi. Ma noto che tu ti stia comunque divertendo!",
+                "Hey %s! Il tabellone è cambiato e sei comunque felice. Benissimo!"
+            ],
+
+            "happy_end": [
+                "Il tabellone è cambiato ma sono felice che tu ti stia comunque divertendo!",
+                "Ops, può capitare di sbagliare alla fine. Ma noto con piacere che la cosa non ti preoccupa!",
+                "Capita di sbagliare anche se si è nella fase finale del gioco. Continua a diverterti!"
+            ]
+        },
+
+        "neutral": {
+            "neutral_beg": [
+                "Il tabellone è cambiato, ma non preoccuparti. è normale agli inizi del gioco.",
+                "Ops, le carte sono state rimescolate. Continua a giocare senza preoccupazioni!",
+                "Capita all'inizio di fare molti tentativi. Continua così!"
+            ],
+
+            "neutral_mid": [
+                "Il tabellone è cambiato, ma non preoccuparti. Continua così!",
+                "Oh no, le carte sono state rimescolate. Continua a giocare senza preoccupazioni!",
+                "Hey %s, il tabellone è cambiato ma non preoccuparti, può capitare. Continua così!"
+            ],
+
+            "neutral_end": [
+                "Hey %s, il tabellone è cambiato, ma non preoccuparti. Continua così!",
+                "Oh no, le carte sono state rimescolate. Però sono rimaste poche coppie, quindi non preoccuparti!",
+                "Hey %s, il tabellone è cambiato ma non preoccuparti. Essendo la fase finale del gioco, non avrai problemi."
+            ]
+        },
+
+        "sad": {
+            "sad_beg": [
+                "Mi dispiace che il tabellone sia cambiato. Faccio il tifo per te %s!",
+                "Non essere triste. è molto comune fare errori all'inizio.",
+                "%s non preoccuparti! Il tabellone è cambiato ma non c'è motivo di essere tristi!",
+                "Ops le carte sono state rimescolate. Non essere triste e continua a giocare senza preoccupazioni. Ci sono io!"
+            ],
+
+            "sad_mid": [
+                "Mi dispiace che il tabellone sia cambiato. Faccio il tifo per te %s!",
+                "Non essere triste. Capita di sbagliare, non abbiamo fretta!",
+                "%s non preoccuparti! Il tabellone è cambiato ma non c'è motivo di essere tristi!",
+                "Ops le carte sono state rimescolate. Non essere triste e continua a giocare senza preoccupazioni."
+            ],
+
+            "sad_end": [
+                "Mi dispiace che il tabellone sia cambiato. Faccio il tifo per te %s!",
+                "Non essere triste. è vero che è la fase finale, ma sono rimaste poche coppie. Puoi farcela!",
+                "%s non preoccuparti! Il tabellone è cambiato ma non c'è motivo di essere tristi!",
+                "Ops le carte sono state rimescolate. Non essere triste e continua a giocare senza preoccupazioni. Ti aiuto io!"
+            ]
+        },
+
+        "surprise": {
+            "surprise_beg": [
+                "Non ti aspettavi di sbagliare per caso? Non preoccuparti %s, può capitare.",
+                "Speravi che il tabellone non cambiasse, eh? Ma è normale che capiti all'inizio. Quindi, non preoccuparti."
+            ],
+
+            "surprise_mid": [
+                "Non ti aspettavi di sbagliare per caso? Non preoccuparti %s, può capitare.",
+                "Speravi che il tabellone non cambiasse, eh? Può capitare anche in queste fasi del gioco. Quindi, non preoccuparti."
+            ],
+
+            "surprise_end": [
+                "Non ti aspettavi di sbagliare per caso? Non preoccuparti %s, può capitare.",
+                "Speravi che il tabellone non cambiasse, eh? Può capitare anche quando si è alla fine. Quindi, non preoccuparti."
+            ]
+        },
+        
+        "angry": {
+            "angry_beg": [
+                "Mi dispiace che il tabellone sia cambiato, però non ti arrabbiare e continua a giocare senza preoccupazioni, coraggio!",
+                "Che peccato: il tabellone è cambiato. Però non ti arrabbiare e continua a giocare senza preoccupazioni, coraggio!",
+                "Coraggio %s, non arrabbiarti! Capita agli inizi che il tabellone cambi. Coraggio!"
+            ],
+
+            "angry_mid": [
+                "Mi dispiace che il tabellone sia cambiato, però non ti arrabbiare e continua a giocare senza preoccupazioni, coraggio!",
+                "Che peccato: il tabellone è cambiato. Però non ti arrabbiare e continua a giocare senza preoccupazioni, coraggio!",
+                "Coraggio %s, non arrabbiarti! Capita anche in queste fasi che il tabellone cambi. Coraggio!"
+            ],
+
+            "angry_end": [
+                "Mi dispiace che il tabellone sia cambiato, però non ti arrabbiare e continua a giocare senza preoccupazioni, coraggio!",
+                "Che peccato: il tabellone è cambiato. Però non ti arrabbiare e continua a giocare senza preoccupazioni, coraggio!",
+                "Coraggio %s, non arrabbiarti! Può capitare anche quando rimangono poche coppie che il tabellone cambi. Coraggio!"
+            ]
+        },
+
+        "fear": {
+            "fear_beg": [
+                "Lo so, può essere faticoso quando il tabellone cambia. Ma siamo solo agli inizi, non preoccuparti!"
+            ],
+
+            "fear_mid": [
+                "Lo so, può essere faticoso quando il tabellone cambia. Ma siamo solo agli inizi, non preoccuparti!"
+            ],
+
+            "fear_end": [
+                "Lo so, può essere faticoso quando il tabellone cambia. Ma siamo solo agli inizi, non preoccuparti!"
+            ]
+        }
     }
 }

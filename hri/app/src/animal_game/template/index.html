@@ -20,34 +20,7 @@
     <!-- Get id player -->
     <div id="session-data-id" data-session-id="{{ session_id }}"></div>
     <div id="session-data" data-session-lan="{{ session_language }}"></div>
-
-    <!-- Overlay for Game End -->
-    <div class="overlay">
-        <div class="overlay-content">
-            <section class="switch-msg"></section>
-            <!-- ending form -->
-            <form id="endingForm" class="congrats-form" style="max-width: 500px; margin: -180px auto 0;">
-                <label for="formText" style="text-align: center; display: block; margin-bottom: 10px;">
-                    <h1>Geez, That's amazing!!</h1></label><br>
-                <img src="static/images/tiger.svg" alt="" id="congrats-image" width="150" style="display: block; margin: 0 auto;"><br>
-
-                <ul class="stars"></ul>
-                <h4>Done with <span class="moves">0</span> Moves in  <span class="timer"><span class="timer-minutes">0</span>:<span class="timer-seconds">00</span></span></h4> 
-                
-                <label for="formText2" style="text-align: center; display: block; margin-bottom: 10px;">
-                    <h1>Grazie per aver giocato!</h1>
-                </label><br>
-                <img src="static/images/ai.png" alt="" id="robot-image" width="50" style="display: block; margin: 0 auto;"><br>
-        
-                <label for="restartFormText" style="display: block; margin-bottom: 10px;">
-                    <h1>Clicca "Exit" per ritornare alla schermata principale.</h1>
-                </label>
-
-                <!--<button type="button" class="restart"><i class="fa fa-repeat"></i> Again</button>-->
-                <button type="button" class="exit" style="background-color: red; color: white;"><i class="fa fa-sign-out"></i> Exit</button>
-            </form>
-        </div>
-    </div>
+    <div id="session-data-shuffle" data-session-shuffle="{{ session_shuffle }}"></div>
 
     <!-- Overlay for Game Start -->
     <div class="overlay-start">
@@ -57,12 +30,48 @@
         </div>
     </div>
 
-    <!-- Suggestion Box -->
-    <div class="suggestion">
-        <div class="suggestion-content">
-            <section class="msg"></section>
-            <h2> Hey, il robot sta per dire qualcosa! </h2>
+    <!-- Overlay for Game End -->
+    <div id="congrats-popup" class="popup-overlay" style="display: none;">
+        <div class="popup-cardEnd">
+            <label for="formText" style="text-align: center; display: block; margin-bottom: 10px;">
+                <h1>Geez, That's amazing!!</h1></label><br>
+          
+            <img src="static/images/tiger.svg" alt="" id="congrats-image" class="popup-illustration" width="150" style="display: block; margin: 0 auto;"><br>
+
+            <ul class="stars"></ul>
+
+            <h4>Done with <span class="moves">0</span> Moves in  <span class="timer"><span class="timer-minutes">0</span>:<span class="timer-seconds">00</span></span></h4> 
+
+            <label for="formText2" style="text-align: center; display: block; margin-bottom: 10px;">
+                <h1>Grazie per aver giocato!</h1>
+            </label><br>
+            <img src="static/images/ai.png" alt="" id="robot-image" width="50" style="display: block; margin: 0 auto;"><br>
+    
+            <label for="restartFormText" style="display: block; margin-bottom: 10px;">
+                <h1>Clicca "Exit" per ritornare alla schermata principale.</h1>
+            </label>
+
+            <button type="button" class="exit" style="background-color: red; color: white;"><i class="fa fa-sign-out"></i> Exit</button>
         </div>
+      </div>
+    
+    <!-- Modal shuffle -->
+    <div id="blur-popup" class="popup-overlay" style="display: none;">
+        <div class="popup-card">
+          <img src="/static/images/shuffle.png" alt="Icona" class="popup-illustration" />
+          <h2 class="popup-title">Oh no! Il tabellone sta cambiando!</h2>
+          <p class="popup-description">Attendi un momento mentre il nuovo tabellone viene generato.</p>
+        </div>
+      </div>
+
+    
+    <!-- Modal hint -->
+    <div id="suggestion-popup" class="popup-overlay" style="display: none;">
+      <div class="popup-cardHint">
+        <img src="/static/images/robot.svg" alt="Icona" class="popup-illustration" />
+        <h2 class="popup-title">Hey, il robot sta per dire qualcosa!</h2>
+        <p class="popup-description">Ricorda che puoi anche non seguire i suggerimenti del robot.</p>
+      </div>
     </div>
 
     <!-- Main Container -->
@@ -75,8 +84,9 @@
         <section class="score-panel">
             <div class="left-content">
                 <ul class="stars"></ul>
-                <span class="moves">0</span> Moves
-                <span class="timer"><span class="timer-minutes">0</span>:<span class="timer-seconds">00</span></span>
+                <span class="moves"><strong>0</span> Moves </strong>
+                <span class="trials"><strong>0</span> Trials </strong>
+                <span class="timer"><strong><span class="timer-minutes">0</span>:<span class="timer-seconds">00</span></strong></span>
             </div>
             <div class="robot-container">
                 <span><img src="static/images/ai.png" alt="" id="robot-image" width="225"></span>

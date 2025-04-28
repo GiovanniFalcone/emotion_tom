@@ -206,6 +206,7 @@ class Util:
             constants.EXTERNAL_DECEPTION: "external_deception",
             constants.SUPERFICIAL_DECEPTION: "superficial_deception",
             constants.HIDDEN_DECEPTION: "hidden_deception",
+            constants.E_TOM: "e_tom",
         }
         return types.get(experimental_condition, "Unknown")
     

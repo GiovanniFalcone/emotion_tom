@@ -45,6 +45,11 @@ class Game:
 		self.num_rows = 4
 		self.__create_board()
 
+	def change_board(self, shuffled):
+		self.shuffled = shuffled
+		self.board = {}
+		self.__create_board()
+
 	def __create_board(self):
 		"""
 		Create a new dictionary which contains the board data.

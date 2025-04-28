@@ -85,15 +85,11 @@ class Furhat:
             print(f"Error: {e}\n Current path is: {os.getcwd()}")
         return gesture
 
-    def change_led_color_based_on_emotion(self, emotion):
+    def set_color_led(self, red, green, blue):
         if not self._demo:
             return
         
-        if emotion == '':
-            self.robot.set_led(red=0, green=0, blue=0)
-        elif emotion == 'happy' or emotion == 'surprise':
-            # yellow 
-            self.robot.set_led(red=255, green=255, blue=0)
-        else:
-            # green in order to calm
-            self.robot.set_led(red=0, green=255, blue=0)
+        # set color of the led
+        self.robot.set_led(red=red, green=green, blue=blue)
+
+    

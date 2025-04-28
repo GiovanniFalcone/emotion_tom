@@ -37,9 +37,9 @@ class Detection:
             return None
         else:
             # now analyze face_roi for emotion recognition
-            start = time.time()
+            # start = time.time()
             result =  DeepFace.analyze(face_detected, actions=['emotion'], enforce_detection=False)
-            end = time.time() - start
+            # end = time.time() - start
             #print(f"Time taken for DeepFace analysis: {end:.4f} seconds -> {result[0]['dominant_emotion']}")
             return result
 

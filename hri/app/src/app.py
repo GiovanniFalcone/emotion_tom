@@ -20,6 +20,7 @@ import os
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'util'))
 
 from util import Util
+from util import constants
 
 # remove debug messages
 log = logging.getLogger('werkzeug')
@@ -27,6 +28,7 @@ log.setLevel(logging.ERROR)
 
 # constants
 IP_ADDRESS = Util.get_from_json_file("config")['ip'] 
+SHUFFLE = Util.get_from_json_file("config")['shuffle'] 
 
 # Creazione dell'app Flask
 app = Flask(__name__, template_folder="./animal_game/template", static_folder="./animal_game/static")
@@ -38,6 +40,7 @@ socketio = SocketIO(app)
 client_instances = {}
 lock = Lock()
 expertiment_condition = None    # new experimental condition received from menu
+e_tom = False                   # used to show the tutorial and message bubble on web-base       
 first_start = True              # in order to not have a menu at the very beginning
 exit_pressed = False            # when return to home page after pressing exit in the menu, don't show again the menu
 cleanup_flag = False            # clear session after CTRL+C
@@ -50,10 +53,27 @@ speech_publisher = rospy.Publisher('speech_hint', String, queue_size=10)
 start_publisher = rospy.Publisher('start', Int32, queue_size=10)
 
 try:
-    expertiment_condition = int(rospy.get_param("condition"))
+    expertiment_condition = (rospy.get_param("condition"))
+    # handle different characters
+    if expertiment_condition == '' or \
+        (type(expertiment_condition) == str and not expertiment_condition.isdigit()) or int(expertiment_condition) not in range(7):
+        rospy.logwarn(f"Condition not valid. It will be used the default one (check play.py)!")
+        experimental_condition = None
+    else:
+        expertiment_condition = int(expertiment_condition)
+    e_tom = True if expertiment_condition == constants.E_TOM else False
 except KeyError:
     rospy.logerr(
-        "Usage: roslaunch app app.launch condition:=<condition>")
+        "Usage: roslaunch app app.launch condition:=<condition>\n" +
+        "Condition can be:\n" +
+        "\t0: Theory of Mind\n" +
+        "\t1: No-Theory of Mind\n" +
+        "\t2: Deception\n" +
+        "\t3: External\n" +
+        "\t4: Superficial\n" +
+        "\t5: Hidden\n" +
+        "\t6: Emotional Intelligence with ToM\n"
+        "\tOther: you will restart with the same experimental condition setted at the beginning.\n")
     sys.exit(1)
 
 def get_id():
@@ -134,11 +154,11 @@ def index():
             if 'id' in session:
                 session.clear()
                 Util.formatted_debug_message("Session deleted for new user...", level='INFO')
-                return render_template('home_page.html')
+                return render_template('home_page.html', session_shuffle=SHUFFLE, session_condition=e_tom)
             else:
                 Util.formatted_debug_message("New user...", level='INFO')
 
-    return render_template('home_page.html')
+    return render_template('home_page.html', session_shuffle=SHUFFLE, session_condition=e_tom)
 
 @app.route('/set_settings', methods=["POST"])
 def set_setting():
@@ -174,9 +194,11 @@ def show_game():
             client_instances[id] = UtilityFlask() 
             # handle player and run Q-learning
             client_instances[id].handle_id_player(id, client_instances.get(id), expertiment_condition)
-            return render_template("index.html", session_id=session.get('id'), session_language=session.get('language'))
+            return render_template("index.html", session_id=session.get('id'), session_language=session.get('language'), 
+                                   session_shuffle=SHUFFLE)
 
-    return render_template("index.html", session_id=session.get('id'), session_language=session.get('language'))
+    return render_template("index.html", session_id=session.get('id'), session_language=session.get('language'), 
+                           session_shuffle=SHUFFLE)
       
 @app.route('/exit', methods=['GET'])
 def exit():
@@ -218,6 +240,15 @@ def receive_hint_data(id):
     send_to_ros(request, "speech")
     
     return utility_flask.handle_robot_hint(request, socketio)
+
+@app.route('/robot_feedback', methods=["POST"])
+def receive_feedback_from_robot():
+    """
+    When the robot should provide a feedback, manager_node send a message to the server 
+    in order to show an alert to the user on the web page.
+    """
+    socketio.emit('Feedback', None)
+    return jsonify({'message': 'feedback message received'}), 200
 
 @app.route('/cheating/<int:id>', methods=["GET", "POST"])
 def def_cheater(id):

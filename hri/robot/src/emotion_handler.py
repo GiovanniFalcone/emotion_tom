@@ -5,12 +5,26 @@ class EmotionHandler:
     def __init__(self, robot):
         self.robot = robot
 
-    def handle_expression_based_on_emotion(self, emotion, n_pairs, match):
+    def change_led_color_based_on_emotion(self, emotion):
+        if emotion == '':
+            self.robot.set_color_led(red=0, green=0, blue=0)
+        elif emotion == 'happy' or emotion == 'surprise':
+            # yellow 
+            self.robot.set_color_led(red=255, green=255, blue=0)
+        else:
+            # green in order to calm
+            self.robot.set_color_led(red=0, green=0, blue=255)
+
+    def handle_expression_based_on_emotion(self, emotion, n_pairs, match, board_changed=False):
+        if board_changed:
+            self._handle_emotion_when_board_change(emotion)
+            return
+        
         is_first_pair = n_pairs == 1
         is_begin = n_pairs < 4
         is_middle = 3 < n_pairs < 8
         is_end = n_pairs >= 8
-
+        
         if match:
             self.handle_expression_given_match(emotion, is_first_pair, is_begin, is_middle, is_end)
         else:
@@ -57,6 +71,22 @@ class EmotionHandler:
                 self.robot.do_facial_expression("Wink")
         else:
             # angry, other
+            self.robot.do_facial_expression("CustomSad")
+            time.sleep(0.5)
+            self.robot.do_facial_expression("BigSmile")
+
+    def _handle_emotion_when_board_change(self, emotion):
+        if emotion in ["happy", "neutral"]: 
+            self.robot.do_facial_expression("happy_1")
+            time.sleep(0.5)
+            self.robot.do_facial_expression("BigSmile")
+        elif emotion == "sad":
+            self.robot.do_facial_expression("CustomSad")
+            self.robot.do_facial_expression("BigSmile")
+        elif emotion == "surprise":
+            self.robot.do_facial_expression("CustomSurprise")
+        else:
+            # angry, sad
             self.robot.do_facial_expression("CustomSad")
             time.sleep(0.5)
             self.robot.do_facial_expression("BigSmile")

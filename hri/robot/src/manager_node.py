@@ -69,10 +69,17 @@ class ManagerNode:
         # Weights for each emotion (30 emotions)
         self.weights = np.array([np.arange(1, 31) / 465])  # 465 = sum of weights (1+2+3+...+30)
 
+        # Head pose estimation for csv
+        self.head_pose = None
+        self.x_pose = None
+        self.y_pose = None
+        self.z_pose = None
+
         # Locks
         self._initialize_locks()
 
         # Time used to save the emotion in the CSV when the robot is not uttering (both conditions)
+        self.board_changed = False
         self.last_saved_time = time.time()
         self.time_to_wait = random.choice([3, 10])
 
@@ -93,6 +100,7 @@ class ManagerNode:
         self.utter_lock = Lock()                        # Lock when emotions are saved in the CSV while the robot is talking
         self.has_uttering = False                       # Variable used by locks while the robot is talking
         self.speaking_lock = Lock()                     # Lock when the robot speaks and the user clicks a card
+        self.pose_lock = Lock()                         # Lock for head pose estimation
 
     ###############################################################################################################
     #                                                   SETTINGS                                                  #
@@ -174,6 +182,18 @@ class ManagerNode:
         emotion = data.dominant_emotion
         emotion_valence = data.valence
         emotion_score = data.model_confidence
+        # save head pose estimation for "filtered" csv
+        with self.pose_lock:
+            self.head_pose = data.head_pose
+            self.x_pose = data.x
+            self.y_pose = data.y
+            self.z_pose = data.z
+        
+        # copy estimated head pose
+        head_pose = data.head_pose
+        x_pose = data.x
+        y_pose = data.y
+        z_pose = data.z
 
         # Skip processing if no emotion is detected
         if not emotion:
@@ -195,6 +215,13 @@ class ManagerNode:
             turn_copy = self.turn
             motivated_copy = self.motivated
 
+        # since surprise can have any valence, we set to positive if match, negative otherwise
+        if emotion == "surprise":
+            emotion_valence = 1 if match_copy else -1
+
+        with self.first_flip_lock:
+            is_hint_provided_on_first_flip = self.is_hint_first_flip
+
         # Process emotion only if the game is ongoing and logger is initialized
         if condition:
             # Update emotion windows
@@ -203,14 +230,21 @@ class ManagerNode:
                 self.emotion_window_valence.append(emotion_valence)
 
             # Handle emotion saving for even turns (end of a move)
-            if is_turn_even:
+            if is_turn_even or self.board_changed:
                 with self.utter_lock:
                     utter_copy = self.has_uttering
 
-                if motivated_copy == 'no':
+                # don't save emotion when robot is providing a hint on the first flip 
+                # (this is done since the robot could motivate the user bu the hint has higher priority)
+                if is_hint_provided_on_first_flip:
+                    rospy.loginfo(f"[Emotion callback] Robot is providing a hint on first flip -> no emotion saved...")
+                    return
+
+                if motivated_copy == 'no' and not self.board_changed:
                     # Save emotions in a temporary window if not motivating
                     self._save_emotions_in_csv_if_not_motivating(
                         timestamp, game_time, emotion, emotion_score, 
+                        head_pose, x_pose, y_pose, z_pose,
                         match_copy, turn_copy, motivated_copy, utter_copy
                     )
                 else:
@@ -224,11 +258,12 @@ class ManagerNode:
                         f"  - Motivated: {motivated_copy}"
                     )
                     self.logger.log_to_csv(
-                        timestamp, game_time, self.id_player, "full", emotion, 
-                        emotion_score, match_copy, turn_copy, motivated_copy
+                        timestamp, game_time, self.id_player, "full", emotion, emotion_score, 
+                        head_pose, x_pose, y_pose, z_pose, match_copy, turn_copy, motivated_copy
                     )
 
-    def _save_emotions_in_csv_if_not_motivating(self, timestamp, game_time, emotion, emotion_score, match_copy, turn_copy, motivated_copy, utter_copy):
+    def _save_emotions_in_csv_if_not_motivating(self, timestamp, game_time, emotion, emotion_score, 
+                                                head_pose, x_pose, y_pose, z_pose, match_copy, turn_copy, motivated_copy, utter_copy):
         """
         Saves emotion data to a CSV file if the robot is not in a motivating state 
         and the specified time interval has not elapsed. If the time interval has 
@@ -264,7 +299,7 @@ class ManagerNode:
             rospy.loginfo(
                 "[Emotion callback]\n"
                 f"  - Game time (pop-up included): {game_time}\n"
-                f"  - Timestamp: {time_since_last_save:.2f} seconds\n"
+                f"  - Timestamp: {time_since_last_save:.2f} seconds (time limit is {self.time_to_wait} seconds)\n"
                 f"  - Adding emotion: {emotion}\n"
                 f"  - Has Uttering: {utter_copy}\n"
                 f"  - Turn: {turn_copy}\n"
@@ -272,8 +307,8 @@ class ManagerNode:
             )
             #if not utter_copy: rospy.loginfo(f"(Call) queue is: {self.emotion_window_valence}\n")
             # update csv
-            self.logger.log_to_csv(timestamp, game_time, self.id_player, "full", emotion, 
-                                    emotion_score, match_copy, turn_copy, motivated_copy)
+            self.logger.log_to_csv(timestamp, game_time, self.id_player, "full", emotion, emotion_score, 
+                                   head_pose, x_pose, y_pose, z_pose, match_copy, turn_copy, motivated_copy)
             return
         else:
             # otherwise, time limit has elpased -> don't save emotions 
@@ -304,15 +339,22 @@ class ManagerNode:
         move = json.loads(game_data.data) 
         n_pairs = move['game']['pairs']
         is_game_ended = n_pairs == 12
+        board_changed = move['game']['board_changed']
 
-        # when the game ends, the end of the interaction is handled
+        # if robot has E-ToM it can provide a feedback when board changed
+        if board_changed and self.emotional_condition:
+            self.board_changed = True
+            self._handle_board_change(move)
+            return 
+        
+        # otherwise, the turn is handled -> save info on log, eventually provide feedback
+        self.handle_turn(move)
+
+        # when the game ends, robot will say goodbye to the user
         if is_game_ended:
             self.state = 'END'
             self.interaction.goodbye(self.emotional_condition)
             self.interaction.player_name = ''
-        else:
-            # otherwise, the turn is handled -> save info on log, eventually provide feedback
-            self.handle_turn(move)
 
     ###############################################################################################################
     #                                             EMOTION LOGIC                                                   #
@@ -412,7 +454,12 @@ class ManagerNode:
         #   - therefore, the robot will provide the hint
         with self.first_flip_lock:
             is_hint_provided_on_first_flip = self.is_hint_first_flip
-        if is_hint_provided_on_first_flip: rospy.loginfo("[Feedback] Robot can't motivate because of hint provided on first flip...")
+        if is_hint_provided_on_first_flip: 
+            rospy.loginfo("[Feedback] Robot can't motivate because of hint provided on first flip...")
+            # uncomment the next line if you want to save the emotion once the user has made a move
+            # example: user don't find a pair in turn 4, so we should save the emotion
+            # but in the turn 5 the robot will provide a hint on first flip
+            return
 
         # get current time in order to save the emotion for some seconds when the robot should not provide a feedback 
         self.last_saved_time = time.time()
@@ -426,6 +473,14 @@ class ManagerNode:
         if emotion in ['fear', '', None] or (match and emotion in ['sad', 'angry', 'fear']):
             emotion = 'neutral'
 
+        # get estimated head pose
+        head_pose, x_pose, y_pose, z_pose = None, None, None, None
+        with self.pose_lock:
+            head_pose = self.head_pose
+            x_pose = self.x_pose
+            y_pose = self.y_pose
+            z_pose = self.z_pose
+
         # if true, the robot will motivate the user based on their emotion (False -> ToM condition only)
         if not self.emotional_condition:
             timestamp = self.logger.get_time()
@@ -435,7 +490,8 @@ class ManagerNode:
             self.time_to_wait = random.choice([3, 10])
             rospy.loginfo(f"[Feedback] Time to wait until time interval expires or new card has been clicked: {self.time_to_wait} seconds...\n")
             # Log to CSV
-            self.logger.log_to_csv(timestamp, game_time, self.id_player, "filtered", emotion, emotion_score, match, turn, 'no')
+            self.logger.log_to_csv(timestamp, game_time, self.id_player, "filtered", emotion, emotion_score, 
+                                   head_pose, x_pose, y_pose, z_pose, match, turn, 'no')
             return 
 
         # define probability for robot's motivational speech
@@ -448,8 +504,10 @@ class ManagerNode:
 
         # if probability and hint is not provided on first flip then motivate user
         if random.random() < probability and not is_hint_provided_on_first_flip:
+            # send to Flask that the robot is providing a feedback
+            requests.post("http://" + ManagerNode.IP_ADDRESS + ":5000/robot_feedback")
             rospy.loginfo(f"[Feedback] Waiting ...")
-            self._provide_feedback(timestamp, game_time, emotion, emotion_score, n_pairs, match, turn)
+            self._provide_feedback(timestamp, game_time, emotion, emotion_score, head_pose, x_pose, y_pose, z_pose, n_pairs, match, turn)
         else:
             rospy.loginfo(f"[Feedback] No feedback provided...")
             # in order to save the emotion for some seconds when the robot should not provide a feedback 
@@ -458,19 +516,20 @@ class ManagerNode:
             # the robot will not motivate the user
             with self.game_data_lock: self.motivated = 'no'
             # Saves the emotion that would be used for the feedback in the csv file
-            self.logger.log_to_csv(timestamp, game_time, self.id_player, "filtered", emotion, emotion_score, match, turn, 'no')
+            self.logger.log_to_csv(timestamp, game_time, self.id_player, "filtered", emotion, emotion_score, 
+                                   head_pose, x_pose, y_pose, z_pose, match, turn, 'no')
             # Perform a facial expression based on match
             self.robot.do_facial_expression("Nod" if match else "Shake")   
 
         # if it was true, reset to false in order to motivate after a move
         self.is_hint_first_flip = False  
 
-    def _provide_feedback(self, timestamp, game_time, emotion, emotion_score, n_pairs, match, turn):
+    def _provide_feedback(self, timestamp, game_time, emotion, emotion_score, head_pose, x_pose, y_pose, z_pose, n_pairs, match, turn):
         """
         This function make the robot utter a motivational sentence based on the emotion of the user.
         """
         # set robot appearance
-        self.robot.change_led_color_based_on_emotion(emotion)
+        self.emotion_handler.change_led_color_based_on_emotion(emotion)
         self.emotion_handler.handle_expression_based_on_emotion(emotion, n_pairs, match)
 
         # get sentence that robot will utter
@@ -498,9 +557,10 @@ class ManagerNode:
         rospy.loginfo(f"[Feedback] ROS turn is: '{self.turn}'...\n")
         
         # remove LED
-        self.robot.change_led_color_based_on_emotion("")
+        self.emotion_handler.change_led_color_based_on_emotion("")
         # Log to CSV ('yes' because is 'filtered' csv - it only save the emotion on each move)
-        self.logger.log_to_csv(timestamp, game_time, self.id_player, "filtered", emotion, emotion_score, match, turn, 'yes')
+        self.logger.log_to_csv(timestamp, game_time, self.id_player, "filtered", emotion, emotion_score, 
+                               head_pose, x_pose, y_pose, z_pose, match, turn, 'yes')
 
     @ staticmethod
     def get_probability_of_feedback(match, n_pairs, turn):   
@@ -518,15 +578,73 @@ class ManagerNode:
         # Higher probability for the first pair found
         if match and n_pairs == 1:
             return 1.0
+        # Probability if a match is found
+        if match:
+            return 0.75
         # No feedback in the first few turns to allow the user to get familiar with the game
         if turn <= 4:
             return 0.0
-        # Higher probability if a match is found
-        if match:
-            return 0.75
         # Lower probability if no match is found
-        return 0.25
+        return 0.65
     
+    def _handle_board_change(self, move):
+        rospy.loginfo(f"[Feedback] Game board is changed -> robot should provide feedback!")
+
+        # get info about game
+        n_pairs = move['game']['pairs']
+        turn = move['game']['turn']
+        match = move['game']['match']
+
+        # acquire lock and save it for emotion_callback ()
+        with self.game_data_lock:
+            self.turn = turn
+            self.match = match
+
+        # emotion to use for feedback
+        emotion, emotion_score = self.get_emotion()
+        # get estimated head pose
+        head_pose, x_pose, y_pose, z_pose = None, None, None, None
+        with self.pose_lock:
+            head_pose = self.head_pose
+            x_pose = self.x_pose
+            y_pose = self.y_pose
+            z_pose = self.z_pose
+        # set robot appearance
+        self.emotion_handler.change_led_color_based_on_emotion(emotion)
+        self.emotion_handler.handle_expression_based_on_emotion(emotion, None, None, board_changed=True)
+
+        # get sentence that robot will utter
+        motivational_sentence = self.interaction.get_motivational_sentence(emotion, n_pairs, None, board_changed=True)
+
+        # set to 'yes' for full emotion csv, since the robot will provide a feedback
+        with self.game_data_lock: self.motivated = 'yes'
+        rospy.loginfo(f"[Feedback] Robot uttering once the board is changed: '{motivational_sentence}'...")
+
+        # lock used for emotion_callback
+        with self.utter_lock: self.has_uttering = True
+
+        # block until robot has not finished to talk
+        # (used when user click a card to fast)
+        with self.speaking_lock:
+            self.interaction.speak(motivational_sentence)
+            rospy.loginfo(f"[Feedback] Robot ended uttering at: '{self.logger.get_game_time()}'...")
+
+        # robot ended uttering -> update variable for emotion_callback (full emotion csv)
+        with self.utter_lock: self.has_uttering = False
+        
+        # remove LED
+        self.emotion_handler.change_led_color_based_on_emotion("")
+        # until the user clicks a new card, the callback does not receive updated data. Therefore increase turn to be odd
+        # e.g: user finds a pair in a turn 4; wait before click another card -> callback will wait and so the turn will still be 4
+        with self.game_data_lock: self.turn += 1 
+        rospy.loginfo(f"[Feedback] ROS turn is: '{self.turn}'...\n")
+        # Log to CSV ('yes' because is 'filtered' csv - it only save the emotion on each move)
+        self.board_changed = False
+        timestamp = self.logger.get_time()
+        game_time = self.logger.get_game_time()
+        self.logger.log_to_csv(timestamp, game_time, self.id_player, "filtered", emotion, emotion_score, 
+                               head_pose, x_pose, y_pose, z_pose, False, turn, 'yes')
+
     def run(self):
         rospy.spin()
 

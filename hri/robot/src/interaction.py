@@ -25,7 +25,7 @@ class InteractionModule:
         # initialize variable
         self.robot = robot
         self.language = language
-        self.player_name = 'gio'
+        self.player_name = Util.get_from_json_file("config")['player_name']
         # do randomic movement with robot's head in order to look more natural
         self.robot.random_head_movements()
         # get sentences from interaction file (greetings, rules, goodbye)
@@ -115,8 +115,8 @@ class InteractionModule:
         sentence = random.choice(sentences)
         self.speak(sentence)
 
-    def get_motivational_sentence(self, emotion, n_pairs, match):
-        return self.emotion_sentence.get_sentence(emotion, n_pairs, match, self.player_name)
+    def get_motivational_sentence(self, emotion, n_pairs, match, board_changed=False):
+        return self.emotion_sentence.get_sentence(emotion, n_pairs, match, self.player_name, board_changed)
 
     def speak(self, sentence):
         self.robot.say(sentence)

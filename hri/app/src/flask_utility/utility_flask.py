@@ -125,12 +125,17 @@ class UtilityFlask:
 
         # received user's info (js)
         if player_move is not None:
+            # if not none send to q-learning in order to compute the next hint
             with self.board_lock:
                 self.move = data
                 self.board_changed.set()
 
             # write log file and update csv file
             self.file_manager._write_game_data_on_file(dictionary)
+
+            if player_move['board_changed']:
+                # if board changed, print game board as matrix and write it on log-file
+                self.file_manager._write_board_on_file(player_move['new_board'], changed=True)
                     
             return jsonify({'message': 'User move received'}), 200
         else:

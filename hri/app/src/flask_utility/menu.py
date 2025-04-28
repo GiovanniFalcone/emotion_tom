@@ -69,11 +69,12 @@ class Menu:
                                         "3: External\n" +
                                         "4: Superficial\n" +
                                         "5: Hidden\n" +
+                                        "6: Emotional Intelligence with ToM\n"
                                         "Other: you will restart with the same experimental condition setted at the beginning",
                                         level='INFO')
             experimental_condition = input("Choose mode: ")
             
-            if experimental_condition == '' or (not experimental_condition.isdigit() or int(experimental_condition) not in range(6)):
+            if experimental_condition == '' or (not experimental_condition.isdigit() or int(experimental_condition) not in range(7)):
                 experimental_condition = None
                 Menu.clean_shell()
             

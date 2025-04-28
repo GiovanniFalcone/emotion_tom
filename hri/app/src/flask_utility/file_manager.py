@@ -26,7 +26,7 @@ class FileManager:
         self.n_game = 1
         self.CSV_FIELDS = ['id_player', 'turn_number', 'position_clicked', 'time_game',
                            'time_until_match', 'suggestion_type', 'position_suggested', 
-                           'experiment_condition', 'match', 'game_ended', 'wrong_hint']
+                           'experiment_condition', 'match', 'game_ended', 'wrong_hint', 'board_changed']
         self.csv_data = {field: [] for field in self.CSV_FIELDS}
 
     def _write_hint_data_on_file(self, data, current_experimental_condition):
@@ -72,7 +72,7 @@ class FileManager:
         game_data = data["game"]
         Util.update_log_file(f"\nTurn: {game_data['turn']}\nPosition_clicked: {game_data['position']}\nCard_clicked: {game_data['open_card_name']}\nTime_game: {game_data['time_game']}\nTime_before_match: {game_data['time_until_match']}\nMatch: {game_data['match']}", self.id_player, self.n_game)
 
-    def _write_board_on_file(self, shuffle_cards):
+    def _write_board_on_file(self, shuffle_cards, changed=False):
         """
         Print game board as matrix and write it on log-file.
 
@@ -88,6 +88,7 @@ class FileManager:
         print("\n")
 
         # write board on file
+        if changed: Util.update_log_file("\nGame board changed!\n\n", self.id_player, self.n_game) # add a new line if game board is changed
         if self.id_player != -1: Util.update_log_file("\n".join(output_lines) + "\n", self.id_player, self.n_game)
 
     def _clear_csv_struct(self):
@@ -114,6 +115,7 @@ class FileManager:
             self.csv_data["time_game"].append(data["game"]["time_game"])
             self.csv_data["time_until_match"].append(data["game"]["time_until_match"])
             self.csv_data["match"].append(data["game"]["match"])
+            self.csv_data["board_changed"].append(data["game"]["board_changed"])
             self.csv_data["game_ended"].append(data["game"]["pairs"] == 12)
 
             # if game is finished, write the csv file and clear the csv structure
