@@ -1,0 +1,71 @@
+{
+    "firstCard": {
+        "withoutHistory": "Why don't you try %s? You might find a card you've already seen.",
+        "bothLocationsOnce": [
+            "You've seen both locations of %s once. Let me refresh your memory: try %s.",
+            "Don't you remember seeing %s already? Try %s, let's see if you remember the other location."
+        ],
+        "bothLocationsMultiple": [
+            "You've often seen both locations of %s. Try %s, this is the least clicked position, so you'll make a match!",
+            "Can't you find %s by chance? You've seen both locations often. Try %s.",
+            "You've clicked %s several times. Click %s, you should remember where the other one is."
+        ],
+        "otherCases": [
+            "You're looking for a particular card, aren't you? Well, then try %s. Surely you remember the other location!",
+            "You've clicked %s often. Can't you find it? In this case, I suggest you try %s.",
+            "Let me give you a little hint: try %s. You should remember the other location.",
+            "You've clicked %s often. Why don't you try clicking %s? That way you should make a match!",
+            "I suggest you uncover %s, then click %s. You've clicked the other location many times, so you should make a match.",
+            "You've clicked %s several times. Click %s, you should remember where the other one is.",
+            "Can't you find %s by chance? It's one of the most frequently clicked cards. You should try %s.",
+            "I believe you're looking for %s. Maybe by clicking %s, you'll find the pair."
+        ]
+    },
+    "secondCard": {
+        "withoutHistory": [
+            "Since you've never uncovered this card, I suggest you uncover %s.",
+            "Let me assist you since you've never uncovered this card: try %s.",
+            "I want to assist you since you've never uncovered this card: try %s.",
+            "It's the first time you've uncovered %s, let me help you: click %s.",
+            "First click for %s! We need to make as few moves as possible, so uncover %s.",
+            "You've uncovered %s for the first time, so let me assist you: uncover %s."
+        ],
+        "bothLocationsOnce": [
+            "You've already seen %s. Remember, for the other location, you need to uncover %s.",
+            "You've uncovered both locations of this card. Uncover %s to make a match.",
+            "You've already seen %s: remember, for the other location, you need to uncover %s.",
+            "You've uncovered both locations of %s. Uncover %s to make a match."
+        ],
+        "oneLocationClickedZeroOtherMultipleTimes": [
+            "You've clicked this card often. Since you haven't found the other, let me assist you: click %s.",
+            "Again this card, huh? Can't you find the other? Well, then try %s.",
+            "Another click for this card, maybe it's better that I help you: uncover %s.",
+            "Again the %s card. Let me assist you: try %s.",
+            "Another click for %s, maybe it's better that I help you: uncover %s."
+        ],
+        "bothClickedMultipleTimes": [
+            "Don't you recall clicking both locations multiple times? In that case, try %s.",
+            "Again this card. Try %s and make a match.",
+            "Having trouble despite your numerous clicks? Don't worry, try clicking %s and let's see if we can solve the problem.",
+            "You've seen both locations of %s more than once. Click %s to make a match.",
+            "You've seen %s multiple times and you should have made a match by now. I assume you need help: uncover %s."
+        ],
+        "currentLocationClickedMultipleTimes": [
+            "Again this location, maybe it's better that I help you: try %s.",
+            "You're focusing on this location. Try uncovering %s.",
+            "Again this location, maybe it's better that I help you: try %s.",
+            "Another click for this card, don't you remember where the other one is? Try %s.",
+            "Again this location of %s, maybe it's better that I help you: try %s."
+        ],
+        "oneCardClickedMultipleTimes": [
+            "Hey, another click on this location. Can't you remember where the other one is? Well, then try %s.",
+            "Hey you've clicked %s again. Remember, for the other location, you need to click %s.",
+            "You've clicked this location of %s again. Don't you remember that for the other location, you need to uncover %s?"
+        ],
+        "otherCases": [
+            "It's the first time you've uncovered this location of %s. You've already seen the other location, so click %s.",
+            "You've found the other location of %s. Do you remember seeing the other one, right? Uncover %s.",
+            "You've uncovered the other location of %s! I remind you that you've already seen the other location, click %s."
+        ]
+    }
+}

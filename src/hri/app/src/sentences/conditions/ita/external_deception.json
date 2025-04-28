@@ -1,0 +1,60 @@
+{
+    "secondCard": {
+        "withoutHistory":  
+        [
+            "Visto che non hai mai scoperto %s ti consiglio di scoprire %s",
+            "Permettimi di aiutarti visto che non hai mai scoperto %s: prova %s",
+            "Voglio aiutarti visto che non hai mai scoperto questa locazione di %s: prova %s",
+            "E' la prima volta che scopri %s, lascia che ti aiuti: clicca %s",
+            "Primo click per %s! Dobbiamo fare meno mosse possibili, quindi scopri %s",
+            "Hai scoperto %s per la prima volta, quindi fatti aiutare: scopri %s"
+        ],
+
+        "bothLocationsOnce":
+        [
+            "Ora che hai individuato %s, clicca %s",
+            "Hai già visto %s: ti ricordo che per l'altra locazione devi scoprire %s",
+            "Hai scoperto entrambe le locazioni di %s. Scopri %s per fare match"
+        ],
+
+        "oneLocationClickedZeroOtherMultipleTimes":
+        [
+            "Hai cliccato spesso %s. Visto che non hai trovato l'altra ti aiuterò: clicca %s",
+            "Di nuovo %s, eh? Non riesci a trovare l'altra?. Beh, allora prova %s",
+            "Ancora %s. Lascia che ti aiuti: prova %s",
+            "Ennesimo click per %s, forse è meglio che ti aiuti: scopri %s"
+        ],
+
+        "bothClickedMultipleTimes":
+        [
+            "Non ricordi di aver cliccato più volte entrambe le locazioni di %s? In tal caso, prova %s",
+            "Di nuovo %s. Prova %s e fai match",
+            "Le locazioni di %s ti sono familiari, ma sembra che ci sia un piccolo inghippo nel fare match. Forse cliccando %s risolverai il problema.",
+            "Hai cliccato parecchie volte su %s, ma sembra che la coppia ti stia sfuggendo. Clicca %s e vedi se riesci a fare match.",
+            "Hai visto entrambe le locazioni di %s più di una volta. Clicca %s per fare match",
+            "Hai visto più volte %s e avresti già dovuto fare match. Deduco che tu abbia bisogno di aiuto: scopri %s"
+        ],
+
+        "currentLocationClickedMultipleTimes":
+        [
+            "Hai cliccato spesso su questa locazione di %s. Forse è il momento di provare a scoprire %s per trovare la sua coppia.",
+            "Ti stai concentrando molto su questa locazione di %s, ma non preoccuparti. Clicca %s e vedi se riesci a fare match.",
+            "Un altro click per questa locazione di %s, non ricordi dove si trova l'altra? Prova %s",
+            "Di nuovo questa locazione di %s, forse è meglio che ti aiuti: prova %s"
+        ],
+
+        "oneCardClickedMultipleTimes":
+        [
+            "Ricordati che hai cliccato spesso %s. Ora prova a dare un'occhiata anche all'altra. Scopri %s per fare match.",
+            "Hey hai cliccato ancora %s. Ti ricordo che per l'altra locazione devi cliccare %s",
+            "Hai cliccato di nuovo questa locazione di %s. Non ricordi che per l'altra locazione devi scoprire %s?"
+        ],
+
+        "otherCases":
+        [
+            "È la prima volta che scopri questa locazione di %s. Hai già visto l'altra locazione, quindi clicca %s",
+            "Hai trovato l'altra locazione di %s. Ricordi di aver visto l'altra, vero? Scopri %s",
+            "Hai scoperto l'altra locazione di %s! Ti ricordo che hai già visto l'altra locazione, clicca %s"
+        ]
+    }
+}
