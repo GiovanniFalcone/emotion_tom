@@ -1,5 +1,13 @@
 #!/usr/bin/env python3
 
+"""
+Flow of the interaction module:
+    1. The robot greets the user and asks for their name. 
+    2. The robot explains the rules of the game.
+    3. The robot interacts with the user during the game, providing motivational sentences based on the user's emotional state.
+    4. The robot ends the interaction with a goodbye message.   
+"""
+
 import rospy
 from std_msgs.msg import String
 
@@ -9,7 +17,7 @@ import json
 import sys
 
 # to access to config file
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'util'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'util'))
 from util import Util
 
 # robot
@@ -20,6 +28,7 @@ from sentences.emotion_sentences import EmotionGenerator
 
 class InteractionModule:
     IP_ADDRESS = Util.get_from_json_file("config")['ip']
+    FEEDBACK_TYPE = Util.get_from_json_file("config")['feedback_type']
 
     def __init__(self, robot: RobotInterface, language='ita'):
         # initialize variable
@@ -31,9 +40,7 @@ class InteractionModule:
         # get sentences from interaction file (greetings, rules, goodbye)
         self.speech = self.load_interaction_sentences()
         # get motivational sentences
-        self.emotion_sentence = EmotionGenerator('friendly', self.language)
-        # once the robot said the feedback write on publisher in order to update the csv correctly
-        self.publisher = rospy.Publisher('feedback', String, queue_size=10)
+        self.emotion_sentence = EmotionGenerator(InteractionModule.FEEDBACK_TYPE, self.language)
 
     ###############################################################################################################
     #                                                   SETTINGS                                                  #
@@ -41,7 +48,7 @@ class InteractionModule:
 
     def load_interaction_sentences(self):
         """Get sentences from interaction file."""
-        filename = os.path.join(os.path.dirname(__file__), 'sentences', 'interaction', self.language, 'interaction.json')
+        filename = os.path.join(os.path.dirname(__file__), '../sentences', 'interaction', self.language, 'interaction.json')
         try:
             with open(filename, 'r', encoding='utf-8') as file:
                 data = json.load(file)
@@ -57,62 +64,74 @@ class InteractionModule:
     #                                                INTERACTION                                                  #
     ###############################################################################################################
 
-    def goodbye(self, emotional_condition):
-        """Ending state of the interaction."""
-        rospy.loginfo(f"Goodbye state...")
-        if emotional_condition:
-            sentences = self.speech["end_etom"]
-        else:
-            sentences = self.speech["end_tom"]
-        sentence = random.choice(sentences)
-        # check for placeholders to replace with player name
-        placeholders = sentence.count('%s')
-        if placeholders > 0:
-            sentence = sentence % (self.player_name)
-        self.speak(sentence)
-
     def start_interaction(self, emotional_condition):
         """BEGIN state"""
-        rospy.loginfo("Start interaction...")
-        self.greetings(emotional_condition)
-        self.rules()
+        rospy.loginfo(f"[Start] User detected, starting interaction...")
+        # self.greetings(emotional_condition)
+        # self.rules()
 
     def greetings(self, emotional_condition):
-        """The robot will start the interation."""
-        rospy.loginfo("Greetings...")
-        if emotional_condition:
-            sentences = self.speech["greetings_etom"]
-        else:
-            sentences = self.speech["greetings"]
+        """The robot will start the interaction."""
+        rospy.loginfo("[Greetings] ...")
+        sentences = self.speech["greetings_etom"] if emotional_condition else self.speech["greetings"]
         sentence = random.choice(sentences)
         self.speak(sentence)
-        # ask name to user if emotional condition
-        if emotional_condition:
-            while self.player_name in ['', None]:
-                rospy.loginfo("Asking name...")
-                self.player_name = self.robot.listen()
-                rospy.loginfo(f"Player's name is {self.player_name}...")
-                if self.player_name not in ['', None]:
-                    sentence = self.speech["asking_name"]
-                    self.speak(sentence % self.player_name)
-                    answer = self.robot.listen()
-                    print(f"Answer is {answer}")
-                    if answer in ["yes", "si", "certo", "yep", "si si"]:
-                        break
-                    else:
-                        self.speak(self.speech["repeating_name"])
-                        self.player_name = None
 
-            self.speak(self.speech["greeting_name"] % self.player_name)
+        # Ask for the user's name if emotional condition is true
+        if emotional_condition:
+            self._ask_for_player_name()
+
+    def _ask_for_player_name(self):
+        """Ask for the player's name and confirm it."""
+        while not self.player_name:
+            rospy.loginfo("[Greetings] Asking for the player's name...")
+            self.player_name = self.robot.listen()
+            rospy.loginfo(f"[Greetings] Player's name received: {self.player_name}")
+
+            if self.player_name not in [None, '']:
+                confirmation_sentence = self.speech["asking_name"] % self.player_name
+                self.speak(confirmation_sentence)
+                answer = self.robot.listen()
+                rospy.loginfo(f"[Greetings] Confirmation answer: {answer}")
+
+                if answer.lower() in ["yes", "si", "certo", "yep", "si si"]:
+                    break
+                else:
+                    self.speak(self.speech["repeating_name"])
+                    self.player_name = None
+
+        greeting_name_sentence = self.speech["greeting_name"] % self.player_name
+        self.speak(greeting_name_sentence)
 
     def rules(self):
         """Robot explain the rules to the user."""
-        rospy.loginfo("Before game...")
+        rospy.loginfo("[Before rules] Robot talking...")
         sentences = self.speech["before_rules"]
         sentence = random.choice(sentences)
         self.speak(sentence)
+
+        rospy.loginfo("Rules] Robot uttering rules...")
         sentences = self.speech["rules"]
         sentence = random.choice(sentences)
+        self.speak(sentence)
+
+    def goodbye(self, emotional_condition):
+        """Ending state of the interaction."""
+        rospy.loginfo(f"[Goodbye] ...")
+
+        # based on the condition, choose the appropriate set of sentences
+        if emotional_condition: sentences = self.speech["end_etom"]
+        else:                   sentences = self.speech["end_tom"]
+        
+        # get one of the sentences randomly
+        sentence = random.choice(sentences)
+
+        # check for placeholders to replace with player name (if any it will be replaced with the player name) 
+        placeholders = sentence.count('%s')
+        if placeholders > 0:
+            sentence = sentence % (self.player_name)
+
+        # speak the sentence
         self.speak(sentence)
 
     def get_motivational_sentence(self, emotion, n_pairs, match, board_changed=False):

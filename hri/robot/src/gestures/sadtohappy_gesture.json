@@ -1,15 +1,15 @@
 {
     "frames": [
         {
-            "time": 2.0,
+            "time": 1,
             "params": {
                 "EXPR_SAD": 1.0,
-                "BROW_DOWN_LEFT": 1.0,
-                "BROW_DOWN_RIGHT": 1.0
+                "BROW_DOWN_LEFT": 0.65,
+                "BROW_DOWN_RIGHT": 0.65
             }
         },
         {
-            "time": 3.0,
+            "time": 2,
             "params": {
                 "EXPR_SAD": 0.5,
                 "SMILE_CLOSED": 0.1,
@@ -20,29 +20,29 @@
             }
         },
         {
-            "time": 5.0,
+            "time": 3,
             "params": {
                 "EXPR_SAD": 0.1,
                 "SMILE_CLOSED": 0.4,
                 "BROW_DOWN_LEFT": 0.0,
                 "BROW_DOWN_RIGHT": 0.0,
-                "BROW_UP_LEFT": 1.0,
-                "BROW_UP_RIGHT": 1.0
+                "BROW_UP_LEFT": 0.85,
+                "BROW_UP_RIGHT": 0.85
             }
         },
         {
-            "time": 4.0,
+            "time": 4,
             "params": {
                 "EXPR_SAD": 0.0,
                 "SMILE_CLOSED": 0.6,
-                "BROW_UP_LEFT": 1.0,
-                "BROW_UP_RIGHT": 1.0
+                "BROW_UP_LEFT": 0.9,
+                "BROW_UP_RIGHT": 0.9
             }
         },
         {
-            "time": 4.0,
+            "time": 4.5,
             "params": {
-                "SMILE_OPEN": 0.6,
+                "SMILE_OPEN": 0.5,
                 "BROW_UP_LEFT": 1.0,
                 "BROW_UP_RIGHT": 1.0
             }
@@ -50,7 +50,7 @@
         {
             "time": 5,
             "params": {
-                "SMILE_OPEN": 0.4,
+                "SMILE_OPEN": 0.6,
                 "BROW_UP_LEFT": 1.0,
                 "BROW_UP_RIGHT": 1.0
             }
@@ -58,12 +58,39 @@
         {
             "time": 5.5,
             "params": {
-                "SMILE_OPEN": 0.1,
+                "SMILE_OPEN": 0.5,
+                "BROW_UP_LEFT": 1.0,
+                "BROW_UP_RIGHT": 1.0
+            }
+        },
+        {
+            "time": 6,
+            "params": {
+                "SMILE_OPEN": 0.4,
                 "SMILE_CLOSED": 1,
                 "BROW_UP_LEFT": 1.0,
                 "BROW_UP_RIGHT": 1.0
             }
-        }
+        },
+        {
+            "time": 6.25,
+            "params": {
+                "SMILE_OPEN": 0.2,
+                "SMILE_CLOSED": 1,
+                "BROW_UP_LEFT": 1.0,
+                "BROW_UP_RIGHT": 1.0
+            }
+        },
+          {
+            "time":[6.5],
+            "params":{
+              "BROW_UP_LEFT":0,
+              "BROW_UP_RIGHT":0,
+              "SMILE_OPEN":0.0,
+              "SMILE_CLOSED":0.0
+              },
+            "persist":false
+          }
     ],
     "name": "fromSadToHappy",
     "class": "furhatos.gestures.Gesture"
