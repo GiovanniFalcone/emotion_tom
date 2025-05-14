@@ -3,10 +3,12 @@
     "port": 6000,
     "language": "ita",
     "HRI": true,
+    "skip_intro": true,
     "shuffle": true,
     "record_all_game": true,
     "player_name": "Gio",
     "feedback_type": "friendly",
     "gpt": false,
+    "robot_type": "furhat",
     "multithreading": true
 }

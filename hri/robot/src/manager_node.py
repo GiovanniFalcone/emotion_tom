@@ -15,7 +15,7 @@ from util import Util
 
 # robot
 from model.interface.robot_interface import RobotInterface
-from model.concrete.furhat import Furhat
+from model.robot_factory import RobotFactory
 # interaction functions
 from interaction.interaction import InteractionModule
 # feedback module
@@ -171,10 +171,12 @@ class ManagerNode:
 if __name__ == '__main__':
     try:
         rospy.init_node('interaction_node', anonymous=True)
-        robot = Furhat()
+        # get robot from configuration file and create the instance 
+        robot_type = Util.get_from_json_file("config")['robot_type']
+        robot = RobotFactory.create_robot(robot_type)
         # connect to robot 
         robot.connect()
-        rospy.loginfo("[Manager] Connection with Furhat successfully established!")
+        rospy.loginfo(f"[Manager] Connection with '{robot_type}' successfully established!")
         # if connection is ok than start
         manager_node = ManagerNode(robot)
         manager_node.run()

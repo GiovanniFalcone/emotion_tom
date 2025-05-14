@@ -6,9 +6,15 @@ from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
 import cv2
 
+import os
+import sys
+# to access to config file
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', 'util'))
+from util import Util
+
 # robot
 from model.interface.robot_interface import RobotInterface
-from model.concrete.furhat import Furhat
+from model.robot_factory import RobotFactory
 
 class PerceptionModule:
     def __init__(self, robot: RobotInterface):
@@ -52,9 +58,12 @@ class PerceptionModule:
 if __name__ == '__main__':
     try:
         rospy.init_node('perception_node', anonymous=True)
-        robot = Furhat()
+        # get robot from configuration file and create the instance 
+        robot_type = Util.get_from_json_file("config")['robot_type']
+        robot = RobotFactory.create_robot(robot_type)
+        # connect to robot 
         robot.connect()
-        rospy.loginfo("[Perception] Connection with Furhat successfully established!")
+        rospy.loginfo(f"[Manager] Connection with '{robot_type}' successfully established!")
         node = PerceptionModule(robot)
         node.run()
     except rospy.ROSInterruptException:

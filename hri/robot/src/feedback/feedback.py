@@ -6,7 +6,6 @@ import random
 import json
 import requests
 import time
-import numpy as np
 
 # in order to use and save correctly in csv file, ecc
 from threading import Lock
@@ -46,7 +45,7 @@ class Feedback:
         # emotion logic (how to handle frame, classify based on turn, ecc)
         self.emotion_processor = EmotionProcessor()
         # Emotion handler
-        self.emotion_handler = RobotEmotionController(self.robot)
+        self.robot_emotion_controller = RobotEmotionController(self.robot)
 
         # Head pose estimation for csv
         self.head_pose = None
@@ -116,9 +115,6 @@ class Feedback:
         Extract game information for emotion handling.
         It use the game_data_lock to ensure thread safety when accessing game state variables.
         It use the first_flip_lock to check if the robot is providing a hint on the first flip.
-
-        Args:
-            game_state: Current state of the game (e.g., 'END').
         
         Returns:
             condition: Boolean indicating if the logger is initialized and the game is not ended.
@@ -142,10 +138,59 @@ class Feedback:
             is_hint_provided_on_first_flip = self.is_hint_first_flip
 
         return condition, is_turn_even, match_copy, turn_copy, motivated_copy, is_hint_provided_on_first_flip
+    
+    def _update_game_when_record_frames_in_even_turns(self, callback_name):
+        """
+        Updates the turn count to ensure it is odd when recording frames during even turns.
+        Then, it set the 'match' variable to False, since the turn will be odd.
 
-    ###############################################################################################################
-    #                                                   HANDLER                                                   #
-    ###############################################################################################################
+        This method increments the turn count by 1 to make it odd. This is necessary because
+        the callback does not receive updated data until the user interacts (e.g., clicks a new card).
+        For example, if the user finds a pair during turn 4 and waits before clicking another card,
+        the callback will still consider the turn as 4. Incrementing the turn ensures proper
+        synchronization.
+        Regarding the 'match' variable, once the turn is increased by 1, it must be set to False.
+        For example, if the user finds a pair during turn 4, this function will increase the turn by 1,
+        so turn is now 5. This means that the user must uncover the first card of the pair. 
+
+        Args:
+            callback_name (str): The name of the callback function invoking this method, used for logging.
+
+        Side Effects:
+            - Increments the `self.turn` attribute by 1.
+            - Sets the `self.match` to False.
+            - Logs the updated turn value using ROS logging.
+        """
+        # until the user clicks a new card, the callback does not receive updated data. Therefore increase turn to be odd
+        # e.g: user finds a pair in a turn 4; wait before click another card -> callback will wait and so the turn will still be 4
+        with self.game_data_lock: 
+            self.turn += 1 
+            self.match = False
+        rospy.loginfo(f"[{callback_name}] ROS turn is: '{self.turn}'...")
+
+    def _should_skip_feedback_due_to_hint(self):
+        """
+        Check if the robot should skip the feedback since user has received a hint on first flip
+        
+        Example: 
+           - turn 'n' (even) user do not finds a pair; 
+           - the next action (based on RL policy) is provide a hint on first flip (turn n + 1) using ToM
+           - therefore, the robot will provide the hint
+
+        Returns:
+            bool: True if the robot should not provide a feedback, False otherwise
+        """
+        with self.first_flip_lock:
+            is_hint_provided_on_first_flip = self.is_hint_first_flip
+
+        if is_hint_provided_on_first_flip:
+            rospy.loginfo("[Feedback] Robot can't motivate because of hint provided on first flip...")
+            # uncomment the next line if you want to save the emotion once the user has made a move
+            # example: user don't find a pair in turn 4, so we should save the emotion
+            # but in the turn 5 the robot will provide a hint on first flip
+            return True
+
+        return False
 
     def handle_first_flip(self, value):
         """
@@ -154,6 +199,10 @@ class Feedback:
         """
         with self.first_flip_lock: 
             self.is_hint_first_flip = value
+
+    ###############################################################################################################
+    #                                              Emotion callback                                               #
+    ###############################################################################################################
 
     def handle_emotion(self, emotion_msg):
         """
@@ -322,10 +371,11 @@ class Feedback:
             return
         else:
             # otherwise, time limit has elpased -> don't save emotions 
-            # until the user clicks a new card, the callback does not receive updated data. Therefore increase turn to be odd
-            # e.g: user finds a pair in a turn 4; wait before click another card -> callback will wait and so the turn will still be 4
-            with self.game_data_lock: self.turn += 1 
-            rospy.loginfo(f"[Emotion callback] ROS turn is: '{self.turn}'...")
+            self._update_turn_when_record_frames_in_even_turns("Emotion callback")
+
+    ###############################################################################################################
+    #                                                Game callback                                                #
+    ###############################################################################################################
 
     def handle_game(self, game_data):
         """
@@ -363,7 +413,6 @@ class Feedback:
 
         # when the game ends, robot will say goodbye to the user
         if self.is_game_ended:
-            self.state = 'END'
             self.interaction.goodbye(self.emotional_condition)
             self.interaction.player_name = ''
 
@@ -397,19 +446,10 @@ class Feedback:
             with self.utter_lock:       self.has_uttering = False
             return
         
-        # otherwise, the turn is even and robot can, eventually, provide a feedback
-        # however, if user has received a suggestion on first flip robot will not motivate 
-        # example: 
-        #   - turn 'n' (even) user do not finds a pair; 
-        #   - the next action (based on RL policy) is provide a hint on first flip (turn n + 1) using ToM
-        #   - therefore, the robot will provide the hint
-        with self.first_flip_lock:
-            is_hint_provided_on_first_flip = self.is_hint_first_flip
-        if is_hint_provided_on_first_flip: 
-            rospy.loginfo("[Feedback] Robot can't motivate because of hint provided on first flip...")
-            # uncomment the next line if you want to save the emotion once the user has made a move
-            # example: user don't find a pair in turn 4, so we should save the emotion
-            # but in the turn 5 the robot will provide a hint on first flip
+        # If the turn is even, the robot can potentially provide feedback.
+        # However, if the user has received a hint on the first flip, the robot will skip motivation.
+        # (Refer to the documentation of the following function for more details.)
+        if self._should_skip_feedback_due_to_hint():
             return
 
         # get current time in order to save the emotion for some seconds when the robot should not provide a feedback 
@@ -421,7 +461,7 @@ class Feedback:
         #   - the emotion hasn't been detected 
         #   - the emotion is fear: we take it as classification error
         #   - the emotion is fear/angry/fear while user find a paid -> we take it as classification error
-        if emotion in ['fear', '', None] or (match and emotion in ['sad', 'angry', 'fear']):
+        if emotion in ['fear', 'disgust', '', None] or (match and emotion in ['sad', 'angry', 'fear']):
             emotion = 'neutral'
 
         # get estimated head pose
@@ -448,7 +488,7 @@ class Feedback:
         game_time = self.logger.get_game_time()
 
         # if probability and hint is not provided on first flip then motivate user
-        if random.random() < probability and not is_hint_provided_on_first_flip:
+        if random.random() < probability:
             self._handle_when_feedback_is_provided(timestamp, game_time, emotion, emotion_score, 
                                                    head_pose, x_pose, y_pose, z_pose, n_pairs, match, turn
                                                    )
@@ -492,8 +532,8 @@ class Feedback:
         rospy.loginfo(f"[Feedback] Waiting ...")
         
         # set robot appearance
-        self.emotion_handler.change_led_color_based_on_emotion(emotion)
-        self.emotion_handler.handle_expression_based_on_emotion(emotion)
+        self.robot_emotion_controller.change_led_color_based_on_emotion(emotion)
+        self.robot_emotion_controller.handle_expression_based_on_emotion(emotion)
 
         # get sentence that robot will utter
         motivational_sentence = self.interaction.get_motivational_sentence(emotion, n_pairs, match)
@@ -511,16 +551,19 @@ class Feedback:
             self.interaction.speak(motivational_sentence)
             rospy.loginfo(f"[Feedback] Robot ended uttering at: '{self.logger.get_game_time()}'...")
 
+        # set to 'no' for full emotion csv, since the robot has finished talking
+        with self.game_data_lock: self.motivated = 'no'
+
         # robot ended uttering -> update variable for emotion_callback (full emotion csv)
         with self.utter_lock: self.has_uttering = False
 
-        # until the user clicks a new card, the callback does not receive updated data. Therefore increase turn to be odd
-        # e.g: user finds a pair in a turn 4; wait before click another card -> callback will wait and so the turn will still be 4
-        with self.game_data_lock: self.turn += 1 
-        rospy.loginfo(f"[Feedback] ROS turn is: '{self.turn}'...\n")
+        # Once the user has clicked a card in a certain turn (e.g turn 4), 
+        # until a new card is clicked (i.e callback activated) the turn will still be 4.
+        # Therefore, increase the turn to avoid saving the emotion in the CSV during odd turns.
+        self._update_game_when_record_frames_in_even_turns("Feedback")
         
         # remove LED
-        self.emotion_handler.change_led_color_based_on_emotion("")
+        self.robot_emotion_controller.change_led_color_based_on_emotion("")
         # Log to CSV ('yes' because is 'filtered' csv - it only save the emotion on each move)
         self.logger.log_to_csv(timestamp, game_time, self.id_player, "filtered", emotion, emotion_score, 
                                head_pose, x_pose, y_pose, z_pose, match, turn, 'yes')
@@ -545,10 +588,13 @@ class Feedback:
             x_pose = self.x_pose
             y_pose = self.y_pose
             z_pose = self.z_pose
+        # time of emotion
+        timestamp = self.logger.get_time()
+        game_time = self.logger.get_game_time()
 
         # set robot appearance
-        self.emotion_handler.change_led_color_based_on_emotion(emotion)
-        self.emotion_handler.handle_expression_based_on_emotion(emotion)
+        self.robot_emotion_controller.change_led_color_based_on_emotion(emotion)
+        self.robot_emotion_controller.handle_expression_based_on_emotion(emotion)
 
         # get sentence that robot will utter
         motivational_sentence = self.interaction.get_motivational_sentence(emotion, n_pairs, None, board_changed=True)
@@ -569,19 +615,21 @@ class Feedback:
         # if emotion is happy or neutral do another facial expression
         if emotion in ['happy, neutral']: self.robot.do_facial_expression("BigSmile" if random.choice([True, False]) else "Wink")
 
+        # set to 'no' for full emotion csv, since the robot has finished talking
+        with self.game_data_lock: self.motivated = 'no'
+
         # robot ended uttering -> update variable for emotion_callback (full emotion csv)
         with self.utter_lock: self.has_uttering = False
         
         # remove LED
-        self.emotion_handler.change_led_color_based_on_emotion("")
-        # until the user clicks a new card, the callback does not receive updated data. Therefore increase turn to be odd
-        # e.g: user finds a pair in a turn 4; wait before click another card -> callback will wait and so the turn will still be 4
-        with self.game_data_lock: self.turn += 1 
-        rospy.loginfo(f"[Feedback] ROS turn is: '{self.turn}'...\n")
+        self.robot_emotion_controller.change_led_color_based_on_emotion("")
+        # Once the user has clicked a card in a certain turn (e.g turn 4), 
+        # until a new card is clicked (i.e callback activated) the turn will still be 4.
+        # Therefore, increase the turn to avoid saving the emotion in the CSV during odd turns. 
+        # (similarly for match that is set to False)
+        self._update_game_when_record_frames_in_even_turns("Feedback")
         # Log to CSV ('yes' because is 'filtered' csv - it only save the emotion on each move)
         self.board_changed = False
-        timestamp = self.logger.get_time()
-        game_time = self.logger.get_game_time()
         self.logger.log_to_csv(timestamp, game_time, self.id_player, "filtered", emotion, emotion_score, 
                                head_pose, x_pose, y_pose, z_pose, False, turn, 'yes')
 
@@ -592,9 +640,14 @@ class Feedback:
         """
         rospy.loginfo(f"[Feedback] No feedback provided...")
             
-        # in order to save the emotion for some seconds when the robot should not provide a feedback 
-        self.time_to_wait = random.choice(Feedback.TIME_TO_WAIT_OPTIONS)
-        rospy.loginfo(f"[Feedback] Time to wait until time interval expires or new card has been clicked: {self.time_to_wait} seconds...\n")
+        # in order to save the emotion for some seconds when the robot should not provide a feedback
+        # (only when we want save emotions during even turns)
+        if not self.RECORD_ALL_GAME:
+            self.time_to_wait = random.choice(Feedback.TIME_TO_WAIT_OPTIONS)
+            rospy.loginfo(f"[Feedback] Time to wait until time interval expires or new card has been clicked: {self.time_to_wait} seconds...\n")
+
+        # update turn and match since this data will not be updated until the callback is called (i.e. the user does not click a new card)
+        self._update_game_when_record_frames_in_even_turns("Feedback")
         
         # the robot will not motivate the user
         with self.game_data_lock: self.motivated = 'no'

@@ -10,7 +10,12 @@
     	
     <arg name="emotion_condition" /> 
     <param name="emotion_condition" value="$(arg emotion_condition)"/>
+
+    <arg name="open_webcam" default="true"/>
+    <param name="open_webcam" value="$(arg open_webcam)"/>
     
-    <!-- Emotion node: emotion recognition -->
-    <node name="emotion_node" pkg="emotion" type="emotion_node.py" output="screen"/>
+    <!-- Emotion node: emotion recognition (launched only if open_webcam is True)-->
+    <group if="$(arg open_webcam)">
+        <node name="emotion_node" pkg="emotion" type="emotion_node.py" output="screen"/>
+    </group>
 </launch>

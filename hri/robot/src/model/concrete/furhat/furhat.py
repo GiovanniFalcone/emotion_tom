@@ -1,7 +1,9 @@
 # furhat movements
-from model.concrete.automatic_movements import AutomaticMovements
+from model.concrete.furhat.automatic_movements import AutomaticMovements
 # Furhat connection
-from model.concrete.connection import RobotConnectionManager
+from model.concrete.furhat.connection import RobotConnectionManager
+# interface
+from model.interface.robot_interface import RobotInterface
 
 # to access to config file
 import os
@@ -14,7 +16,7 @@ import threading
 # load custom gestures
 import json
 
-class Furhat:
+class Furhat(RobotInterface):
     def __init__(self):
         self.robot = None
         self._gestures_api = None

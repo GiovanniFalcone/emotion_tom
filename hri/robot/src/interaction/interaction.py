@@ -22,13 +22,14 @@ from util import Util
 
 # robot
 from model.interface.robot_interface import RobotInterface
-from model.concrete.furhat import Furhat
+from model.robot_factory import RobotFactory
 # Emotion sentence
 from sentences.emotion_sentences import EmotionGenerator
 
 class InteractionModule:
     IP_ADDRESS = Util.get_from_json_file("config")['ip']
     FEEDBACK_TYPE = Util.get_from_json_file("config")['feedback_type']
+    SKIP_INTRO = Util.get_from_json_file("config")['skip_intro']
 
     def __init__(self, robot: RobotInterface, language='ita'):
         # initialize variable
@@ -67,8 +68,10 @@ class InteractionModule:
     def start_interaction(self, emotional_condition):
         """BEGIN state"""
         rospy.loginfo(f"[Start] User detected, starting interaction...")
-        # self.greetings(emotional_condition)
-        # self.rules()
+        # if skip_intro is True, the robot will not greet the user 
+        if not InteractionModule.SKIP_INTRO:
+            self.greetings(emotional_condition)
+            self.rules()
 
     def greetings(self, emotional_condition):
         """The robot will start the interaction."""
@@ -146,7 +149,9 @@ class InteractionModule:
 if __name__ == '__main__':
     try:
         rospy.init_node('interaction_node', anonymous=True)
-        robot = Furhat()
+        # get robot from configuration file and create the instance 
+        robot_type = Util.get_from_json_file("config")['robot_type']
+        robot = RobotFactory.create_robot(robot_type)
         interaction_node = InteractionModule(robot)
         interaction_node.run()
     except rospy.ROSInterruptException:
