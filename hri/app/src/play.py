@@ -1,9 +1,10 @@
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'util'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+from util.util import Util
 
-from util import constants
-from util import Util
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+from rl_utils.env import constants
 
 from learning.qlearning_elements import actions, states, epsilon, alpha, gamma
 from learning.learning import Qlearning

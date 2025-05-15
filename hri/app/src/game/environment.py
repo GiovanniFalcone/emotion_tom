@@ -3,9 +3,11 @@ from game.game import Game
 from game.player import Player
 from game.card import Card
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'util'))
-from util import constants
-from util import Util
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+from util.util import Util
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..'))
+from rl_utils.env import constants
 
 class Environment:
     def __init__(self, SERVER_IP, ID_PLAYER, instance_flask):

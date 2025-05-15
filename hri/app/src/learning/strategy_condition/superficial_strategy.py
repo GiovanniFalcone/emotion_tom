@@ -3,10 +3,11 @@ from sentences.sentences import SuggestionGenerator
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'util'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..'))
+from rl_utils.env import constants
 
-from util import Util
-from util import constants
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..'))
+from util.util import Util
 
 class SuperficialStrategy(AgentStrategy):
     def __init__(self, env):

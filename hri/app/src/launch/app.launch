@@ -1,5 +1,8 @@
 <launch>
 
+    <arg name="id" /> 
+    <param name="id" value="$(arg id)"/>
+
 	<arg name="condition" /> 
     <param name="condition" value="$(arg condition)"/>
 

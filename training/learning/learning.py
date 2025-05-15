@@ -3,12 +3,11 @@ import pandas as pd
 
 import sys
 import os
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'rl_utils'))
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'util'))
-
-from util import constants
-from util import Util
-from plotting import Plotting
+from rl_utils.env import constants
+from util.util import Util
+from util.plotting import Plotting
 
 from learning.agent import Agent
 

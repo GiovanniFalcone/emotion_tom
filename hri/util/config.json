@@ -2,7 +2,7 @@
     "ip": "172.17.0.1", 
     "port": 6000,
     "language": "ita",
-    "HRI": true,
+    "HRI": false,
     "skip_intro": true,
     "shuffle": true,
     "record_all_game": true,
@@ -10,5 +10,6 @@
     "feedback_type": "friendly",
     "gpt": false,
     "robot_type": "furhat",
+    "robot_ip": "localhost",
     "multithreading": true
 }

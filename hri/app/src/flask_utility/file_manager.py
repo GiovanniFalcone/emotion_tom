@@ -5,9 +5,8 @@ import sys
 import os
 import numpy as np
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'util'))
-
-from util import Util
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+from util.util import Util
 
 class FileManager:
 

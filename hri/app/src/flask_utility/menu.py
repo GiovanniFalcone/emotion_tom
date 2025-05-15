@@ -1,12 +1,8 @@
 import sys
 import os
-import threading
 
-from flask import jsonify
-
-from util import Util
-
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', 'util'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+from util.util import Util
 
 class Menu:
     MULTITHREADING = Util.get_from_json_file("config")['multithreading'] 

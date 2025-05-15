@@ -7,9 +7,9 @@ import multiprocessing
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'util'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+from util.util import Util
 
-from util import Util
 from play import run_q_learning
 
 from flask_utility.file_manager import FileManager

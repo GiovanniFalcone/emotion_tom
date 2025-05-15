@@ -17,8 +17,8 @@ import json
 import sys
 
 # to access to config file
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'util'))
-from util import Util
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+from util.util import Util
 
 # robot
 from model.interface.robot_interface import RobotInterface

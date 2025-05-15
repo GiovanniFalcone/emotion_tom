@@ -2,8 +2,8 @@ import sys
 import os
 import math
 
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'util'))
-from util import constants
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'rl_utils'))
+from rl_utils.env import constants
 
 from game.card import Card
 from game.player import Player

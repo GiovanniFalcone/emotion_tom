@@ -2,14 +2,14 @@ import numpy as np
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'util'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..'))
+from rl_utils.env import constants
 
 from learning.learning import Qlearning
 from game.environment import Environment
 
-from util import constants
-from util import Util
-from plotting import Plotting
+from util.util import Util
+from util.plotting import Plotting
 
 # define robot's action
 actions = ['none', 'suggest_row_col', 'suggest_card']

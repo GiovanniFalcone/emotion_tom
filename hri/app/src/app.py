@@ -17,10 +17,11 @@ from flask_utility.menu import Menu
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'util'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
+from util.util import Util
 
-from util import Util
-from util import constants
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+from rl_utils.env import constants
 
 # remove debug messages
 log = logging.getLogger('werkzeug')
@@ -62,6 +63,9 @@ try:
     else:
         expertiment_condition = int(expertiment_condition)
     e_tom = True if expertiment_condition == constants.E_TOM else False
+
+    id_player = int(rospy.get_param("id"))
+    Util.check_if_dir_with_id_already_exists(id_player)
 except KeyError:
     rospy.logerr(
         "Usage: roslaunch app app.launch condition:=<condition>\n" +
@@ -87,14 +91,10 @@ def get_utility_flask(id, log_context):
     return utility_flask
 
 def create_new_session(data):
-    # get id for user
-    lock.acquire()
-    id = Util.create_dir_for_current_user() 
-    lock.release()
     # save it into session
-    session['id'] = id
+    Util.create_dir_for_current_user(id_player)
+    session['id'] = id_player
     session['language'] = data.get('language')
-    return id
 
 def clear_session():
     id = session.get('id')
@@ -132,7 +132,7 @@ def provide_id():
 @app.route('/', methods=["GET", "POST"])
 @app.route('/index', methods=["GET", "POST"])
 def index():
-    global expertiment_condition, first_start, exit_pressed
+    global expertiment_condition, first_start, exit_pressed, id_player
 
     if 'menu_handled' not in session and not exit_pressed:
         if not first_start: 
@@ -147,6 +147,8 @@ def index():
             # if exit was pressed it's useless show the other menu
             if len(session) != 0:
                 expertiment_condition = Menu._handle_admin_menu_experimental_condition()
+                # increase player id by 1 since the server is still running
+                id_player += 1
         else: 
             first_start = False
         
@@ -162,20 +164,18 @@ def index():
 
 @app.route('/set_settings', methods=["POST"])
 def set_setting():
-    global id_player
     # unpack request
     data = request.get_json()
 
     # create a session for new user, otherwise delete it and create a new one
     if 'id' not in session:
         Util.formatted_debug_message("Creating new session...", level='Settings')
-        id = create_new_session(data)
+        create_new_session(data)
     else:
         clear_session()
         Util.formatted_debug_message("Session cleared...", level='Settings')
-        id = create_new_session(data)
+        create_new_session(data)
     
-    id_player = id
     Menu.clean_shell()
     # return response
     response = jsonify({"message": "ok"})

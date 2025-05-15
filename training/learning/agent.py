@@ -2,9 +2,9 @@ import random
 
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'util'))
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'rl_utils'))
 
-from util import constants
+from rl_utils.env import constants
 
 class Agent:
     def __init__(self, env):

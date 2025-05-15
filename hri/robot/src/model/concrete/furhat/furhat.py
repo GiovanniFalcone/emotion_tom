@@ -1,3 +1,6 @@
+# furhat API
+from furhat_remote_api import FurhatRemoteAPI
+
 # furhat movements
 from model.concrete.furhat.automatic_movements import AutomaticMovements
 # Furhat connection
@@ -8,8 +11,8 @@ from model.interface.robot_interface import RobotInterface
 # to access to config file
 import os
 import sys
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..', 'util'))
-from util import Util
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..'))
+from util.util import Util
 
 # create a separate thread to run automatic movements of furhat's head
 import threading
@@ -21,12 +24,28 @@ class Furhat(RobotInterface):
         self.robot = None
         self._gestures_api = None
         self._demo = Util.get_from_json_file("config")['HRI']
+        self.furhat_ip = Util.get_from_json_file("config")['robot_ip'] 
+
+    def _get_session(self):
+        """
+        Returns a connection to furhat robot if session is not established yet, otherwise it will return the old session. 
+        """
+        session = None
+
+        if RobotConnectionManager._session is None:
+            try:
+                session = FurhatRemoteAPI(self.furhat_ip)
+            except Exception as e:
+                print("Unable to connect to Furhat:", e)
+                os._exit(1)
+                
+        return session
 
     def connect(self):
         if not self._demo:
             return
         
-        self.robot = RobotConnectionManager.get_session()
+        self.robot = self._get_session()
         # load gestures
         expressions = self.robot.get_gestures()
         self._gestures_api = [expression.name for expression in  expressions]

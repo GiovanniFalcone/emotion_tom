@@ -7,8 +7,8 @@ import sys
 from string import Template
 
 # to access to config file
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', 'util'))
-from util import Util
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
+from util.util import Util
 
 
 class EmotionGenerator:

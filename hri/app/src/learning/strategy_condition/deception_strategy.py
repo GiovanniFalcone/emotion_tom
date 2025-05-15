@@ -4,10 +4,13 @@ from sentences.sentences import SuggestionGenerator
 import random
 import sys
 import os
-sys.path.append(os.path.join(os.path.dirname(__file__), '..', 'util'))
 
-from util import constants
-from util import Util
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..', '..'))
+from rl_utils.env import constants
+
+sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..', '..'))
+from util.util import Util
+
 from game.card import Card
 
 class DeceptionStrategy(AgentStrategy):
