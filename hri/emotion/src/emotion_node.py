@@ -18,6 +18,40 @@ from concurrent.futures import ProcessPoolExecutor
 from detection import Detection
 # prova
 from collections import deque
+from threading import Thread
+
+
+# https://stackoverflow.com/questions/55099413/python-opencv-streaming-from-camera-multithreading-timestamps 
+# https://github.com/vasugupta9/DeepLearningProjects/blob/main/MultiThreadedVideoProcessing/video_processing_parallel.py
+class VideoStreamWidget:
+    def __init__(self, src=0):
+        self.cap = cv2.VideoCapture(src)
+        self.cap.set(cv2.CAP_PROP_FOURCC, cv2.VideoWriter_fourcc(*'MJPG'))
+        if not self.cap.isOpened():
+            raise IOError("Cannot open webcam")
+
+        # reading a single frame from vcap stream for initializing 
+        self.grabbed, self.frame = self.cap.read()
+        self.stopped = False
+        self.thread = Thread(target=self.update, daemon=True)
+        self.thread.start()
+
+    def update(self):
+        while not self.stopped:
+            self.grabbed, self.frame = self.cap.read()
+            if not self.grabbed:
+                print("Frame read failed.")
+                time.sleep(0.1)
+            # adding a delay for simulating time taken for processing a frame 
+            time.sleep(0.01)
+
+    def read(self):
+        return self.grabbed, self.frame
+
+    def stop(self):
+        self.stopped = True
+        self.thread.join()
+        self.cap.release()
 
 class EmotionModule:
     def __init__(self):
@@ -28,11 +62,7 @@ class EmotionModule:
         # used to save all emotion in the csv
         self.full_emotion_publisher = rospy.Publisher('full_emotion', emotion, queue_size=10)
         self.rate = rospy.Rate(30)  # Hz
-        self.cap = cv2.VideoCapture(0)
-        # Set camera parameters
-        self.cap.set(cv2.CAP_PROP_FRAME_WIDTH, 640)
-        self.cap.set(cv2.CAP_PROP_FRAME_HEIGHT, 480)
-        self.cap.set(cv2.CAP_PROP_FPS, 30)
+        self.cap = VideoStreamWidget(0)
         rospy.loginfo("[EmotionModule] Camera initialized successfully.")
         
         # prova
@@ -123,9 +153,10 @@ class EmotionModule:
             # Check if the user has pressed the `q` key, if yes then close the program.
             if cv2.waitKey(1) & 0xFF == ord('q'):
                 break
-
-        self.cap.release()
+        
+        process_executor.shutdown(wait=True)
         cv2.destroyAllWindows()
+        self.cap.stop()
 
     def handle_emotion(self, text_pose, pose_coordinates, result):
         # Mapping of the emotion to valence

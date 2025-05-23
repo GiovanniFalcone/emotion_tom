@@ -548,7 +548,7 @@ class Feedback:
         # block until robot has not finished to talk
         # (used when user click a card to fast)
         with self.speaking_lock:
-            self.interaction.speak(motivational_sentence)
+            self.interaction.speak(motivational_sentence, emotion=emotion)
             rospy.loginfo(f"[Feedback] Robot ended uttering at: '{self.logger.get_game_time()}'...")
 
         # set to 'no' for full emotion csv, since the robot has finished talking
@@ -609,7 +609,7 @@ class Feedback:
         # block until robot has not finished to talk
         # (used when user click a card to fast)
         with self.speaking_lock:
-            self.interaction.speak(motivational_sentence)
+            self.interaction.speak(motivational_sentence, emotion=emotion)
             rospy.loginfo(f"[Feedback] Robot ended uttering at: '{self.logger.get_game_time()}'...")
         
         # if emotion is happy or neutral do another facial expression

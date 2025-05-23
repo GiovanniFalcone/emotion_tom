@@ -1,0 +1,79 @@
+{
+  "frames": [
+    {
+      "time": [0.32, 2],
+      "params": {
+        "SMILE_CLOSED": 0.8,
+        "BROW_UP_LEFT": 1.0,
+        "BROW_UP_RIGHT": 1.0
+      }
+    },
+    {
+      "time": [2.5],
+      "params": {
+        "BROW_UP_LEFT": 1.0,
+        "BROW_UP_RIGHT": 1.0,
+        "SMILE_OPEN": 0.4
+      }
+    },
+    {
+      "time": [3],
+      "params": {
+        "BROW_UP_LEFT": 1.0,
+        "BROW_UP_RIGHT": 1.0,
+        "SMILE_CLOSED": 0.8
+      }
+    },
+    {
+      "time": [3.5],
+      "params": {
+        "BROW_UP_LEFT": 1.0,
+        "BROW_UP_RIGHT": 1.0,
+        "SMILE_CLOSED": 0.4
+      }
+    },
+    {
+      "time": [4],
+      "params": {
+        "BROW_UP_LEFT": 1.0,
+        "BROW_UP_RIGHT": 1.0,
+        "SMILE_CLOSED": 0.2
+      }
+    },
+    {
+      "time": [4.5],
+      "params": {
+        "SMILE_OPEN": 0.5
+      }
+    },
+    {
+      "time": [5],
+      "params": {
+        "SMILE_OPEN": 0.8
+      }
+    },
+    {
+      "time": [5.5],
+      "params": {
+        "SMILE_OPEN": 0.85
+      }
+    },
+    {
+      "time": [6, 6.5],
+      "persist": false,
+      "params": {
+        "SMILE_OPEN": 0.9
+      }
+    },
+    {
+      "time": [7],
+      "persist": false,
+      "params": {
+        "SMILE_OPEN": 0.0,
+        "SMILE_CLOSED": 0.1
+      }
+    }
+  ],
+  "name": "indefiniteSmile",
+  "class": "furhatos.gestures.Gesture"
+}

@@ -6,7 +6,7 @@ class RobotInterface(ABC):
         pass
 
     @abstractmethod
-    def say(self, sentence):
+    def say(self, sentence, **kwargs):
         pass
 
     @abstractmethod

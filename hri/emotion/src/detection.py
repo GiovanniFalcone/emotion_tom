@@ -17,8 +17,8 @@ class Detection:
         mp_face_mesh = mp.solutions.face_mesh
         self.face_mesh = mp_face_mesh.FaceMesh(min_detection_confidence=0.5, min_tracking_confidence=0.5)
         # in order to draw rectangle around the face - also landmarks, etc...
-        mp_drawing = mp.solutions.drawing_utils
-        drawing_spec = mp_drawing.DrawingSpec(color=(128, 0, 128), thickness=2, circle_radius=1)
+        # mp_drawing = mp.solutions.drawing_utils
+        # drawing_spec = mp_drawing.DrawingSpec(color=(128, 0, 128), thickness=2, circle_radius=1)
     
     @staticmethod
     # credit: https://medium.com/@vabhinav991222/effortless-face-detection-and-distance-measurement-enhancing-interaction-with-computer-vision-d96e280d16a0
@@ -40,7 +40,7 @@ class Detection:
             # start = time.time()
             result =  DeepFace.analyze(face_detected, actions=['emotion'], enforce_detection=False)
             # end = time.time() - start
-            #print(f"Time taken for DeepFace analysis: {end:.4f} seconds -> {result[0]['dominant_emotion']}")
+            # print(f"Time taken for DeepFace analysis: {end:.4f} seconds -> {result[0]['dominant_emotion']}")
             return result
 
     def face_detection_mediapipe(self, frame):
@@ -155,10 +155,10 @@ class Detection:
                 z = angles[2] * 360
 
                 #here based on axis rot angle is calculated
-                if y < -10:     text = "Looking Left"
-                elif y > 10:    text = "Looking Right"
-                elif x < -10:   text = "Looking Down"
-                elif x > 10:    text = "Looking Up"
+                if y < -15:     text = "Looking Left"
+                elif y > 15:    text = "Looking Right"
+                elif x < -15:   text = "Looking Down"
+                elif x > 15:    text = "Looking Up"
                 else:           text = "Forward"
 
                 if text is not None:

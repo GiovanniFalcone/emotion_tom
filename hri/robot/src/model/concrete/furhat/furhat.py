@@ -1,13 +1,29 @@
+"""
+This module contains the implementation of the Furhat robot interface.
+It provides methods to connect to the Furhat robot, send speech, listen for user input,
+perform facial expressions, and control the robot's LED lights.
+
+The Furhat class inherits from the RobotInterface class and implements the necessary methods 
+to interact with the Furhat robot.
+
+The class is designed to work in both demo mode and SDK mode. In demo mode, it uses the FurhatRemoteAPI
+to connect to the robot and perform actions. In SDK mode, it sends HTTP requests to the robot's API
+to perform actions.
+    - if demo (config.json) is set to True, the functions will simply do nothing.
+    - if sdk (config.json) is set to True, the robot will use the HTTP API to communicate with the Furhat robot.
+    - if sdk is set to False, the robot will use the FurhatRemoteAPI to communicate with the Furhat robot (in this case, the robot 
+      ip should be 'localhost' or the one of the phisical robot).
+"""
+
 # furhat API
 from furhat_remote_api import FurhatRemoteAPI
 
 # furhat movements
 from model.concrete.furhat.automatic_movements import AutomaticMovements
-# Furhat connection
-from model.concrete.furhat.connection import RobotConnectionManager
 # interface
 from model.interface.robot_interface import RobotInterface
 
+import requests
 # to access to config file
 import os
 import sys
@@ -23,8 +39,12 @@ class Furhat(RobotInterface):
     def __init__(self):
         self.robot = None
         self._gestures_api = None
-        self._demo = Util.get_from_json_file("config")['HRI']
+        self._HRI = Util.get_from_json_file("config")['HRI']
+        self._sdk = Util.get_from_json_file("config")['robot_sdk']
         self.furhat_ip = Util.get_from_json_file("config")['robot_ip'] 
+        self.furhat_port = Util.get_from_json_file("config")['robot_port'] # only for sdk
+        language = Util.get_from_json_file("config")['language'] 
+        self.language = 'it-IT' if language == "ita" else "en-US"
 
     def _get_session(self):
         """
@@ -32,50 +52,86 @@ class Furhat(RobotInterface):
         """
         session = None
 
-        if RobotConnectionManager._session is None:
-            try:
-                session = FurhatRemoteAPI(self.furhat_ip)
-            except Exception as e:
-                print("Unable to connect to Furhat:", e)
-                os._exit(1)
+        try:
+            session = FurhatRemoteAPI(self.furhat_ip)
+        except Exception as e:
+            print("Unable to connect to Furhat:", e)
+            os._exit(1)
                 
         return session
 
     def connect(self):
-        if not self._demo:
+        # do not connect to the robot if HRI is set to False
+        if not self._HRI:
+            return
+        
+        # do nothing since the sdk should be already connected
+        if self._sdk:   
             return
         
         self.robot = self._get_session()
-        # load gestures
+        # load built-in gestures 
         expressions = self.robot.get_gestures()
         self._gestures_api = [expression.name for expression in  expressions]
 
-    def say(self, sentence):
-        if self._demo:
+    def say(self, sentence, **kwargs):
+        # if sdk is set to True, then send an http request to robot sdk to make it speak the sentence
+        if self._sdk:
+            data = {"sentence": sentence}
+            if 'emotion' in kwargs:
+                data.update(kwargs)
+                self._send_http_request(route="feedback", data=data)
+            else:
+                # generic furhat.say(something)
+                self._send_http_request(route="speech", data=data)
+            return 
+
+        # if HRI is True, the robot (remote api) can speak
+        if self._HRI:
             self.robot.say(text=sentence, blocking=True)
 
     def listen(self):
-        if self._demo:
-            answer = self.robot.listen()
+        # send and http request to sdk 
+        # returns what robot heard
+        if self._sdk:
+            response = self._send_http_request(route="listen", data=None)
+            return response.text
+
+        # if HRI is set to True, then call listen method using current language
+        if self._HRI:
+            answer = self.robot.listen(language=self.language)
             return answer.message
 
     def user_detection(self):
-        if self._demo:
+        # if HRI is set to True, use remote python api, while in other cases return a string
+        if self._HRI:
             users = self.robot.get_users()
             # Attend the user closest to the robot
             self.robot.attend(user="CLOSEST")
             return users
         else:
-            return 'demo'
+            # used for demo (without connecting to the robot) or sdk
+            return 'other'
 
     def random_head_movements(self):
-        if self._demo:
+        # do nothing if you are using robot sdk 
+        if self._sdk: return 
+
+        # when HRI is set to True run another thread to perform random gesture
+        if self._HRI:
+            # create a separate thread to run automatic movements of furhat's head
             threading.Thread(target=AutomaticMovements.random_head_movements, args=(self.robot, )).start()
 
     def do_facial_expression(self, expression):
-        if not self._demo:
+        # if sdk is set to True,  send an http request to robot sdk in order to perform the gesture
+        if self._sdk:
+            self._send_http_request(route="gesture", data={"gesture": expression})
             return
         
+        # if HRI is set to False, do nothing
+        if not self._HRI: return
+        
+        # else, check if the expression is a built-in gesture or a custom one
         if expression in self._gestures_api:
             self.robot.gesture(name=expression)
         else:
@@ -93,9 +149,6 @@ class Furhat(RobotInterface):
             self.robot.gesture(body=expression, blocking=False)
 
     def _get_custom_expression(self, filename):
-        if not self._demo:
-            return
-        
         file_path = "../emotion_tom/src/hri/robot/src/gestures/" + filename + ".json"
         gesture = ''
         try:
@@ -107,10 +160,29 @@ class Furhat(RobotInterface):
         return gesture
 
     def set_color_led(self, red, green, blue):
-        if not self._demo:
+        # if sdk is set to True, send an http request to robot sdk in order to set the led
+        if self._sdk:
+            res = self._send_http_request(route="led", data={"r": red, "g": green, "b": blue})
+            print(res)
             return
         
-        # set color of the led
+        # if HRI is set to False, do nothing
+        if not self._HRI:
+            return
+        
+        # else, set color of the led using python remote api
         self.robot.set_led(red=red, green=green, blue=blue)
 
+    def _send_http_request(self, route, data):
+        """
+        Send an HTTP request to the Furhat robot.
+        """
+        url = f"http://{self.furhat_ip}:{self.furhat_port}/{route}"
+        
+        try:
+            response = requests.post(url, json=data)
+            response.raise_for_status()
+            return response
+        except requests.exceptions.RequestException as e:
+            print(f"Error sending HTTP request: {e}")
     

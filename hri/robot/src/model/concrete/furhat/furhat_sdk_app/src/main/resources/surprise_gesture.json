@@ -1,0 +1,46 @@
+{
+  "frames": [
+    {
+      "time": [0.32, 1.3],
+      "params": {
+        "SURPRISE": 0.8
+      }
+    },
+    {
+      "time": 2,
+      "params": {
+        "SURPRISE": 0.4,
+        "SMILE_CLOSED": 0.5,
+        "BROW_UP_LEFT": 1.0,
+        "BROW_UP_RIGHT": 1.0
+      }
+    },
+    {
+      "time": 3,
+      "params": {
+        "SURPRISE": 0.0,
+        "SMILE_CLOSED": 0.8,
+        "BROW_UP_LEFT": 1.0,
+        "BROW_UP_RIGHT": 1.0
+      }
+    },
+    {
+      "time": 3.5,
+      "params": {
+        "BROW_UP_LEFT": 1.0,
+        "BROW_UP_RIGHT": 1.0,
+        "SMILE_OPEN": 0.4
+      }
+    },
+    {
+      "time": 4,
+      "params": {
+        "BROW_UP_LEFT": 1.0,
+        "BROW_UP_RIGHT": 1.0,
+        "SMILE_CLOSED": 0.4
+      }
+    }
+  ],
+  "name": "indefiniteSmile",
+  "class": "furhatos.gestures.Gesture"
+}

@@ -33,6 +33,7 @@ class ManagerNode:
         self.language = language                        # Language used by the robot
         self.emotional_condition = False                # Experimental condition
         self.id_player = -1                             # ID player for CSV: analysis for emotion
+        self.start = False                              # Flag to check if the game has started (just for debugging)
 
         # Emotion CSV object
         self.logger = None                              
@@ -89,8 +90,9 @@ class ManagerNode:
         After finishing the conversation, it enters the game_state (by setting the corresponding variable).
         """
         if msg.data:
+            rospy.loginfo("[Manager] User detected, starting interaction...")
             self.interaction.start_interaction(self.emotional_condition)
-        
+
     def game_started(self, msg):
         """
         If this callback is trigger, it means that game page has been showed and so the user can starts to play.
@@ -98,6 +100,7 @@ class ManagerNode:
         """
         # get player id from topic
         self.id_player = msg.data
+        self.start = True
 
         # debug
         print("\n")
@@ -147,8 +150,8 @@ class ManagerNode:
         """
         emotion = data.dominant_emotion
         
-        # Skip processing if no emotion is detected
-        if not emotion:
+        # Skip processing if no emotion is detected (or skip if the game has not started yet)
+        if not emotion or not self.start:
             return
 
         # Get timestamp and game time if logger is initialized

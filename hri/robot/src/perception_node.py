@@ -2,10 +2,8 @@
 
 import rospy
 from std_msgs.msg import Bool
-from sensor_msgs.msg import Image
-from cv_bridge import CvBridge, CvBridgeError
-import cv2
 
+import time
 import os
 import sys
 # to access to config file
@@ -21,31 +19,35 @@ class PerceptionModule:
         # get robot 
         self.robot = robot
         self.pub = rospy.Publisher('person_detected', Bool, queue_size=10)
-        self.rate = rospy.Rate(10)  # 10 Hz
+        self.rate = rospy.Rate(5)  # 5 Hz
         self.user_found = False
 
     def run(self):
         """
         Check if a user is detected by the robot and publish the result on the topic '/person_detected'.
-        The function will write on the topic several times if a user is detected in order to give
-        some time to the manager node to read the message.
-        The function will stop after 10 iterations or if the node is stopped.
+        The function will stop once a user has been engaged.
         """
-        counter = 0
-        while not rospy.is_shutdown() and counter < 10:
+        waiting_log_counter = 0
+        waiting_log_interval = 10  # Log every 10 cycles when waiting
+
+        time.sleep(2) # wait for subscriber to be ready
+
+        while not rospy.is_shutdown():
             self.detect_person()
             if self.user_found:
                 self.pub.publish(self.user_found)
-                if counter == 1: rospy.loginfo("[Perception] Writing on topic '/person_detected' several times!\n")
-                counter += 1
+                rospy.loginfo("[Perception] Writing on topic '/person_detected'!\n")
+                break
             else:
-                if counter == 1: rospy.loginfo("[Perception] Waiting for user...\n")
+                if waiting_log_counter % waiting_log_interval == 0:
+                    rospy.logwarn("[Perception] Waiting for user...\n")
+                waiting_log_counter += 1
             self.rate.sleep()
 
     def detect_person(self):
         # Get the users detected by the robot 
         users = self.robot.user_detection()
-        if users == 'demo':
+        if users == 'other':
             self.user_found = True
             #rospy.loginfo("User found!")
         elif len(users) > 0:

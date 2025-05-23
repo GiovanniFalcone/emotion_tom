@@ -13,7 +13,7 @@
         "Ciao, io sono Furhat, un robot parlante, piacere di conoscerti! E tu come ti chiami?"
     ],
 
-    "asking_name": "%s, giusto?",
+    "asking_name": "%s, è corretto?",
 
     "repeating_name": "Oh, scusami. Ho capito male. Come hai detto che ti chiami?",
 
@@ -40,5 +40,10 @@
         "Hey, hai trovato tutte le coppie! Ottimo lavoro! Ti ringrazio per aver partecipato %s, spero che tu abbia trovato questa esperienza interessante! Adesso, però, dobbiamo salutarci, ciao!",
         "Hey, hai completato il gioco, fantastico! Però, ora che la partita è conclusa possiamo anche salutarci. Spero che ti sia piaciuto giocare con me. %s adesso ti saluto: ciao!",
         "Fantastico! Hai completato il gioco! Sono davvero felice di aver giocato con te! Adesso, però, dobbiamo salutarci! A presto %s!"
+    ],
+
+    "yes": [
+        "sì", "sì sì", "sì, certo", "sì, va bene", "sì, d'accordo", "sì, ok", "sì, perfetto", "sì, certo che sì",
+        "si", "si si", "ok", "yes", "yep", "certo", "giusto", "giustissimo", "assolutamnete", "assolutamente sì"
     ]
 }

@@ -86,7 +86,7 @@ class InteractionModule:
 
     def _ask_for_player_name(self):
         """Ask for the player's name and confirm it."""
-        while not self.player_name:
+        while self.player_name in ['', None]:
             rospy.loginfo("[Greetings] Asking for the player's name...")
             self.player_name = self.robot.listen()
             rospy.loginfo(f"[Greetings] Player's name received: {self.player_name}")
@@ -97,11 +97,14 @@ class InteractionModule:
                 answer = self.robot.listen()
                 rospy.loginfo(f"[Greetings] Confirmation answer: {answer}")
 
-                if answer.lower() in ["yes", "si", "certo", "yep", "si si"]:
+                # answer of user is yes/yep/si ...
+                if answer.lower() in self.speech["yes"]:
                     break
                 else:
+                    # otherwise, ask for the name again
                     self.speak(self.speech["repeating_name"])
                     self.player_name = None
+                    print("\n")
 
         greeting_name_sentence = self.speech["greeting_name"] % self.player_name
         self.speak(greeting_name_sentence)
@@ -113,7 +116,7 @@ class InteractionModule:
         sentence = random.choice(sentences)
         self.speak(sentence)
 
-        rospy.loginfo("Rules] Robot uttering rules...")
+        rospy.loginfo("[Rules] Robot uttering rules...")
         sentences = self.speech["rules"]
         sentence = random.choice(sentences)
         self.speak(sentence)
@@ -140,8 +143,8 @@ class InteractionModule:
     def get_motivational_sentence(self, emotion, n_pairs, match, board_changed=False):
         return self.emotion_sentence.get_sentence(emotion, n_pairs, match, self.player_name, board_changed)
 
-    def speak(self, sentence):
-        self.robot.say(sentence)
+    def speak(self, sentence, **kwargs):
+        self.robot.say(sentence, **kwargs)
 
     def run(self):
         rospy.spin()
