@@ -30,7 +30,8 @@ class PerceptionModule:
         waiting_log_counter = 0
         waiting_log_interval = 10  # Log every 10 cycles when waiting
 
-        time.sleep(2) # wait for subscriber to be ready
+        # wait for subscriber to be ready
+        time.sleep(2) 
 
         while not rospy.is_shutdown():
             self.detect_person()
