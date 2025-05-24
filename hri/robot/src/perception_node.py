@@ -48,13 +48,13 @@ class PerceptionModule:
         # Get the users detected by the robot 
         users = self.robot.user_detection()
         if users == 'other':
+            # when sdk is set to True, or you want to try application without the robot
             self.user_found = True
-            #rospy.loginfo("User found!")
         elif len(users) > 0:
+            # when a user is detected using python remote api
             self.user_found = True
-            #rospy.loginfo("User found!")
         else:
-            #rospy.loginfo("Waiting for user...")
+            # when no user is detected
             self.user_found = False
 
 if __name__ == '__main__':
