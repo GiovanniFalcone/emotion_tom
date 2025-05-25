@@ -4,14 +4,13 @@
     "HRI":              true,
     "ip":               "172.17.0.1", 
     "language":         "ita",
-    "multithreading":   true,
     "player_name":      "",
     "port":             6000,
     "record_all_game":  true,
     "robot_type":       "furhat",
     "robot_ip":         "localhost",
     "robot_port":       9092,
-    "robot_sdk":        false,
+    "robot_sdk":        true,
     "shuffle":          true,
-    "skip_intro":       true
+    "skip_intro":       false
 }

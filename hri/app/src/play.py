@@ -18,15 +18,8 @@ def run_q_learning(id_player, instance, experimental_condition, n_game, stop_eve
 
     # get string and send it to server
     if experimental_condition is None:
-        # Choose one of the following experimental conditions:
-        # - TOM 
-        # - NO_TOM
-        # - DECEPTION
-        # - SUPERFICIAL_DECEPTION
-        # - HIDDEN_DECEPTION
-        # - EXTERNAL_DECEPTION
-        # - E_TOM (currently selected)
-        experimental_condition = constants.E_TOM
+        raise ValueError("Experimental condition is None!")
+    
     experimental_condition_str = Util.get_experimental_condition(experimental_condition)
     Util.update_log_file("\nExperimental condition:" + experimental_condition_str + "\n\n", id_player, n_game)
     Util.formatted_debug_message("Experiment condition:" + experimental_condition_str, level='INFO')

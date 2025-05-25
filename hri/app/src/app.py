@@ -40,7 +40,7 @@ socketio = SocketIO(app)
 # global
 client_instances = {}
 lock = Lock()
-expertiment_condition = None    # new experimental condition received from menu
+experimental_condition = None    # new experimental condition received from menu
 e_tom = False                   # used to show the tutorial and message bubble on web-base       
 first_start = True              # in order to not have a menu at the very beginning
 exit_pressed = False            # when return to home page after pressing exit in the menu, don't show again the menu
@@ -54,15 +54,15 @@ speech_publisher = rospy.Publisher('speech_hint', String, queue_size=10)
 start_publisher = rospy.Publisher('start', Int32, queue_size=10)
 
 try:
-    expertiment_condition = (rospy.get_param("condition"))
+    experimental_condition = (rospy.get_param("condition"))
     # handle different characters
-    if expertiment_condition == '' or \
-        (type(expertiment_condition) == str and not expertiment_condition.isdigit()) or int(expertiment_condition) not in range(7):
+    if experimental_condition == '' or \
+        (type(experimental_condition) == str and not experimental_condition.isdigit()) or int(experimental_condition) not in range(7):
         rospy.logwarn(f"Condition not valid. It will be used the default one (check play.py)!")
         experimental_condition = None
     else:
-        expertiment_condition = int(expertiment_condition)
-    e_tom = True if expertiment_condition == constants.E_TOM else False
+        experimental_condition = int(experimental_condition)
+    e_tom = True if experimental_condition == constants.E_TOM else False
 
     id_player = int(rospy.get_param("id"))
     Util.check_if_dir_with_id_already_exists(id_player)
@@ -132,7 +132,7 @@ def provide_id():
 @app.route('/', methods=["GET", "POST"])
 @app.route('/index', methods=["GET", "POST"])
 def index():
-    global expertiment_condition, first_start, exit_pressed, id_player
+    global experimental_condition, first_start, exit_pressed, id_player
 
     if 'menu_handled' not in session and not exit_pressed:
         if not first_start: 
@@ -146,7 +146,7 @@ def index():
                 threading.Timer(2.0, os._exit, args=[0]).start() 
             # if exit was pressed it's useless show the other menu
             if len(session) != 0:
-                expertiment_condition = Menu._handle_admin_menu_experimental_condition()
+                experimental_condition = Menu._handle_admin_menu_experimental_condition(experimental_condition)
                 # increase player id by 1 since the server is still running
                 id_player += 1
         else: 
@@ -184,6 +184,8 @@ def set_setting():
 
 @app.route("/game", methods=["POST", "GET"])
 def show_game():
+    global experimental_condition
+    
     if request.method == "GET":
         id = get_id()
         Util.formatted_debug_message(f"Showing game page to user with ID={id}", level='INFO')
@@ -193,7 +195,7 @@ def show_game():
             # create instance for user
             client_instances[id] = UtilityFlask() 
             # handle player and run Q-learning
-            client_instances[id].handle_id_player(id, client_instances.get(id), expertiment_condition)
+            client_instances[id].handle_id_player(id, client_instances.get(id), experimental_condition)
             return render_template("index.html", session_id=session.get('id'), session_language=session.get('language'), 
                                    session_shuffle=SHUFFLE)
 
@@ -258,7 +260,7 @@ def def_cheater(id):
     utility_flask = client_instances.get(id)
     if utility_flask is not None:
         client_instances[id].handle_cheater()
-        client_instances[id].handle_id_player(id, client_instances.get(id), expertiment_condition)
+        client_instances[id].handle_id_player(id, client_instances.get(id), experimental_condition)
     
     return redirect(url_for("show_game"))
 

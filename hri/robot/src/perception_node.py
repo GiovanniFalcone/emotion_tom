@@ -61,12 +61,22 @@ class PerceptionModule:
 if __name__ == '__main__':
     try:
         rospy.init_node('perception_node', anonymous=True)
+
         # get robot from configuration file and create the instance 
         robot_type = Util.get_from_json_file("config")['robot_type']
         robot = RobotFactory.create_robot(robot_type)
+
         # connect to robot 
         robot.connect()
-        rospy.loginfo(f"[Manager] Connection with '{robot_type}' successfully established!")
+
+        # debug
+        robot_sdk = Util.get_from_json_file("config")['robot_sdk']
+        if not robot_sdk:
+            rospy.loginfo(f"[Perception] Connection with '{robot_type}' successfully established!")
+        else:
+            rospy.loginfo(f"[Perception] '{robot_type}' will use SDK.")
+
+        # if connection is ok than start 
         node = PerceptionModule(robot)
         node.run()
     except rospy.ROSInterruptException:

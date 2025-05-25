@@ -119,6 +119,8 @@ class FileManager:
 
             # if game is finished, write the csv file and clear the csv structure
             if data["game"]["pairs"] == 12:
+                import time
+                time.sleep(0.5)
                 Util.formatted_debug_message("Saving csv...", level='INFO')
                 Util.put_data_in_csv(self.csv_data, self.id_player, self.n_game)
                 Util.formatted_debug_message("Data saved on csv file. Clear csv struct...", level='INFO')

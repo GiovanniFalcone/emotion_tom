@@ -5,24 +5,12 @@ sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..', '..'))
 from util.util import Util
 
 class Menu:
-    MULTITHREADING = Util.get_from_json_file("config")['multithreading'] 
-
     @staticmethod
     def clean_shell():
         """
         Clears the terminal shell.
         """
         os.system('clear' if os.name == 'posix' else 'cls')
-
-    @staticmethod
-    def debug_print(message):
-        """
-        Prints a debug message if multithreading is enabled.
-        
-        Args:
-            message (str): Debug message to print.
-        """
-        if Menu.MULTITHREADING: print(message)
 
     @staticmethod
     def _handle_admin_menu():
@@ -41,7 +29,7 @@ class Menu:
             return user_input == "ok"
 
     @staticmethod
-    def _handle_admin_menu_experimental_condition():
+    def _handle_admin_menu_experimental_condition(current_experimental_condition):
         """
         Handle the experimental conditions in the admin menu.
 
@@ -71,9 +59,9 @@ class Menu:
             experimental_condition = input("Choose mode: ")
             
             if experimental_condition == '' or (not experimental_condition.isdigit() or int(experimental_condition) not in range(7)):
-                experimental_condition = None
+                experimental_condition = current_experimental_condition
                 Menu.clean_shell()
             
             return int(experimental_condition)
         else:
-            return None
+            return current_experimental_condition

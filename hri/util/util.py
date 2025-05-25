@@ -1,5 +1,6 @@
 import json
 import os
+import shutil
 import numpy as np
 import csv
 
@@ -136,7 +137,12 @@ class Util:
     def check_if_dir_with_id_already_exists(player_id):
         user_path = "../emotion_tom/src/hri/app/src/data/user_" + str(player_id)
         if os.path.exists(user_path):
-            raise ValueError(f"Directory with ID={player_id} already exists!")
+            answer = input(f"Directory with ID={player_id} already exists. Do you want to delete it? y/n: ")
+            if answer in ['yes', 'Y', 'Yes', 'y']:
+                shutil.rmtree(user_path)
+            else:
+                raise ValueError("Restart application with another id!")
+
 
     
     @staticmethod

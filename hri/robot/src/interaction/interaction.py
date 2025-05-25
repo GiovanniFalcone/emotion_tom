@@ -13,6 +13,7 @@ from std_msgs.msg import String
 
 import os
 import random
+import time
 import json
 import sys
 
@@ -123,7 +124,8 @@ class InteractionModule:
 
     def goodbye(self, emotional_condition):
         """Ending state of the interaction."""
-        rospy.loginfo(f"[Goodbye] ...")
+        rospy.loginfo(f"[Goodbye] Waiting a moment before saying goodbye...")
+        time.sleep(1.5)
 
         # based on the condition, choose the appropriate set of sentences
         if emotional_condition: sentences = self.speech["end_etom"]

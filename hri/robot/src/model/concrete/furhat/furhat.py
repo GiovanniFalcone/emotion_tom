@@ -24,6 +24,7 @@ from model.concrete.furhat.automatic_movements import AutomaticMovements
 from model.interface.robot_interface import RobotInterface
 
 import requests
+import socket
 # to access to config file
 import os
 import sys
@@ -65,8 +66,18 @@ class Furhat(RobotInterface):
         if not self._HRI:
             return
         
-        # do nothing since the sdk should be already connected
+        # check if sdk is running
         if self._sdk:   
+            # check if sdk is started
+            with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
+                s.settimeout(1)
+                try:
+                    s.connect((self.furhat_ip, self.furhat_port))
+                    print("Ok, sdk is running!")
+                    return
+                except (ConnectionRefusedError, socket.timeout):
+                    print("Connection refused. Did you run Furhat SDK first?")
+                    sys.exit(1)
             return
         
         self.robot = self._get_session()
@@ -104,13 +115,13 @@ class Furhat(RobotInterface):
 
     def user_detection(self):
         # if HRI is set to True, use remote python api, while in other cases return a string
-        if self._HRI:
+        if self._HRI and not self._sdk:
             users = self.robot.get_users()
             # Attend the user closest to the robot
             self.robot.attend(user="CLOSEST")
             return users
         else:
-            # used for demo (without connecting to the robot) or sdk
+            # used for demo (without connecting to the robot)
             return 'other'
 
     def random_head_movements(self):
@@ -163,7 +174,6 @@ class Furhat(RobotInterface):
         # if sdk is set to True, send an http request to robot sdk in order to set the led
         if self._sdk:
             res = self._send_http_request(route="led", data={"r": red, "g": green, "b": blue})
-            print(res)
             return
         
         # if HRI is set to False, do nothing
@@ -183,6 +193,9 @@ class Furhat(RobotInterface):
             response = requests.post(url, json=data)
             response.raise_for_status()
             return response
+        except requests.exceptions.ConnectionError as e:
+            raise Exception(f"Connection error: {e}")
         except requests.exceptions.RequestException as e:
-            print(f"Error sending HTTP request: {e}")
+            raise Exception(f"Error sending HTTP request: {e}")
+        
     
