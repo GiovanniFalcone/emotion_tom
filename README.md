@@ -1,5 +1,5 @@
 # emotion_tom
-This projects use ROS Noetic.
+This projects use **ROS Noetic**.
 
 ```sh
 mkdir ~/emotion_tom
@@ -19,4 +19,4 @@ roslaunch app app.launch id:=<id> condition:=<1/.../6>
 roslaunch robot controller.launch emotion_condition:=<true/false> open_webcam:=<true/false>
 ```
 
-Check "HowToPlay.pdf" for more informations.
+*Check "HowToPlay.pdf" for more informations*.
