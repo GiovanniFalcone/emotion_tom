@@ -12,5 +12,5 @@
     "robot_port":       9092,
     "robot_sdk":        true,
     "shuffle":          true,
-    "skip_intro":       false
+    "skip_intro":       true
 }

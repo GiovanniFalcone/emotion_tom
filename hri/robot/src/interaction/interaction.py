@@ -126,6 +126,7 @@ class InteractionModule:
         """Ending state of the interaction."""
         rospy.loginfo(f"[Goodbye] Waiting a moment before saying goodbye...")
         time.sleep(1.5)
+        rospy.loginfo(f"[Goodbye] Speaking ...")
 
         # based on the condition, choose the appropriate set of sentences
         if emotional_condition: sentences = self.speech["end_etom"]

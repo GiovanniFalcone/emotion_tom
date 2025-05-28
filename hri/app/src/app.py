@@ -58,11 +58,12 @@ try:
     # handle different characters
     if experimental_condition == '' or \
         (type(experimental_condition) == str and not experimental_condition.isdigit()) or int(experimental_condition) not in range(7):
-        rospy.logwarn(f"Condition not valid. It will be used the default one (check play.py)!")
+        rospy.logwarn(f"Condition not valid!")
         experimental_condition = None
     else:
         experimental_condition = int(experimental_condition)
     e_tom = True if experimental_condition == constants.E_TOM else False
+    rospy.loginfo(f"Chosen condition: {Util.get_experimental_condition(experimental_condition)}")
 
     id_player = int(rospy.get_param("id"))
     Util.check_if_dir_with_id_already_exists(id_player)
@@ -292,5 +293,5 @@ if __name__ == '__main__':
     # handle CTRL+C
     signal.signal(signal.SIGINT, handle_exit)
     # run app
-    print("* Running on http://" + IP_ADDRESS + ":5000/ (Press CTRL+C to quit)")
+    rospy.loginfo("Running on http://" + IP_ADDRESS + ":5000/ (Press CTRL+C to quit)")
     socketio.run(app, host=IP_ADDRESS, port=5000, debug=True, use_reloader=False, log_output=False)

@@ -90,13 +90,13 @@ fun provideFeedback(request: String) = state {
 
                 val secondComma = if (commaIndices.size >= 2) commaIndices[1] else -1
 
-                // Scegli il primo indice valido (non -1) tra quelli trovati
+                // sceglie il primo 'separatore' individuato
                 val splitIndex = listOf(secondComma, firstDot, firstExcl)
                     .filter { it >= 0 }
                     .minOrNull() ?: -1
 
                 val (firstPart, secondPart) = if (splitIndex != -1) {
-                    val splitAt = splitIndex + 1  // include il carattere di punteggiatura
+                    val splitAt = splitIndex + 1
                     val first = message.substring(0, splitAt).trim()
                     val second = message.substring(splitAt).trim()
                     first to second

@@ -31,14 +31,14 @@
     ],
 
     "end_tom": [
-        "Bene, abbiamo terminato. Spero che tu abbia trovato questa esperienza interessante! Adesso ti saluto, ciao!",
+        "Bene, abbiamo terminato. Spero che tu abbia trovato questa esperienza interessante! Adesso ti saluto, a presto!",
         "Ora che la partita è conclusa possiamo anche salutarci. Spero che tu abbia trovato questa esperienza interessante! Arrivederci!",
-        "Okay, abbiamo finito! Spero che giocare con me ti sia piaciuto. Adesso, però, dobbiamo salutarci: ciao!"
+        "Okay, abbiamo finito! Spero che giocare con me ti sia piaciuto. Adesso, però, dobbiamo salutarci: a presto!"
     ],
 
     "end_etom": [
-        "Hey, hai trovato tutte le coppie! Ottimo lavoro! Ti ringrazio per aver partecipato %s, spero che tu abbia trovato questa esperienza interessante! Adesso, però, dobbiamo salutarci, ciao!",
-        "Hey, hai completato il gioco, fantastico! Però, ora che la partita è conclusa possiamo anche salutarci. Spero che ti sia piaciuto giocare con me. %s adesso ti saluto: ciao!",
+        "Hey, hai trovato tutte le coppie! Ottimo lavoro! Ti ringrazio per aver partecipato %s, spero che tu abbia trovato questa esperienza interessante! Adesso, però, dobbiamo salutarci, a presto!",
+        "Hey, hai completato il gioco, fantastico! Però, ora che la partita è conclusa possiamo anche salutarci. Spero che ti sia piaciuto giocare con me. %s adesso ti saluto: a presto!",
         "Fantastico! Hai completato il gioco! Sono davvero felice di aver giocato con te! Adesso, però, dobbiamo salutarci! A presto %s!"
     ],
 

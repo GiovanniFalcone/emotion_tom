@@ -1,4 +1,5 @@
 # emotion_tom
+This projects use ROS Noetic.
 
 ```sh
 mkdir ~/emotion_tom
@@ -14,8 +15,8 @@ chmod u+x src/hri/robot/src/perception.py
 ## How to play
 
 ```sh
-roslaunch robot usb_cam-test.launch
-roslaunch app app.launch condition:=0
-roslaunch robot controller.launch emotion_condition:=true
+roslaunch app app.launch id:=<id> condition:=<1/.../6>
+roslaunch robot controller.launch emotion_condition:=<true/false> open_webcam:=<true/false>
 ```
 
+Check "HowToPlay.pdf" for more informations.

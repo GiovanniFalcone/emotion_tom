@@ -125,11 +125,13 @@ class ManagerNode:
         """
         # deserialize json
         json_data = json.loads(data.data)
-        # rospy.loginfo(f"[Hint] {json_data}")
-        sentence = json_data["action"]["sentence"]
-        flip_type = json_data["action"]["flip_type"]
+
         # if hint is provided for first flip 
+        flip_type = json_data["action"]["flip_type"]
         self.feedback.handle_first_flip(flip_type == "firstCard")
+        
+        # get the sentence to utter
+        sentence = json_data["action"]["sentence"]
         # if hint is provided then utter it
         if sentence != '':
             rospy.loginfo(f"[Hint] Hint Received: {sentence}")

@@ -37,11 +37,11 @@ class PerceptionModule:
             self.detect_person()
             if self.user_found:
                 self.pub.publish(self.user_found)
-                rospy.loginfo("[Perception] Writing on topic '/person_detected'!\n")
+                rospy.loginfo("[Perception] Writing on topic '/person_detected'!")
                 break
             else:
                 if waiting_log_counter % waiting_log_interval == 0:
-                    rospy.logwarn("[Perception] Waiting for user...\n")
+                    rospy.logwarn("[Perception] Waiting for user...")
                 waiting_log_counter += 1
             self.rate.sleep()
 

@@ -199,6 +199,7 @@ class Feedback:
         """
         with self.first_flip_lock: 
             self.is_hint_first_flip = value
+        rospy.loginfo(f"[Feedback] is_hint_first_flip set to: {self.is_hint_first_flip}...")
 
     ###############################################################################################################
     #                                              Emotion callback                                               #
@@ -399,7 +400,7 @@ class Feedback:
         # get data
         move = json.loads(game_data.data) 
         n_pairs = move['game']['pairs']
-        self.is_game_ended = n_pairs == 12
+        is_game_ended = n_pairs == 12
         board_changed = move['game']['board_changed']
 
         # if robot has E-ToM it can provide a feedback when board changed
@@ -412,7 +413,10 @@ class Feedback:
         self._handle_turn(move)
 
         # when the game ends, robot will say goodbye to the user
-        if self.is_game_ended:
+        if is_game_ended:
+            # update self.is_game_ended only after saving the last turn,
+            # otherwise the emotion handler will stop logging too early
+            self.is_game_ended = True
             self.interaction.goodbye(self.emotional_condition)
             self.interaction.player_name = ''
 
@@ -436,7 +440,7 @@ class Feedback:
             self.match = match
 
         # debug 
-        rospy.loginfo(f"[Feedback] Card clicked in ros time {self.logger.get_game_time()} - js time {time_js}")
+        rospy.loginfo(f"[Feedback] Card clicked in ros time {self.logger.get_game_time()} - js time {time_js} - turn: {turn}")
 
         # if the turn is odd (first card of pair is clicked) update values
         #   - motivated: no, since the robot can only motivate after the outcome of a move
@@ -444,12 +448,6 @@ class Feedback:
         if not is_turn_even:
             with self.game_data_lock:   self.motivated = 'no'
             with self.utter_lock:       self.has_uttering = False
-            return
-        
-        # If the turn is even, the robot can potentially provide feedback.
-        # However, if the user has received a hint on the first flip, the robot will skip motivation.
-        # (Refer to the documentation of the following function for more details.)
-        if self._should_skip_feedback_due_to_hint():
             return
 
         # get current time in order to save the emotion for some seconds when the robot should not provide a feedback 
@@ -471,6 +469,13 @@ class Feedback:
             x_pose = self.x_pose
             y_pose = self.y_pose
             z_pose = self.z_pose
+
+        # If the turn is even, the robot can potentially provide feedback.
+        # However, if the user has received a hint on the first flip, the robot will skip motivation.
+        # (Refer to the documentation of the following function for more details.)
+        # n.b the check must be done after the emotion has been computed, to give some time before checking the flip 
+        if self._should_skip_feedback_due_to_hint():
+            return
 
         # if true, the robot will motivate the user based on their emotion (False -> ToM condition only)
         if not self.emotional_condition:
@@ -581,6 +586,9 @@ class Feedback:
 
         # emotion to use for feedback
         emotion, emotion_score = self.emotion_processor.get_emotion()
+        # set to 'neutral' if the emotion hasn't been detected 
+        if emotion in ['', None]: emotion = 'neutral'
+
         # get estimated head pose
         head_pose, x_pose, y_pose, z_pose = None, None, None, None
         with self.pose_lock:
